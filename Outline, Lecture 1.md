@@ -1,5 +1,3 @@
-
-
 # COMS W3261
 
   Computer Science Theory
