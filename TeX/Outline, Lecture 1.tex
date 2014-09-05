@@ -8,140 +8,140 @@
 
 \title{COMS W3261 \\ Computer Science Theory \\ Lecture 1}
 \author{Alexander Roth}
-\date{2014-09-03}
+\date{2014 -- 09 -- 03}
 \maketitle
 \section{Schedule}
-\begin{itemize}
-\item Lectures: Mondays and Wednesdays, 1:10 -- 2:25pm, 833 Mudd.
-\item Office Hours: Mondays and Wednesdays, after class.
-\end{itemize}
+  \begin{itemize}
+    \item Lectures: Mondays and Wednesdays, 1:10 -- 2:25pm, 833 Mudd.
+    \item Office Hours: Mondays and Wednesdays, after class.
+  \end{itemize}
 
 \section{Course Objectives}
-\begin{itemize}
-\item Learning computational thinking
-\item Understanding the fundamental models of computation that underlie modern computer hardware, software, and programming languages.
-\item Discovering that there are problems no computer can solve.
-\item Discovering that there are limits on how fast a computer can solve a problem.
-\item Mastering the foundations of automata theory, computability theory, and complexity theory.
-\item Learning about applications of computer science theory to algorithms, programming languages, compilers, natural language translation, operating systems, and software verification.
-\end{itemize}
+  \begin{itemize}
+    \item Learning computational thinking
+    \item Understanding the fundamental models of computation that underlie modern computer hardware, software, and programming languages.
+    \item Discovering that there are problems no computer can solve.
+    \item Discovering that there are limits on how fast a computer can solve a problem.
+    \item Mastering the foundations of automata theory, computability theory, and complexity theory.
+    \item Learning about applications of computer science theory to algorithms, programming languages, compilers, natural language translation, operating systems, and software verification.
+  \end{itemize}
 
 \section{Course Syllabus}
-\begin{itemize}
-\item Languages and decision problems
-\item Finite automata
-\item Regular expressions
-\item Properties of regular languages
-\item Context-free grammars
-\item Pushdown automata
-\item Algorithms and Turing machines
-\item Lambda calculus
-\begin{itemize}
-\item The computational model for functional languages. Java 8 now has lambdas.
-\end{itemize}
-\item Undecidability
-\item Complexity theory
-\end{itemize}
+  \begin{itemize}
+    \item Languages and decision problems
+    \item Finite automata
+    \item Regular expressions
+    \item Properties of regular languages
+    \item Context-free grammars
+    \item Pushdown automata
+    \item Algorithms and Turing machines
+    \item Lambda calculus
+      \begin{itemize}
+        \item The computational model for functional languages. Java 8 now has lambdas.
+      \end{itemize}
+    \item Undecidability
+    \item Complexity theory
+  \end{itemize}
 
 \section{Course Requirements}
-\begin{itemize}
-\item Homeworks (best four out of five homeworks will constitute 20\% of final grade)
-\item Midterm (40\% of final grade)
-\item Final (40\% of final grade)
-\end{itemize}
+  \begin{itemize}
+    \item Homeworks (best four out of five homeworks will constitute 20\% of final grade)
+    \item Midterm (40\% of final grade)
+    \item Final (40\% of final grade)
+  \end{itemize}
 
 \section{Languages}
-\begin{itemize}
-\item An \emph{alphabet} $\sum$ is a finite, nonempty set of symbols.
-\item A \emph{function} maps an element to a range.
-\item[\textbf{Example:}]
-$\{0, 1\}$, ASCII, Unicode. 
-\item A \emph{string} is a finite sequence of symbols chosen from some alphabet.
-\item[\textbf{Example:}] $\varepsilon$, the empty string, 0, 01, 011
-\begin{itemize}
-\item Don't forget about the empty string, it's important!
-\end{itemize}
-\end{itemize}
+  \begin{itemize}
+    \item An \emph{alphabet} $\sum$ is a finite, nonempty set of symbols.
+    \item A \emph{function} maps an element to a range.
+    \item[\textbf{Example:}]
+    $\{0, 1\}$, ASCII, Unicode. 
+    \item A \emph{string} is a finite sequence of symbols chosen from some alphabet.
+    \item[\textbf{Example:}] $\varepsilon$, the empty string, 0, 01, 011
+    \begin{itemize}
+      \item Don't forget about the empty string, it's important!
+    \end{itemize}
+  \end{itemize}
 
-\subsection{Terms associated with strings}
-\begin{keyword}
-Prefix: Any sequence of characters at the beginning of a string.
-\end{keyword}
-\begin{example}
-``dog'' has 4 prefixes: $\varepsilon$, d, do, dog.
-\end{example}
-All strings have $n + 1$ prefixes.
+  \subsection{Terms associated with strings}
+    \begin{keyword}
+    Prefix: Any sequence of characters at the beginning of a string.
+    \end{keyword}
+    \begin{example}
+    ``dog'' has 4 prefixes: $\varepsilon$, d, do, dog.
+    \end{example}
+  All strings have $n + 1$ prefixes.
 
-\begin{keyword}
-Suffixes: Any sequence of characters at the end of a string.
-\end{keyword}
-\begin{example}
-``dog'' has 4 suffixes. $\varepsilon$, g, go, god.
-\end{example}
-All strings have $n + 1$ suffixes
+    \begin{keyword}
+    Suffixes: Any sequence of characters at the end of a string.
+    \end{keyword}
+    \begin{example}
+    ``dog'' has 4 suffixes. $\varepsilon$, g, go, god.
+    \end{example}
+  All strings have $n + 1$ suffixes
 
-\begin{keyword}
-Substrings: Obtained by maintaining the sequence of characters while reducing the size of the strings.
-\end{keyword}
-\begin{example}
-``dog'': \\
-Shortest String: $\varepsilon$ \\
-String of length 1: d, o, g \\
-String of length 2: do, og, dg \\
-String of length 3: dog
-\end{example}
-All substrings are of length $n! + 1$
+    \begin{keyword}
+    Substrings: Obtained by maintaining the sequence of characters while reducing the size of the strings.
+    \end{keyword}
+    \begin{example}
+    ``dog'': \\
+    Shortest String: $\varepsilon$ \\
+    String of length 1: d, o, g \\
+    String of length 2: do, og, dg \\
+    String of length 3: dog
+    \end{example}
+  All substrings are of length $n! + 1$
 
-\begin{keyword}
-Subsequences: Obtained by deleting zero or more characters in a string
-\end{keyword}
-\begin{example}
-``dog'': $\varepsilon$, d, o, g, do, dg, og, dog
-\end{example}
-$2^n$ subsequences in any given string $x$.\\
-A string is ordered, strings are sequences and sequences have orders.\\
+    \begin{keyword}
+    Subsequences: Obtained by deleting zero or more characters in a string
+    \end{keyword}
+    \begin{example}
+    ``dog'': $\varepsilon$, d, o, g, do, dg, og, dog
+    \end{example}
+  $2^n$ subsequences in any given string $x$.\\
+  A string is ordered, strings are sequences and sequences have orders.\\
 
-\textbf{Operations on Strings}
-Common operations:
-\begin{itemize}
-\item Concatenation
-\item Reversal
-\end{itemize}
+  \textbf{Operations on Strings}
+  Common operations:
+  \begin{itemize}
+    \item Concatenation
+    \item Reversal
+  \end{itemize}
 
-\textbf{Terms associated with Strings}
-\begin{itemize}
-\item Prefix
-\item Suffix
-\item Substring
-\item Subsequence
-\end{itemize}
+  \textbf{Terms associated with Strings}
+  \begin{itemize}
+    \item Prefix
+    \item Suffix
+    \item Substring
+    \item Subsequence
+  \end{itemize}
 
-A \emph{language} over $\sum$ is a set of strings whose symbols are chosen from $\sum$
-\begin{example}
-\begin{itemize}
-\item The empty set, $\varnothing$
-\item $\{ 0, 1 \}$, $\{0\}$, $\{1\}$, $\{01\}$
-\item $P = \{ 10, 11, 101, 111, 1011, 1101, \ldots \}$ (the binary representation of the prime numbers)
-\end{itemize}
-\end{example}
+  A \emph{language} over $\sum$ is a set of strings whose symbols are chosen from $\sum$
+  \begin{example}
+    \begin{itemize}
+      \item The empty set, $\varnothing$
+      \item $\{ 0, 1 \}$, $\{0\}$, $\{1\}$, $\{01\}$
+      \item $P = \{ 10, 11, 101, 111, 1011, 1101, \ldots \}$ (the binary representation of the prime numbers)
+    \end{itemize}
+  \end{example}
 
-\textbf{Distinction between finite and infinite languages:}
-\begin{itemize}
-\item Distinction between finite and infinite languages:
-\begin{itemize}
-\item There are a finite number of objects in the set.
-\item Two types of infinite:
-\begin{itemize}
-\item \textbf{Countably:} 1 to 1 mapping between the numbers in the set against the natural integers. A set of all syntactically valid java programs is countably infinite.
-\item \textbf{Uncountably:} Do not have 1 to 1 mapping between the natural integers and the given set.
-\end{itemize}
-\end{itemize}
-\end{itemize}
+  \textbf{Distinction between finite and infinite languages:}
+    \begin{itemize}
+      \item Distinction between finite and infinite languages:
+      \begin{itemize}
+        \item There are a finite number of objects in the set.
+        \item Two types of infinite:
+        \begin{itemize}
+          \item \textbf{Countably:} 1 to 1 mapping between the numbers in the set against the natural integers. A set of all syntactically valid java programs is countably infinite.
+          \item \textbf{Uncountably:} Do not have 1 to 1 mapping between the natural integers and the given set.
+        \end{itemize}
+      \end{itemize}
+    \end{itemize}
 
-\subsection{Kleene Closure}
-\[ L \cup M \]
-\[ L \cap M \]
-\[ LM = \{ \, xy \, | x \in \]
+  \subsection{Kleene Closure}
+    \[ L \cup M \] 
+    \[ L \cap M \]
+    \[ LM = \{ \, xy \, | x \in \]
 
 
 \end{document}
