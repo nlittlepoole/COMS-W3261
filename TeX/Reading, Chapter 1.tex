@@ -1,0 +1,125 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{indentfirst}
+\usepackage{tikz}
+\usetikzlibrary{arrows,automata}
+\begin{document}
+
+\title{COMS W3261 \\ Computer Science Theory \\ Chapter 1 Notes}
+\author{Alexander Roth}
+\date{2014-09-06}
+\maketitle
+
+\section*{Definitions}
+  \begin{description}
+    \item[Grammars] A useful model when designing software that processes data 
+    with a recursive structure.
+    \item[Regular Expressions] Denote the structure of data, especially text
+    strings.
+  
+  \subsection*{Regular Expression Special Characters}
+    \begin{description}
+      \item[\texttt{\lbrack A-Z\rbrack}] Represents a range of characters from
+      capital `A' to capital `Z'.
+      \item[\texttt{\lbrack \, \rbrack}] Represents a blank character alone.
+      \item[\texttt{*}] Represents ``any number of'' the preceding expression.
+      \item[( \, )] Used to group components of the expression. 
+    \end{description}
+    
+  \item[Decidability] What can a computer do at all? Problems that a computer
+  can solve are called ``decidable''.
+  \item[Intractability] What can a computer do efficiently? The problems that 
+  can be solved by a computer using no more time than some slowly growing 
+  function of the size of the input are called ``tractable.''
+  
+  \end{description}
+ 
+\section*{Introduction to Formal Proofs}
+
+  \subsection*{Reduction to Definitions}
+    \begin{itemize}
+      \item If you are not sure how to start a proof, convert all terms in the
+      hypothesis to their definitions.
+    \end{itemize}
+    \begin{enumerate}
+      \item A set $S$ is \emph{finite} if there exists an integer $n$ such that
+      $S$ has exactly $n$ elements. We write $\|S\| = n$, where $\|S\|$ is used 
+      to denote the number of elements in a set $S$.
+      \item If the set $S$ is not finite, we say $S$ is \emph{infinite}.
+      Intuitively, an infinite set is a set that contains more than any integer
+      number of elements.
+      \item If $S$ and $T$ are both subsets of some set $U$, then $T$ is the
+      \emph{complement} of $S$ (with respect to $U$) if $S \cup T = U$ and
+      $S \cap T = \emptyset$. That is each element of $U$ is in exactly one of
+      $S$ and $T$; put another way, $T$ consists of exactly those elements of
+      $U$ that are not in $S$.
+    \end{enumerate}
+    \begin{description}
+      \item[Proof by Contradiction] Assume that the conclusion is false. Then
+      use that assumption, together with parts of the hypothesis, to prove the
+      opposite of one of the given statements of the hypothesis. Shown that it
+      is impossible for all parts of the hypothesis to be true and for the
+      conclusion to be false at the same time, there is only one possibility.
+      The conclusion must be true whenever the hypothesis is true. Thus, the
+      theorem is true.
+    \end{description}
+  
+  \subsection*{Ways of Saying ``If-Then''}
+    \begin{enumerate}
+      \item $H$ implies $C$.
+      \item $H$ only if $C$.
+      \item $C$ if $H$.
+      \item Whenever $H$ holds, $C$ follows.
+    \end{enumerate}
+      \subsubsection*{Examples}
+        \begin{enumerate}
+          \item $x \geq 4$ implies $2^x \geq x^2$.
+          \item $x \geq 4$ only if $2^x \geq x^2$.
+          \item $2^x \geq x^2$ if $x \geq 4$.
+          \item Whenever $x \geq 4$, $2^x \geq x^2$ follows.
+        \end{enumerate}
+    The operator $\rightarrow$ can also take the place of ``if-then''.
+    
+  \subsection*{If-And-Only-If Statements}
+    Forms of the statement ``$A$ if and only if $B$'' include: ``$A$ iff $B$'',
+    ``$A$ is equivalent to $B$'' or ``$A$ exactly when $B$''. This statement is
+    actually two if-then statements. We prove this by doing:
+    \begin{enumerate}
+      \item The \emph{if part}: ``if $B$ then $A$,'' and
+      \item The \emph{only-if part}: ``if $A$ then $B$,'' which is often stated
+      in the equivalent form ``$A$ only if $B$.''
+    \end{enumerate}
+    The operators $\leftrightarrow$ and $\equiv$ are used to denote 
+    ``if-and-only-if'' statements.
+  
+  \subsection*{How Formal Do Proofs Have to Be?}
+    There are certain things that are required in proofs, and omitting them
+    surely makes the proof inadequate. For example, any deductive proof that
+    uses statements which are not justified by given or previous statements,
+    cannot be adequate.
+
+\section*{Additional Forms of Proofs}
+  \subsection*{Proving Equivalences About Sets}
+    If $E$ and $F$ are two expressions representing sets, the statement
+    $E = F$ means that the two sets represented are the same.
+    
+  \subsection*{The Contrapositive}
+    The \emph{contrapositive} of the statement ``if $H$ then $C$'' is ``if not
+    $C$ then not $H$''. A statement its contrapositive are either both true or
+    both false, so we can prove either to prove the other.
+    
+  \subsection*{The Converse}
+    The \emph{converse} of an if-then statement is the ``other direction''; 
+    that is, the converse of ``if $H$ then $C$'' is ``if $C$ then $H$.'' 
+    Unlike the contrapositive, which is logically equivalent to the original, 
+    the converse is \emph{not} equivalent to the original statement.
+  
+  \subsection*{Counterexamples}
+    Statements that have no parameters, or that apply to only a finite number
+    of values of its parameter(s) are called \emph{observations}. It is often
+    easier to prove that a statement is not a theorem than to prove it 
+    \emph{is} a theorem.
+
+\end{document}
