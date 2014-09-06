@@ -1,0 +1,60 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{indentfirst}
+\usepackage{tikz}
+\usetikzlibrary{arrows,automata}
+\begin{document}
+
+\title{COMS W3261 \\ Computer Science Theory \\ Chapter 2 Notes}
+\author{Alexander Roth}
+\date{2014-09-06}
+\maketitle
+
+\section*{Definitions}
+  \begin{description}
+    \item[Deterministic] The automaton cannot be in more than one state at any 
+    time.
+    \item[Nondeterministic] The automaton may be in several states at once.
+  \end{description}
+
+\section*{An Informal Picture of Finite Automata}
+  We will be using the example of a real-world problem whose solution uses 
+  finite automata in an important role. We investigate protocols that support 
+  ``electronic money'' -- files that a customer can use to pay for goods on 
+  the internet, and that the seller can receive insurance that the ``money'' 
+  is real.
+  
+  \subsection*{The Ground Rules}
+    There are three participants: the customer, the store, and the bank. We 
+    assume for simplicity that there is only one ``money'' file in existence.
+    Interactions among the three participants is thus limited to five 
+    elements:
+    \begin{enumerate}
+      \item The customer may decide to \emph{pay}. That is, the customer sends
+      the money to the store.
+      \item The customer may decide to \emph{cancel}. The money is sent to the
+      bank with a message that the value of the money is to be added to the
+      customer's bank account.
+      \item The store may \emph{ship} goods to the customer.
+      \item The store may \emph{redeem} the money. That is, the money is sent
+      to the bank with a request that its value be given to the store.
+      \item The bank may \emph{transfer} the money by creating a new, suitably
+      encrypted money file and sending it to the store.
+    \end{enumerate}
+    
+  \subsection*{The Protocol}
+    The customer cannot be relied upon to act responsibly. In particular, the 
+    customer may try to copy the money file, use it to pay several times, or 
+    both pay and cancel the money, thus getting the goods ``for free''. The 
+    bank must behave responsibly, or it cannot be a bank. The store should be 
+    careful as well. In particular, it should not ship goods until it is sure 
+    it has been given valid money for the goods. \\
+    \indent These types of protocols can be represented by finite automata. 
+    Each state represents a situation that one of the participants could be 
+    in. Transitions between states occur when one of the five events described 
+    above occur.
+
+
+\end{document}
