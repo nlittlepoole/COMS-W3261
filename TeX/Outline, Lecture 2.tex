@@ -42,8 +42,8 @@
     \item A DFA has five components:
       \begin{enumerate}
         \item A finite set of states $Q$.
-        \item An input alphabet consisting of a finite set of symbols $\sum$.
-        \item A transition function $\delta$ that maps $Q \times \sum$ to $Q$.\\
+        \item An input alphabet consisting of a finite set of symbols $\Sigma$.
+        \item A transition function $\delta$ that maps $Q \times \Sigma$ to $Q$.\\
         This transition function can be represented by a transition diagram in 
         which the nodes are labeled by states and arcs by symbols.
         \item A start state which is one of the states in $Q$.
@@ -63,7 +63,7 @@
     \item Consider the following DFA $D$ with:
       \begin{enumerate}
         \item The finite set of states $Q = \{ \texttt{A, B} \}$
-        \item The input alphabet $\sum = \{ \texttt{0, 1} \}$
+        \item The input alphabet $\Sigma = \{ \texttt{0, 1} \}$
         \item The transition function $\delta$ as represented by the following 
         transition table:
         
@@ -104,7 +104,7 @@
     \item Consider the following DFA $D$ with:
       \begin{enumerate}
         \item The finite set of states $Q = \{ \texttt{A, B, C} \}$
-        \item The input alphabet $\sum = \{ \texttt{0, 1} \}$
+        \item The input alphabet $\Sigma = \{ \texttt{0, 1} \}$
         \item The transition function $\delta$ as represented by the following 
         transition table:
         
@@ -135,8 +135,8 @@
     \item A nondeterministic finite automaton (NFA) consists of
       \begin{itemize}
         \item A finite set of states $Q$.
-        \item An input alphabet consisting of a finite set of symbols $\sum$.
-        \item A transition function $\delta$ that maps $Q \times \sum$ to $P(Q)$, 
+        \item An input alphabet consisting of a finite set of symbols $\Sigma$.
+        \item A transition function $\delta$ that maps $Q \times \Sigma$ to $P(Q)$, 
         the set of subsets of $Q$. \\
         Like a DFA, this transition function can be represented by a transition 
         diagram in which the nodes are labeled by states and arcs by symbols. 
@@ -157,14 +157,14 @@
   
 \section{Equivalence of DFAs and NFAs: the Subset Construction}
   \begin{itemize}
-    \item From an NFA $N = (Q_N, \sum, \delta_N, q_0, F_N)$, we can construct a 
-    DFA $D = (Q_D, \sum, \delta_D, \{q_0\}, F_D)$ that simulates all possible 
+    \item From an NFA $N = (Q_N, \Sigma, \delta_N, q_0, F_N)$, we can construct a 
+    DFA $D = (Q_D, \Sigma, \delta_D, \{q_0\}, F_D)$ that simulates all possible 
     moves of $N$ on any given input as follows:
       \begin{itemize}
         \item $Q_D$ is the set of all subsets of $Q_N$.
         \item The input alphabet of $D$ is the same as that of $N$.
         \item For each state $S$ in $Q_N$ and each input symbol \texttt{a} in 
-        $\sum$. \\
+        $\Sigma$. \\
         $\delta_D(S, \texttt{a})$ is the union of all states in $\delta_N(
         \texttt{p}, \texttt{a})$ for all \texttt{p} in $S$. 
         \item The start state of $D$ is the state \{ $\texttt{q}_0$ \}.

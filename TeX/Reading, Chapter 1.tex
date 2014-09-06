@@ -121,5 +121,115 @@
     of values of its parameter(s) are called \emph{observations}. It is often
     easier to prove that a statement is not a theorem than to prove it 
     \emph{is} a theorem.
-
+    
+\section*{Inductive Proofs}
+  In automata theory, inductive proofs are used with recursively defined 
+  concepts such as trees and expressions of various sorts (e.g. regular 
+  expressions).
+  
+  \subsection*{Inductions on Integers}
+    \begin{itemize}
+      \item \emph{The Induction Principle}: If we prove $S(i)$ and we prove 
+      that for all $n \geq i$, $S(i)$ implies $S(n + 1)$, then we may conclude
+      $S(n)$ for all $n \geq i$.
+    \end{itemize}
+  
+  \subsection*{Structual Inductions}
+    When we have a recursive definitions, we can prove theorems about it using
+    the following proof form, which is called \emph{structural induction}. Let
+    $S(X)$ be a statement about the structures $X$ that are defined by some
+    particular recursive definition.
+    \begin{enumerate}
+      \item As a basis, prove $S(X)$ for the basis structure(s) $X$.
+      \item For the inductive step, take a structure $X$ that the recursive
+      definition says is formed from $Y_1, Y_2, \ldots, Y_k$. Assume that the
+      statements \\ $S(Y_1), S(Y_2),\ldots, S(Y_k)$ hold, and use these to 
+      prove $S(X)$.
+    \end{enumerate}  
+  Our conclusions is that $S(X)$ is true for all $X$.
+  
+  \subsection*{Mutual Inductions}
+    \begin{itemize}
+      \item Each of the statements must be proved separately in the basis and
+      in the inductive step.
+      \item If the statements are ``if-and-only-if,'' then both directions of
+      each must be proved, both in the basis and in the induction.
+    \end{itemize}
+    
+\section{The Central Concepts of Automata Theory}
+  \subsection*{Alphabet}
+    An \emph{alphabet} is a finite, nonempty set of symbols. Conventionally, we
+    use $\Sigma$ for an alphabet.
+  
+  \subsection*{Strings}
+    A \emph{string} is a finite sequence of symbols chosen from some alphabet.
+  
+    \subsubsection*{The Empty String}
+      The \emph{empty string} is the string with zero occurrences of symbols.
+      Denoted by $\epsilon$.
+ 
+    \subsubsection*{Length of a String}
+      It is often useful to classify strings by their \emph{length}, that is
+      the number of positions for symbols in the string. The standard notation
+      for the length of a string $w$ is $|w|$.
+      
+    \subsubsection*{Powers of an Alphabet}
+      If $\Sigma$ is an alphabet, we can express the set of all strings of a 
+      certain length from that alphabet by using an exponential notation. We
+      define $\Sigma^k$ to be the set of strings of length $k$, each of whose
+      symbols is in $\Sigma$.
+        \begin{itemize}
+          \item The set of all strings over an alphabet $\Sigma$ is
+          conventionally denoted $\Sigma^*$.
+          \item The set of nonempty strings from alphabet $\Sigma$ is denoted
+          $\Sigma^+$
+          \item $\Sigma^+ = \Sigma^1 \, \cup \, \Sigma^2 \, \cup \, \Sigma^3 \, 
+          \cup \, \cdots$.
+          \item $\Sigma^* = \Sigma^+ \, \cup \, \{ \epsilon \}$.
+        \end{itemize}
+      
+    \subsubsection*{Concatentation of Strings}
+      Let $x$ and $y$ be strings. Then $xy$ denotes the \emph{concatenation} of
+      $x$ and $y$, that is, the string formed by making a copy of $x$ and
+      following it by a copy of $y$. $\epsilon$ is the \emph{identity for
+      concatenation}, since when concatenated with any string it yields the 
+      other string as a result.
+  
+  \subsection*{Languages}
+    A set of strings all of which are chosen from some $\Sigma^*$, where 
+    $\Sigma$ is a particular alphabet, is called a \emph{language}. If $\Sigma$ 
+    is an alphabet, and $L \subseteq \Sigma^*$, then $L$ is a \emph{language 
+    over} $\Sigma$. The only important constraint on what can be a language is
+    that all alphabets are finite.
+    
+  \subsection*{Problems}
+    A \emph{problem} is the question of deciding whether a given string is a 
+    member of some particular language. If $\Sigma$ is an alphabet, and $L$ is 
+    a language over $\Sigma$ then the problem $L$ is:
+      \begin{itemize}
+        \item Given a string $w$ in $\Sigma^*$, decide whether or not $w$ is in   
+        $L$.
+      \end{itemize}
+      
+\section*{Summary}
+  \begin{description}
+    \item[Finite Automata] Finite automata involve states and transitions among 
+    states in response to inputs.
+    \item[Regular Expressions] These are structural notation for describing the 
+    same patterns that can be represented by finite automata.
+    \item[Context-Free Grammars] These are an important notation for describing
+    the structure of programming languages and related sets of strings.
+    \item[Turing Machines] These are automata that model the power of real 
+    computers. They allow us to study decidability, the question of what can or 
+    cannot be done by a computer. They also let us distinguish tractable 
+    problems.
+    \item[Deductive Proofs] This basic method of proof proceeds by listing 
+    statements that are either given to be true, or that follow logically from 
+    some of the previous statements.
+    \item[Languages and Problems] A language is a (possibly infinite) set of 
+    strings, all of which choose their symbols from one alphabet. When the 
+    strings of a language are to be interpreted in some way, the question of 
+    whether a string is in the language is sometimes called a problem.
+  \end{description}
+       
 \end{document}
