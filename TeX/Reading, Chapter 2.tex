@@ -257,6 +257,193 @@
         takes a state in $Q$ and an input symbol in $\Sigma$ as arguments and 
         returns a subset of $Q$.
       \end{enumerate}
+  
+  \subsection*{The Extended Transition Function}
+    We need to extend the transition function $\delta$ of an NFA to a function 
+    $\hat{\delta}$ that takes a state $q$ and a string of input symbols $w$, 
+    and returns the set of states that the NFA is in if it starts in state $q$ 
+    and processes the string $w$.
     
+  \subsection*{The Language of an NFA}
+    An NFA accepts a string $w$ if it is possible to make any sequence of 
+    choices of next state, while reading the characters of $w$, and go from 
+    the start state to any accepting state. The fact that other choices using 
+    the input symbols of $w$ lead to a nonaccepting state, or do not lead to 
+    any state at all (i.e., the sequence of states ``dies''), does not prevent 
+    $w$ from being accepted by the NFA as a whole. Formally, if $A = (Q, 
+    \Sigma, \delta, q_0, F)$ is an NFA, then
+    
+      \[ 
+        L(A) = \{ \, w \, | \, \hat{\delta}(q_0, w) \, \cap \, F \neq 
+        \emptyset \} 
+      \]
+      
+    That is, $L(A)$ is the set of string $w$ in $\Sigma^*$ such that $
+    \hat{\delta}(q_0, w)$ contains at least one accepting state.
+    
+  \subsection*{Equivalence of Deterministic and Nondeterministic Finite 
+  Automata}
+    DFA's and NFA's in practice have about the same number of states, although 
+    the DFA will will often have more transitions. In the worst case, however, 
+    the smallest DFA can have $2^n$ states while the smallest NFA for the same
+    language has only $n$ states. \\
+    \indent The proof that DFA's can do whatever NFA's can do involves an 
+    important ``construction'' called the \emph{subset construction} because 
+    it involves constructing all subsets of the set of state of the NFA. \\
+    \indent The subset construction starts from an NFA $N = (Q_N, \Sigma, 
+    \delta_N, q_0, F_N)$. ITs goal is the description of a DFA $D = (Q_D, 
+    \Sigma, \delta_D, \{q_0\}, F_D)$ such that $L(D) = L(N)$. The other 
+    components of $D$ are constructed as follows:
+      \begin{itemize}
+        \item $Q_D$ is teh set of subsets of $Q_N$; i.e., $Q_D$ is the 
+        \emph{power set} of $Q_N$. Note that if $Q_N$ has $n$ states, then 
+        $Q_D$ will have $2^n$ states. Often, not all these states are 
+        accessible from the start state of $Q_D$. Inaccessible states can be 
+        ``thrown away,'' so effectively, the number of states of $D$ may be 
+        much smaller than $2^n$.
+        \item $F_D$ is the set of subsets $S$ of $Q_N$ such that $S \cap F_N \
+        \neq \emptyset$. That is, $F_D$ is all sets of $N$'s states that 
+        include at least one accepting state of $N$.
+        \item For each set $S \subseteq Q_N$ and for each input symbol $a$ in 
+        $\Sigma$,
+        
+          \[ 
+            \delta_D(S, a) \, = \, \bigcup_{p \, \text{in} \, S} \, 
+            \delta_N(p,a)
+          \]
+        
+        That is, to compute $\delta_D(S,a)$ we look at all the states $p$ in 
+        $S$, see what states $N$ goes to from $p$ on input $a$, and take the 
+        union of all those states.
+      \end{itemize}
+      \begin{description}
+        \item[Theorem:] If $D = (Q_D, \Sigma, \delta_D, \{q_0\}, F_D)$ is the 
+        DFA constructed from NFA $N = (Q_N, \Sigma, \delta_N, q_0, F_N)$ by 
+        the subset construction, then $L(D) = L(N)$.
+        \item[Theorem:] A language $L$ is accepted by some DFA if and only if 
+        $L$ is accepted by some NFA. 
+      \end{description}
+      
+  \subsection*{The Pigeonhole Principle}
+    Colloquially, if you have more pigeons than pigeonholes, and each pigeon 
+    files into some pigeonhole, then there must be at least one hole that has 
+    more than one pigeon. \\
+    \indent The pigeonhole principle may appear obvious, but it actually 
+    depends on the number of pigeonholes being finite. Thus, it works for 
+    finite-state automata, with the states as pigeonholes, but does not apply 
+    other kinds of automata that have an infinite number of states.
+    
+  \subsection*{Dead States and DFA's Missing Some Transitions}
+    We have formally defined a DFA to have a transition from any state, on any 
+    input symbol, to exactly one state. However, sometimes, it is more 
+    convenient to design the DFA to ``die'' in situations where we know it is 
+    impossible for any extension of the input sequence to be accepted. 
+    Technically, this automaton is not a DFA, because it lacks transitions on 
+    most symbols from each of its states. \\
+    \indent However, such an automaton is an NFA. If we use the subset 
+    construction to convert it to a DFA, the automaton looks almost the same, 
+    but it includes a \emph{dead state}, that is, a nonaccepting state that 
+    goes to itself on every possible input symbol. The dead state corresponds 
+    to $\emptyset$, the empty set of states of the automaton. \\
+    \indent In general, we can add a dead state to any automaton that has 
+    \emph{no more} than one transition for any state and input symbol. Then, 
+    add a transition to the dead state from each other state $q$, on all input 
+    symbols for which $q$ has no other transition. The result will be a DFA in 
+    the strict sense.
+    
+\section*{Finite Automata With Epsilon-Transitions}
+  We now allow a transition on $\epsilon$, the empty string. In effect, an NFA 
+  is allowed to make a transition spontaneously, without receiving an input 
+  symbol. Like nondeterminism, this new capability does not expand the class 
+  of languages that can be accepted by finite automata, but it does give us 
+  some added ``programming convenience''.
+  
+  \subsection*{The Formal Notation for an $\epsilon$-NFA}
+    We represent an $\epsilon$-NFA exactly as we do an NFA, with one 
+    exception: the transition function must include information about 
+    transitions on $\epsilon$. Formally, we represent an $\epsilon$-NFA $A$ by 
+    $A = (Q, \Sigma, \delta, q_0, F)$, where all components have their same 
+    interpretation as for an NFA, except that $\delta$ is now a function that 
+    takes as arguments:
+      \begin{enumerate}
+        \item A state in $Q$, and
+        \item A member of $\Sigma \cup \{\epsilon\}$, that is, either an input 
+        symbol, or the symbol $\epsilon$.
+      \end{enumerate}
+  
+  \subsection*{Epsilon-Closures}
+    Informally, we $\epsilon$-close a state $q$ by following all transitions 
+    out of $q$ that are labelled $\epsilon$. However, when we get to other 
+    states by following $\epsilon$, we follow the $\epsilon$-transitions out 
+    of those states, and so on, eventually finding every state that can be 
+    reached from $q$ along any path whose arcs are all labeled $\epsilon$.
+    
+  \subsection*{Extended Transitions and Languages for $\epsilon$-NFA's}
+    Suppose that $E = (Q, \Sigma, \delta, q_0m F)$ is an $\epsilon$-NFA. We 
+    first define $\hat{\delta}$, the extended transition function, to reflect 
+    what happens on a sequence of inputs. The intent is that $\hat{\delta}(q, 
+    w)$ is the set of states that can be reached along a path whose labels, 
+    when concatenated, form the string $w$. As always, $\epsilon$'s along this 
+    path do not contribute to $w$. \\
+    \indent The language of an $\epsilon$-NFA $E = (Q, \Sigma, \delta, q_0, F)
+    $ is defined as: $L(E) = \{ \, w \, | \, \hat{\delta}(q_0, w) \cap F \neq 
+    \emptyset$. That is, the language of $E$ is the set of strings $w$ that 
+    take the start state to at least on accepting state.
+    
+  \subsection*{Eliminating $\epsilon$-Transitions}
+    Given any $\epsilon$-NFA $E$, we can find a DFA $D$ that accepts the same 
+    language as $E$. Let $E = (Q_E, \Sigma, \delta_E, q_0, F_E)$. Then, the 
+    equivalent DFA
+    
+      \[ D = (Q_D, \Sigma, \delta_D, q_D, F_D) \]
+    
+    is defined as follows:
+      \begin{enumerate}
+        \item $Q_D$ is the set of subsets of $Q_E$. 
+        \item $q_D = \, \text{ECLOSE}(S)$; that is, we get the start state of 
+        $D$ by closing the set consisting of only the start state of E.
+        \item $F_D$ is those set of states that contain at least one accepting 
+        state of $E$. That is, $F_D = \{ \, S \, | \, S \, \text{is in} \, Q_D 
+        \, \text{and} \, S \cap F_E \neq \emptyset \, \}$.
+        \item $\delta_D(S,a)$ is computed, for all $a$ in $\Sigma$ and sets $S
+        $ in $Q_D$ by:
+          \begin{enumerate}
+            \item Let $S = \{p_1, p_2, \ldots, p_k\}$.
+            \item Computer $\bigcup^k_{i=1} \delta_E(p_i,a)$; let this set be 
+            $\{r_1, r_2, \ldots, r_m\}$.
+            \item Then $\delta_D(S,a) = \, \text{ECLOSE}(\{r_1,r_2,\ldots,r_m
+            \})$.
+          \end{enumerate}
+      \end{enumerate}
+      \begin{description}
+        \item[Theorem:] A language $L$ is accepted by some $\epsilon$-NFA if 
+        and only if $L$ is accepted by some DFA.
+      \end{description}
+      
+\section{Summary of Chapter 2}
+  \begin{description}
+    \item[Deterministic Finite Automata] A DFA has a finite set of states and 
+    a finite set of input symbols. One state is designated the start state, 
+    and zero or more states are accepting states. A transition function 
+    determines how the state changes each time an input symbol is processed.
+    \item[Transition Diagrams] It is convenient to represent automata by a 
+    graph in which the nodes are the states, and arcs are labeled by input 
+    symbols, indicating the transitions of that automaton. The start state is 
+    designated by an arrow, and the accepting states by double circles.
+    \item[Language of an Automaton] The automaton accepts strings. A string is 
+    accepted if, starting in the start state, the transitions caused by 
+    processing the symbols of that string one-at-a-time lead to an accepting 
+    state. In terms of the transition diagram, a string is accepted if it is 
+    the label of a path from the start state to some accepting state.
+    \item[Nondeterministic Finite Automata] The NFA differs from the DFA in 
+    that the NFA can have any number of transitions (including zero) to next 
+    states from a given state on a given input symbol.
+    \item[The Subset Construction] By treating sets of states of an NFA as 
+    states of a DFA, it is possible to convert any NFA to a DFA that accepts 
+    the same language.
+    \item[$\epsilon$-Transitions] We can extend the NFA by allowing 
+    transitions on an empty input, i.e., no input symbol at all. These 
+    extended NFA's can be converted to DFA's accepting the same language.
+  \end{description}
 
 \end{document}
