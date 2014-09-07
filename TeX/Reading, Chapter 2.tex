@@ -54,7 +54,209 @@
     \indent These types of protocols can be represented by finite automata. 
     Each state represents a situation that one of the participants could be 
     in. Transitions between states occur when one of the five events described 
-    above occur.
+    above occur. \\
 
+    \begin{tikzpicture}[>=stealth',shorten >=1pt,auto,node distance=2.5cm]
+      \node[initial,state] (1)              {$1$};
+      \node[state]         (2) [above of=1] {$2$};
+      \node[state]         (3) [right of=1] {$3$};
+      \node[state]         (4) [right of=3] {$4$};
+  
+      \path[->] (1) edge node {cancel}   (2);
+      \path[->] (1) edge node {redeem}   (3);
+      \path[->] (3) edge node {transfer} (4);
+    \end{tikzpicture}
+    
+    This is the automaton for the bank. The start state is state 1; it
+    represents the situation where the bank has issued the money file in
+    question but has not been requested either to redeem or cancel it. If a
+    \emph{cancel} request is sent to the bank by the customer, then the bank
+    restores the money to the customer's account and enters state 2. The bank,
+    being responsible, will not leave state 2 once it is entered, since the 
+    bank must not allow the same money to be cancelled again or spent by the
+    customer. Similar concepts should be applied to the other states. \\
+    \indent Now, let us consider the automaton of the actions for the store.\\
+    
+    \begin{tikzpicture}[>=stealth',shorten >=1pt,auto,node distance=2.5cm]          
+      \node[initial,state] (a)              {$a$};
+      \node[state]         (b) [right of=a] {$b$};
+      \node[state]         (c) [below of=b] {$c$};
+      \node[state]         (d) [right of=b] {$d$};
+      \node[state]         (e) [below of=d] {$e$};
+      \node[state]         (f) [right of=d] {$f$};
+      \node[state]         (g) [below of=f] {$g$};
+        
+      \path[->] (a) edge node {pay}      (b);
+      \path[->] (b) edge node {ship}     (c);
+      \path[->] (b) edge node {redeem}   (d);
+      \path[->] (c) edge node {redeem}   (e);
+      \path[->] (d) edge node {ship}     (e);
+      \path[->] (d) edge node {transfer} (f);
+      \path[->] (e) edge node {transfer} (g);
+      \path[->] (f) edge node {ship}     (g);
+    \end{tikzpicture}
+      
+    There are some defects in the store's design. Imagine that the shipping
+    and financial operations are done by separate processes, so there is the
+    opportunity for the \emph{ship} action to be done either before, after, or
+    during the redemption of the electronic money. Thus, the store can get
+    into situations where it has already shipped the goods only to find out
+    that the money was bogus. \\
+    \indent Finally, there is the automaton for the customer.
+    
+    \begin{tikzpicture}[>=stealth',shorten >=1pt,auto,node distance=2.5cm]
+      \node[initial, state] (a) {$a$};
+        
+      \path[->] (a) edge [loop above] node {pay}    (a);
+      \path[->] (a) edge [loop below] node {cancel} (a);
+    \end{tikzpicture}
+    
+    This automaton only has one state, reflecting the fact that the customer
+    ``can do anything.'' The customer can perform the \emph{pay} and
+    \emph{cancel} actions any number of times, in any order, and stays in the
+    lone state after each action.
+    
+  \subsection*{Enabling the Automata to Ignore Actions}
+    While the three automata reflect the behaviors of the three participants
+    independently, there are certain transitions that are missing. For
+    example, the store is not affected by a \emph{cancel} message. According
+    to the formal definition of a finite automaton, whenever an input $X$ is
+    received by an automaton, the automaton must follow an arc labeled $X$
+    from the state it is in to some new state. \\
+    \indent Thus, in the current scenario, if the store were to receive a
+    \emph{cancel} action from the customer, the store automaton would ``die'';
+    that is, the automaton would be in no state at all, and further actions by 
+    that automaton would be impossible. This gives rise to the actions that
+    must be ignored by an automaton:
+    \begin{enumerate}
+      \item \emph{Actions that are irreleveant to the participant involved.}
+      \item \emph{Actions that must not be allowed to kill the automaton.}
+    \end{enumerate}
+
+\section*{Deterministic Finite Automata}
+  The term ``deterministic'' refers to the fact that on each input there is
+  one and only one state to which the automaton can transition from its
+  current state. In contrast, ``nondeterministic'' can be in several states at
+  once.
+  
+  \subsection*{Definition of a Deterministic Finite Automaton}
+    A \emph{deterministic finite automaton} consists of:
+    \begin{enumerate}
+      \item A finite set of \emph{states}, often denoted by $Q$.
+      \item A finite set of \emph{input symbols}, often denoted by $\Sigma$.
+      \item A \emph{transition function} that takes as arguments a state and
+      an input symbol and returns a state. The transition function will be
+      commonly noted as $\delta$. If $q$ is a state, and $a$ is an input
+      symbol, then $\delta(q, \, a)$ is the state $p$ such that there is an
+      arc labeled $a$ from $q$ to $p^2$.
+      \item A \emph{start state}, one of the states in $Q$.
+      \item A set of \emph{final} or \emph{accepting} states $F$. The set $F$
+      is a subset of $Q$.
+    \end{enumerate}
+    In proofs, we often talk about a DFA in ``five-tuple'' notation:
+    
+      \[ A = (Q, \Sigma, \delta, q_0, F) \]
+      
+    where $A$ is the name of the DFA, $Q$ is its set of states, $\Sigma$ its
+    input symbols, $\delta$ its transition function, $q_0$ its start state,
+    and $F$ its set of accepting states.
+    
+  \subsection*{How a DFA Processes Strings}
+    The ``language'' of a DFA is the set of all strings that the DFA accepts.
+    Suppose $a_{1}a_{2}\cdots a_n$ is a sequence of input symbols. We start
+    our DFA in its start state, $q_0$. We consult the transition function
+    $\delta$, say $\delta(q_0, a_1) = q_1$ to find the state that the DFA $A$
+    enters after processing the first input symbol $a_1$. We continue in this
+    manner, finding states $q_2,q_3,\cdots,q_n$ such that $\delta(q_{i-1}, 
+    a_i) = q_i$ for each $i$. If $q_n$ is a member of $F$, then the input
+    $a_{1}a_{2}\cdots a_n$ is accepted, and if not then it is ``rejected''.
+    
+  \subsection*{Simpler Notations for DFA's}
+    There are two preferred notations for describing automata:
+    \begin{enumerate}
+      \item A \emph{transition diagram}, which is a graph such as the ones 
+      construct earlier.
+      \item A \emph{transition table}, which is a tabular listing of $\delta$
+      function, which by implication tells us the set of states and the input
+      alphabet.
+    \end{enumerate}
+    
+    \subsubsection*{Transition Diagrams}
+      A \emph{transition diagram} for a DFA $A = (Q, \Sigma, \delta, q_0, F)$
+      is a graph defined as follows:
+      \begin{enumerate}
+        \item[a)] For each state in $Q$ there is a node.
+        \item[b)] For each state $q$ in $Q$ and each input symbol $a$ in $
+        \Sigma$, let $\delta(q, a) = p.$ Then the transition diagram has an 
+        arc from node $q$ to node $p$, labeled $a$. If there are several input 
+        symbols that cause transitions from $q$ to $p$, then the transition 
+        diagram can have one arc, labeled by the list of these symbols.
+        \item[c)] There is an arrow into the start state $q_0$, labeled 
+        \emph{Start}. This arrow does not originate at any node.
+        \item[d)] Nodes corresponding to accepting states (those in $F$) are 
+        marked by a double circle. States not in $F$ have a single circle.
+      \end{enumerate}
+    
+    \subsubsection*{Transition Tables}
+      A \emph{transition table} is a conventional, tabular representation of a
+      function like $\delta$ that takes two arguments and returns a value. The
+      rows of the table correspond to the states, and the columns correspond
+      to the input. The entry for the row corresponding to state $q$ and the
+      column corresponding to input $a$ is the state $\delta(q,a)$. The start
+      state is marked with an arrow, and the accepting state is marked with a
+      star.
+      
+  \subsection*{Extending the Transition Function to Strings}
+    We need to make the notion of the language of a DFA precise. Thus, we
+    define an \emph{extended transition function} that describes what happens
+    when we start in any state and follow any sequence of inputs. If $\delta$
+    is our transition function, then the extended transition function 
+    constructed from $\delta$ will be called $\hat{\delta}$. The extended 
+    transition function is a function that takes a state $q$ and a string $w$ 
+    and returns a state $p$ -- the state that the automaton reaches when 
+    starting in state $q$ and processing the sequence of inputs $w$.
+    
+  \subsection*{The Language of a DFA}
+    Now, we can define the \emph{language} of a DFA $A = (Q, \Sigma, \delta, 
+    q_0, F)$. This language is denoted $L(A)$, and is defined by
+    
+      \[ L(A) = \{w\, | \, \hat{\delta}(q_0, w) \, \text{is in} \, F\} \]
+    
+    That is, the language of $A$ is the set of strings $w$ that take the start 
+    state $q_0$ to one of the accepting states. If $L$ is $L(A)$ for some DFA 
+    $A$, then we say $L$ is a \emph{regular language}
+    
+\section*{Nondeterministic Finite Automata}
+  A ``nondeterministic'' finite automaton (\emph{NFA}) has the power to be in 
+  serval states at once. This ability is often expressed as an ability to 
+  ``guess'' something about its input. \\
+  \indent NFA's accept exactly the regular languages, just as DFA's do. 
+  However, NFA's are often more succinct and easier to design than DFA's. 
+  Moreover, while we can always convert an NFA to a DFA, the latter may have 
+  exponentially more staten than the NFA.
+  
+  \subsection*{An Informal View of Nondeterministic Finite Automata}
+    An NFA, like a DFA has a finite set of states, input symbols, a start 
+    state and a set of accepting states. It also has a transition function 
+    referred to by $\delta$. However, in an NFA, $\delta$ can return a set of 
+    zero, one, or more states, rather than exactly one.
+    
+  \subsection*{Definition of Nondeterministic Finite Automata}
+    An NFA is represented essentially like a DFA:
+    
+      \[ A = (Q, \Sigma, \delta, q_0m F) \]
+      
+    where:
+      \begin{enumerate}
+        \item $Q$ is a finite set of \emph{states}.
+        \item $\Sigma$ is a finite set of \emph{input symbols}.
+        \item $q_0$, a member of $Q$, is the \emph{start state}.
+        \item $F$, a subset of $Q$, is the set of \emph{final} (or 
+        \emph{accepting}) states.
+        \item $\delta$, the \emph{transition function} is a function that 
+        takes a state in $Q$ and an input symbol in $\Sigma$ as arguments and 
+        returns a subset of $Q$.
+      \end{enumerate}
+    
 
 \end{document}
