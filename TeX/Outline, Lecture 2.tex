@@ -4,6 +4,8 @@
 \usepackage{amsthm}
 \usepackage{listings}
 \usepackage{multirow}
+\usepackage{tikz}
+\usetikzlibrary{arrows,automata}
 \begin{document}
 
 \title{COMS W3261 \\ Computer Science Theory \\ Lecture 2\\ Finite Automata}
@@ -33,6 +35,17 @@
       \end{itemize}
     \item We will discover that this is a proper hierarchy of languages.
   \end{itemize}
+  \begin{description}
+    \item[Regular Languages] Can be described using Finite Automata and
+    Regular Expressions
+    \item[Context-Free Grammars] Can be used to construct Regular Languages.
+    \item[Algorithm] A Turing machine that halts on all inputs.
+    \item[Recursively Enumerable] Does not halt on all inputs.
+    \item[All Languages] What do you think? What kind of infinite is there?
+  \end{description}
+  If we look at any programming language, there are only a countably infinite
+  number of programs; however, there are uncountably infinite languages. Thus,
+  we reach a boundary of computing.
 
 \section{Deterministic Finite Automata}
   \begin{itemize}
@@ -59,6 +72,29 @@
     accepted by $D$.
     \item A language accepted by a DFA is called a \emph{regular language}.
   \end{itemize}
+  We can imagine a Finite Automata as a circuit, which contains an input tape,
+  with a read head and an input/output system. The machine starts in one state
+  \texttt{A}, and moves along the tape. It begins in an initial condition, and
+  then it makes a sequence of 0 or more moves until it reaches the final
+  state, where it then says it \emph{accepts} the final state.
+
+    \[ D = (Q, \Sigma, \delta, q_0, F) \]
+
+  \begin{itemize}
+    \item $D$ is the DFA.
+    \item $Q$ is the finite set of states.
+    \item $\Sigma$ is the input alphabet.
+    \item $\delta$ is the transition function.
+    \item $q_0$ is the start state.
+    \item $F$ is the set of final states $F \subseteq Q$.
+  \end{itemize}
+
+    \[ \hat{\delta}: Q \times \Sigma^* \rightarrow Q \]
+
+  where $\delta$ is $Q \times \Sigma \rightarrow Q$, that is the transition
+  function that maps the alphabet to the finite state machine. \\
+  \indent ``For every state and for every input symbol, there is a state it
+  maps too.'' Everything need to be completely specified.
 
 \section{Example 1: DFA for All Strings of 0's and 1's With an Even Number of
 0's}
@@ -98,6 +134,16 @@
     \item The language defined by $D$ is the set of all strings of 0's and 1's
     having an even number of 0's.
   \end{itemize}
+  \begin{tikzpicture}[>=stealth',shorten >=1pt,auto,node distance=2.5cm]
+    \node[initial,state,accepting] (A)              {$A$};
+    \node[state]         (B) [right of=A] {$B$};
+
+    \path[->] (A) edge [loop above] node  {1}   (A);
+    \path[->] (A) edge [bend left] node  {0}   (B);
+    \path[->] (B) edge [bend left] node {0}  (A);
+    \path[->] (B) edge [loop above] node {1} (B);
+  \end{tikzpicture}
+  $L = \{ \, w | \, w \, \text{is a string of 0's and 1's with an even number of 0's} \, \}$
 
 \section{Example 2: DFA for Binary Numbers Divisible by 3}
   \begin{itemize}
@@ -135,6 +181,38 @@
     $D$.
   \end{itemize}
 
+    \[ L = \{ \Sigma, 0, 11, 110, \ldots \} \]
+
+    \subsection{Modular Arithmetic}
+
+        \[ a \equiv b(\text{mod} \,n) \, \text{iff} \, a - b = kn \]
+
+      Thus, we have
+
+        \[ 5 \, \% \, 3 = 2 \]
+
+      If $a_1 \equiv b_1 (\, \text{mod} \, n)$ and $a_2 = b_2 ( \, \text{mod}
+      \, n)$ then $a_1 + a_2 \equiv (b_1 + b_2) \, \text{mod} \, n$
+      $a_1a_2 \equiv (b_1b_2) \, \text(mod) \, n$ \\
+      \textbf{Prove this.}
+
+  \begin{tikzpicture}[>=stealth',shorten >=1pt,auto,node distance=2.5cm]
+
+    \node[initial,state,accepting] (A)              {$A$};
+    \node[state]         (B) [right of=A] {$B$};
+    \node[state]         (C) [right of=B] {$C$};
+
+    \path[->] (A) edge [loop above] node {0} (A);
+    \path[->] (A) edge [bend left]  node {1} (B);
+    \path[->] (B) edge [bend left]  node {1} (A);
+    \path[->] (B) edge [bend left]  node {0} (C);
+    \path[->] (C) edge [bend left]  node {0} (B);
+    \path[->] (C) edge [loop above] node {1} (C);
+
+  \end{tikzpicture} \\
+  Is the finite state diagram for this machine were $A = 0 \, \text{mod} \, n
+  $, $B = 1 \, \text{mod} \, n$ and $C = 2 \, \text{mod} \, n$.
+
 \section{Nondeterministic Finite Automata}
   \begin{itemize}
     \item A nondeterministic finite automaton (NFA) consists of
@@ -161,6 +239,23 @@
     \item $L(A)$, the language defined by an NFA $N$ is the set of string
     accepted by $N$.
   \end{itemize}
+  NP vs P? Nondeterministic Polynomial time vs Polynomial time.\\
+  $L = \{\, w \, | \, w$ is a string of \texttt{a}'s and \texttt{b}'s ending
+  in \texttt{abb} \} \\
+  \begin{tikzpicture}[>=stealth',shorten >=1pt,auto,node distance=2.5cm]
+
+    \node[initial,state]   (A)              {$A$};
+    \node[state]           (B) [right of=A] {$B$};
+    \node[state]           (C) [right of=B] {$C$};
+    \node[state,accepting] (D) [right of=C] {$D$};
+
+    \path[->] (A) edge [loop above] node {a,b} (A);
+    \path[->] (A) edge              node {a}   (B);
+    \path[->] (B) edge              node {b}   (C);
+    \path[->] (C) edge              node {b}   (D);
+
+  \end{tikzpicture} \\
+  A nondeterministic machine is omniscient.
 
 \section{Equivalence of DFAs and NFAs: the Subset Construction}
   \begin{itemize}
@@ -184,6 +279,15 @@
     can reach each nondeterministic state \texttt{p} in $S$ on \texttt{w}. See
     Sect. 2.3.5 of HMU.
   \end{itemize}
+  For the example of last section: \\
+    \begin{tabular}{c|c c }
+       State             & a                 & b                 \\ \hline
+       \texttt{\{A\}}    & \texttt{\{A, B\}} & \texttt{\{A\}}    \\
+       \texttt{\{A, B\}} & \texttt{\{A, B\}} & \texttt{\{A, C\}} \\
+       \texttt{\{A, C\}} & \texttt{\{A, B\}} & \texttt{\{A, D\}} \\
+       \texttt{\{A, D\}} & \texttt{\{A, B\}} & \texttt{\{A\}}    \\
+    \end{tabular}
+
 
 \section{Bad Case for the Subset Construction}
   \begin{itemize}
@@ -191,6 +295,9 @@
     of a's and b's in which the $n^{th}$ character from the end is an ``a''.
     The smallest DFA that accepts $L$ must have at least $2^n$ states.
   \end{itemize}
+  We have an NFA $N$ that we want to transform into a DFA $D$ such that
+  $L(N) = L(D)$. Thus, the states on the DFA are going to be subsets of the
+  states used in the NFA.
 
 \section{Practice Problems}
   \begin{enumerate}
