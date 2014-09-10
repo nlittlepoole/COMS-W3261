@@ -162,70 +162,69 @@
 \section{\textepsilon-NFA: an NFA with Epsilon-Transitions}
   \begin{itemize}
     \item An \textepsilon-NFA is an NFA $(Q, \Sigma, \delta, q_0, F$) whose
-          transition function $\delta$ is a mapping from $\Sigma \cup \{
-          \varepsilon \}$ to $P(Q)$, the set of subsets of $Q$.
+    transition function $\delta$ is a mapping from
+    $\Sigma \cup \{ \varepsilon \}$ to $P(Q)$, the set of subsets of $Q$.
     \item The language of an \textepsilon-NFA is the set of all strings that
-          spell out a path from the start state to a final state. There can be
-          \textepsilon-transitions along this path.
+    spell out a path from the start state to a final state. There can be
+    \textepsilon-transitions along this path.
     \item Epsilon-closures
       \begin{itemize}
         \item We define ECLOSE$(q)$, the \textepsilon-closure of a state $q$ of
-              an \textepsilon-NFA, recursively as follows:
+        an \textepsilon-NFA, recursively as follows:
           \begin{itemize}
             \item State $q$ is in ECLOSE$(q)$.
-            \item If state $p$ is in ECLOSE$(q)$, then all states in $\delta
-                  (p, \varepsilon)$ are also in ECLOSE$(q)$.
+            \item If state $p$ is in ECLOSE$(q)$, then all states in $\delta(p,
+            \varepsilon)$ are also in ECLOSE$(q)$.
           \end{itemize}
         \item We can computer the \textepsilon-closure of a set of states $S$ by
-              taking the union of the \textepsilon-closures of all the
-              individual states in $S$.
+        taking the union of the \textepsilon-closures of all the individual
+        states in $S$.
       \end{itemize}
   \end{itemize}
 
 \section{Converting an \textepsilon-NFA to an equivalent DFA}
   \begin{itemize}
     \item We can eliminate all \textepsilon-transitions from an \textepsilon-NFA
-          by converting it into an equivalent DFA using the subset construction.
+    by converting it into an equivalent DFA using the subset construction.
     \item Given an \textepsilon-NFA $E = (Q_E, \Sigma, \delta_E, q_E, F_E)$, we
-          construct the DFA $D = (Q_D, \Sigma, \delta_D, q_D, F_D)$ as follows:
+    construct the DFA $D = (Q_D, \Sigma, \delta_D, q_D, F_D)$ as follows:
       \begin{itemize}
         \item $Q_D = P(Q_E)$.
         \item $\delta_D$ is computed all $a$ in $\Sigma$ and $S$ in $P(Q_E)$ as
-              follows: \\
-              Let $S = \{p_1, p_2, \ldots, p_k\}$ and let
-              $\{r_1,r_2,\ldots,r_m\}$ be the union of $\delta_E(p_i, a)$ for
-              $i = 1, 2, \ldots, k$. \\
-              Then, $\delta_D(S,a) = \text{ECLOSE}(\{r_1,r_2,\ldots,r_m\})$.
+        follows: \\ Let $S = \{p_1, p_2, \ldots, p_k\}$ and let
+        $\{r_1,r_2,\ldots,r_m\}$ be the union of $\delta_E(p_i, a)$ for $i = 1,
+        2, \ldots, k$. \\ Then, $\delta_D(S,a) =
+        \text{ECLOSE}(\{r_1,r_2,\ldots,r_m\})$.
         \item $q_D = \text{ECLOSE}(q_E)$.
         \item $F_D = \{ \, S | \, S \, \text{is in} \, Q_D \, \text{and} \, S \,
-              \text{contains a state in} \, F_E \, \}$.
+        \text{contains a state in} \, F_E \, \}$.
       \end{itemize}
     \item As with the subset construction, we can prove by induction that
-          $L(D) = L(E)$.
+    $L(D) = L(E)$.
   \end{itemize}
 
 \section{Practice Problems}
   \begin{enumerate}
     \item Do the two regular expressions $(a + b)^*$ and $(a^*b^*)^*$ denote the
-          same language?
+    same language?
     \item Write a Kleene regular expression for all strings of 0's and 1's with
-          an even number of 0's and an even number of 1's.
+    an even number of 0's and an even number of 1's.
     \item Let $L$ be the language $\{ \, \texttt{abxba} | \texttt{x} \text{is
-          any string of \texttt{a}'s,\texttt{b}'s, and \texttt{c}'s not
-          containing \texttt{ba}} \}$. This language models comments in the
-          programming language C.
+    any string of \texttt{a}'s,\texttt{b}'s, and \texttt{c}'s not containing
+    \texttt{ba}} \}$. This language models comments in the programming language
+    C.
       \begin{enumerate}
         \item Construct a regular expression for $L$.
         \item Show how your regular expression defines the string
               \texttt{abcbaba}.
       \end{enumerate}
     \item Write a Kleene regular expression for all strings of a's and b's that
-          begin and end with an a.
+    begin and end with an a.
     \item Write a Posix regular expression that matches all English words ending
-          in dous.
+    in dous.
     \item Write a Posix regular expression that matches all English words with
-          five vowels a,e,i,o,u in order. (The vowels do not have to be next to
-          one another.)
+    five vowels a,e,i,o,u in order. (The vowels do not have to be next to one
+    another.)
     \item HMU Exercise 2.5.1.
   \end{enumerate}
 
