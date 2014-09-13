@@ -1,0 +1,259 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{listingsutf8}
+\usepackage{multirow}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+\usepackage{tipa}
+\usetikzlibrary{arrows,automata}
+\begin{document}
+
+\newtheorem{thm}{Theorem}
+
+\title{COMS W3261 \\ Computer Science Theory \\ Lecture 4\\ Equivalence of
+Regular Expressions and Finite Automata}
+\author{Alexander Roth}
+\date{2014-09-15}
+\maketitle
+\section*{Outline}
+  \begin{itemize}
+    \item McNaughton-Yamada-Thompson algorithm: RE to \textepsilon-NFA
+    \item Kleene's algorithm: DFA to RE
+    \item Converting a DFA to an equivalent RE by eliminating states
+    \item A detailed proof that a DFA defines a given language
+  \end{itemize}
+
+\section{Review}
+  \begin{itemize}
+    \item We say that two finite automata are equivalent if they define the same
+    language.
+    \item In the last two lectures we showed the subset construction could be
+    used to convert either an NFA or an \textepsilon-NFA into an equivalent DFA.
+    \item We say that a regular expression $E$ and a finite automaton $A$ are
+    \emph{equivalent} if $L(E) = L(A)$.
+    \item In this lecture we first show how to construct an equivalent
+    \textepsilon-NFA from a regular expression. Since we know that we can then
+    use the subset construction to convert the \textepsilon-NFA into an
+    equivalent DFA, we will then have shown that regular expressions are no more
+    powerful in defining languages as a DFA.
+    \item We then show that we can construct a regular expression that defines
+    the same languages as a DFA.
+    \item These results allow us to conclude that DFA's, NFA's,
+    \textepsilon-NFA's, and regular expressions are all equivalent in
+    definitional power -- they all define precisely the regular languages.
+  \end{itemize}
+
+\section{McNaughton-Yamada-Thompson Algorithm: From an RE to an equivalent
+\textepsilon-NFA}
+  \begin{thm}
+    Let $R$ be a regular expression $R$. Then we can construct an
+    \textepsilon-NFA $N$ such that $L(N) = L(R)$.
+  \end{thm}
+  \begin{proof}
+    See HMU, Sect. 3.2.3, pp. 102 -- 107
+  \end{proof}
+  \begin{itemize}
+    \item The proof is in the form of an algorithm that takes as input a regular
+    expression $R$ of length $n$ and recursively constructs from it an
+    equivalent \textepsilon-NFA that has
+      \begin{itemize}
+        \item exactly one start state and one final state,
+        \item at most $2n$ states,
+        \item no arcs coming into its start state,
+        \item no arcs leaving its final state,
+        \item at most two arcs leaving any nonfinal state
+      \end{itemize}
+    \item This algorithm was discovered by McNaughton and Yamada and then
+    independently by Ken Thompson who used it in the string-matching program
+    \texttt{grep} on Unix. On an input string of length $m$, an $n$-state MYT
+    \textepsilon-NFA can be efficiently simulated in time O($mn$) using a
+    two-stack algorithm.
+  \end{itemize}
+
+\section{Kleene's Algorithm: From a DFA to an equivalent regular expression}
+  \begin{itemize}
+    \item Given a DFA $A$, Kleene's algorithm constructs a regular expression
+    $R$ from $A$ such that $L(R) = L(A)$.
+    \item Suppose the states of $A$ are numbered $1, 2, \ldots, n$.
+    \item Kleene's algorithm is a dynamic programming algorithm that constructs
+    a regular expressions $R[i, j, k]$ that denotes all paths from state $i$ to
+    state $j$ with no intermediate node in the path numbered higher than $k$ as
+    follows:
+
+    \newpage
+      \begin{lstlisting}
+for (i = 1; i <= n; i++)
+  for (j= 1; j <= n; j++)
+    if (i != j)
+      if (there are transitions from state i to
+          state j labeled a1, a2, ..., ak)
+        R[i,j,0] = a1 + a2 + ... + ak;
+      else
+        R[i,j,0] = (emptyset);
+    else if (i == j)
+      if (there are transitions from state i to
+          state i labeled a1, a2, ..., ak)
+        R[i,i,0] = (emptystring) + a1 + a2 + ... + ak;
+      else
+        R[i,i,0] = (emptystring)
+for (k = 1; k <= n; k++)
+  for (i = 1; i <= n; i++)
+    for (j = 1; j <= n; j++)
+      R[i,j,k] = R[i,j,k-1] + R[i,k,k-1](R[k,k,k-1])*R[k,j,k-1];
+      \end{lstlisting}
+
+    \item Assuming the start state is 1, the regular expression for the DFA $A$
+    is then the sum (union) of all expressions \texttt{R[1,j,n]} where $j$ is a
+    final state.
+    \item Note that Kleene's algorithm for constructing a regular expression
+    from a DFA reduces to Warshall's transitive closure algorithm and to Floyd's
+    all-pairs shortest paths algorithm for directed graphs.
+    \item Example 3.5, HMU, pp. 95 -- 97.
+  \end{itemize}
+
+\section{Converting a DFA to an equivalent RE by Eliminating States}
+  \begin{itemize}
+    \item Kleene's algorithm gives us a mechanical way to construct a regular
+    expression from a DFA, or for that matter, from any NFA or \textepsilon-NFA.
+    \item Another approach that avoids duplicating work is to eliminate states,
+    one at a time, from the DFA using the procedure outline in Section 3.2.2 of
+    HMU.
+    \item Example 3.6, HMU, pp. 101 -- 102.
+    \item You can see an expanded treatment of state elimination with more
+    examples in pp. 583 -- 588 of Chapter 10 of
+    \emph{Aho and Ullman, Foundations of Computer Science}.
+  \end{itemize}
+
+\section{A detailed proof that a DFA defines a given language}
+  \begin{itemize}
+    \item To prove that a DFA $D$ defines a given language $L$, we need to show
+    that every string in $L(D)$ is in $L$ and that every string in $L$ is in
+    $L(D)$. Here is a detailed example of how this can be done using induction
+    for both parts.
+    \item Consider the DFA $D = (\{\texttt{A},\texttt{B}\}, \{0, 1\}, \delta,
+    \texttt{A}, \{\texttt{A}\})$ in Example 1 from Lecture 2, Sep 8, 2014 where
+    the transition function $\delta$ has the transition table: \\
+
+      \begin{tabular}{|c|c|c|}
+        \hline
+             State & \multicolumn{2}{|c|}{Input Symbol} \\ \cline{2-3}
+                   & \texttt{0} & \texttt{1} \\ \hline
+        \texttt{A} & \texttt{B} & \texttt{A} \\ \hline
+        \texttt{B} & \texttt{A} & \texttt{B} \\ \hline
+      \end{tabular}
+
+    \item Let $L$ be the language consisting of all strings of 0's and 1's with
+    an even number of zeros. We shall prove that $L(D) = L$.
+    \item To begin, we shall show that every string accepted by $D$ is in $L$,
+    by proving the following inductive hypothesis by induction on $n$, the
+    number of moves made by $D$ accepting a string $w$, for $n \geq 0$: \\
+    Inductive Hypothesis IH1:
+      \begin{enumerate}
+        \item[(a)] If $\delta^n(A, w) = A$, then $w$ has an even numbers of 0's.
+        Here, $\delta^n$ means $n$ moves by $D$.
+        \item[(b)] If $\delta^n(A, w) = B$, then $w$ has an odd number of 0's.
+          \begin{itemize}
+            \item Basis. $n = 0$ which implies that $w = \epsilon$ and hence
+            that $w$ has an even number of 0's
+            \item Induction. Assume IH1 is true for 0, 1, 2, \ldots, $n$ moves.
+              \begin{itemize}
+                \item Suppose $D$ makes $n + 1$ moves on a string $w = x0$ and
+                enters state \texttt{A} after reading $x$ and then enters state
+                \texttt{B} after reading the final 0. From the inductive
+                hypothesis we know that $x$ must have an even number of 0's.
+                Therefore, $x0$ has an odd number of 0's.
+                \item Suppose $D$ makes $n + 1$ moves on a string $w = x0$ and
+                enters state \texttt{B} after reading $x$ and then enters state
+                \texttt{A} after reading the final 0. From the inductive
+                hypothesis we know that $x$ must have an odd number of 0's.
+                Therefore, $x0$ has an even number of 0's.
+                \item Suppose $D$ makes $n + 1$ moves on a string $w = x1$ and
+                enters state \texttt{A} after reading $x$ and then state
+                \texttt{A} after reading the final 1. From the inductive
+                hypothesis we know that $x$ must have an even number of 0's.
+                Therefore, $x1$ also has an even number of 0's.
+                \item Suppose $D$ makes $n + 1$ moves on a string $w = x1$ and
+                enters state \texttt{B} after reading $x$ and then state
+                \texttt{A} after reading the final 1. From the inductive
+                hypothesis we know that $x$ must have an odd number of 0's.
+                Therefore, $x1$ also has an odd number of 0's.
+              \end{itemize}
+          \end{itemize}
+      \end{enumerate}
+    \item We have now shown that IH1 is true for all sequences of $n$ moves,
+    where $n \geq 0$.
+    \item We now need to show that every string in $L$ is accepted by $D$.
+    To do this, we shall prove the following inductive hypothesis by
+    induction on $n$, the length of a string $w$, for $n \geq 0$: \\
+    Inductive Hypothesis IH2:
+      \begin{enumerate}
+       \item[(a)] If $w$ has an even number of 0's, then
+        $\delta^*(A,w) = A$.
+        \item[(b)] If $w$ has an odd number of 0's, then
+        $\delta^*(A, w) = B$
+          \begin{itemize}
+            \item Suppose $w$ is now a string of length $n + 1$ and $w = x0$
+            and $x$ has an even number of 0's. From IH2,
+            $\delta^*(A, x) = A$. Since $\delta(A, 0) = B$,
+            $\delta^*(A, w) = B$.
+            \item Suppose $w = x0$ and $x$ has an odd number of 0's. From
+            IH2, $\delta^*(A, x) = B$. Since $\delta(B, 0) = A$,
+            $\delta^*(A, w) = A$.
+            \item Suppose $w = x1$ and $x$ has an even number of 0's. From
+            IH2, $\delta^*(A, x) = A$. Since $\delta(A, 1) = A$,
+            $\delta^*(A, w) = A$.
+            \item Suppose $w = x1$ and $x$ has an odd number of 0's. From
+            IH2, $\delta^*(A, x) = B$. Since $\delta(B, 1) = B$,
+            $\delta^*(A, w) = B$.
+          \end{itemize}
+      \end{enumerate}
+    \item We have now shown that IH2 is true for all strings of length $n$,
+    $n \geq 0$.
+    \item From the two inductive hypotheses, we can conclude that $w$ is
+    accepted by $D$ iff $w$ is in $L$. In other words, $L(D) = L$.
+  \end{itemize}
+
+\section{Practice Problems}
+  \begin{enumerate}
+    \item Use the MYT algorithm to construct an equivalent \textepsilon-NFA for
+    the regular expression $a + b * a$.
+    \item Show the behavior of your \textepsilon-NFA on the input string
+    \texttt{bba}.
+    \item Use the subset construction to convert your \textepsilon-NFA into a
+    DFA.
+    \item Show the behavior of your DFA on the input string \texttt{bba}.
+    \item Consider the DFA $D$ with:
+      \begin{enumerate}
+        \item[1.] $Q = \{\texttt{1, 2, 3}\}$
+        \item[2.] $\Sigma = \{\texttt{a, b}\}$
+        \item[3.] $\delta$: \\
+
+          \begin{tabular}{|c|c|c|}
+            \hline
+            State      & \multicolumn{2}{|c|}{Input Symbol} \\ \cline{2-3}
+                       & \texttt{a} & \texttt{b}            \\ \hline
+            \texttt{1} & \texttt{2} & \texttt{1}            \\ \hline
+            \texttt{2} & \texttt{3} & \texttt{1}            \\ \hline
+            \texttt{3} & \texttt{3} & \texttt{2}            \\ \hline
+          \end{tabular}
+
+        \item[4.] Start state: \texttt{1}
+        \item[5.] $F = \{\texttt{3}\}$
+          \begin{enumerate}
+            \item[a)] Use Kleene's algorithm to construct a regular expression
+            for $L(D)$. Simplify your expressions as much as possible at each
+            stage.
+            \item[b)] Construct a regular expression for $L(D)$ by eliminating
+            state 2.
+          \end{enumerate}
+      \end{enumerate}
+  \end{enumerate}
+
+\section{Reading Assignment}
+  \begin{itemize}
+    \item HMU: Ch 3
+  \end{itemize}
+
+\end{document}
