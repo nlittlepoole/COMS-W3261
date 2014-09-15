@@ -44,6 +44,24 @@ Regular Expressions and Finite Automata}
     \textepsilon-NFA's, and regular expressions are all equivalent in
     definitional power -- they all define precisely the regular languages.
   \end{itemize}
+  \subsection*{Class Notes}
+    \begin{itemize}
+      \item What form of finite automata is this? $\delta: Q \times \Sigma 
+      \rightarrow Q$, where $Q \times \Sigma$ is the Domain, and $Q$ is the 
+      range. This is a DFA.
+      \item $Q = \{q_0, q_1, q_2\}$, $P(Q) = 8 sets$.
+      \item If there are only a finite set of state in $Q$, then there is an 
+      exponential finite state in the power set of $Q$.
+      \item NFA: $\delta: Q\times\Sigma \rightarrow P(Q)$.
+      \item $\epsilon$-NFA: $\delta: Q\times(\Sigma\cup\{\epsilon\}) \rightarrow 
+      P(Q)$
+      \item Regular expressions are an equivalent way of defining the regular 
+      languages.
+      \item Check out Warthol's algorithm and Floyd's algorithm. They are 
+      examples of dynamic programming.
+      \item We can prove that a regular expression recognizes the same strings 
+      as a finite automata.
+    \end{itemize}
 
 \section{McNaughton-Yamada-Thompson Algorithm: From an RE to an equivalent
 \textepsilon-NFA}
@@ -71,6 +89,13 @@ Regular Expressions and Finite Automata}
     \textepsilon-NFA can be efficiently simulated in time O($mn$) using a
     two-stack algorithm.
   \end{itemize}
+  \subsection*{Class Notes}
+    Base cases for a regular expression: $a$, $\epsilon$, and $\emptyset$. Here 
+    is an example: Let $R = a(a+b)^+$ \\
+    \Tree [.concat [.a ][.* [.+ [.a ][.b ]] ]] \\
+    \subsubsection*{Two Stack Algorithm}
+    If there are $n$ states, in the machine there can be $n$ states in the 
+    stack. Sometimes this is called the Two Stack algorithm.
 
 \section{Kleene's Algorithm: From a DFA to an equivalent regular expression}
   \begin{itemize}
