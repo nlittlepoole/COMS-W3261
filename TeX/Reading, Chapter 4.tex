@@ -15,5 +15,126 @@
 \maketitle
 \newtheorem{thm}{Theorem}
 
+\section*{Properties of Regular Langauges}
+  One important kind of fact about the regular languages is called a ``closure
+  property.'' These properties let us build recognizers for languages that are
+  constructed from other languages by certain operations.
+
+\section*{Proving Languages Not to Be Regular}
+  We have established that the class of languages known as the regular languages
+  has at least four different descriptions. They are the languages accepted by
+  DFA's, by NFA's, by $\epsilon$-NFA's, and by Regular Expressions.
+
+  \subsection*{The Pumping Lemma for Regular Languages}
+    \begin{thm}
+      (The pumping lemma for regular languages) Let $L$ be a regular language.
+      Then there exists a constant $n$ (which depends on $L$) such that for
+      every string $w$ in $L$ such that $|w| \geq n$, we can break $w$ into
+      three strings, $w = xyz$, such that:
+        \begin{enumerate}
+          \item $y \neq \epsilon$.
+          \item $|xy| \leq n$.
+          \item For all $k \geq 0$, the string $xy^kz$ is also in $L$.
+        \end{enumerate}
+      That is, we can always find a nonempty string $y$ not too far from the
+      beginning of $w$ that can be ``pumped''; that is, repeating $y$ any number
+      of times, or deleting it (the case $k = 0$), keeps the resulting string in
+      the language $L$.
+    \end{thm}
+
+\section*{Closure Properties of Regular Languages}
+  Closure properties express the idea that when one (or several) languages are
+  regular, then certain related languages are also regular. Here is a summary of
+  the principal closure properties for regular languages:
+    \begin{enumerate}
+      \item The union of two regular languages is regular.
+      \item The intersection of two regular languages is regular.
+      \item The complement of a regular language is regular.
+      \item The difference of two regular languages is regular.
+      \item The reversal of a regular language is regular.
+      \item The closure (star) of a regular language is regular.
+      \item The concatenation of regular languages is regular.
+      \item A homomorphism (substitution of strings for symbols) of a regular
+      language is regular.
+      \item The inverse homomorphism of a regular language is regular.
+    \end{enumerate}
+
+  \subsection*{Closure of Regular Languages Under Boolean Operations}
+    The boolean operations: union, intersection, and complementation:
+      \begin{enumerate}
+        \item Let $L$ and $M$ be languages over alphabet $\Sigma$. Then
+        $L \cup M$ is the language that contains all strings that are in either
+        or both of $L$ and $M$.
+        \item Let $L$ and $M$ be languages over alphabet $\Sigma$. Then
+        $L \cap M$ is the language that contains all strings that are in both
+        $L$ and $M$.
+        \item Let $L$ be a language over alphabet $\Sigma$. Then $\overline{L}$,
+        \emph{the complement of $L$}, is the set of strings in $\Sigma^*$ that
+        are not in $L$.
+      \end{enumerate}
+    \subsubsection*{Closure Under Union}
+      \begin{thm}
+        If $L$ and $M$ are regular languages, then so is $L \cup M$.
+      \end{thm}
+    \subsubsection*{Closure Under Complementation}
+      \begin{thm}
+        If $L$ is a regular language over alphabet $\Sigma$, then
+        $\overline{L} = \Sigma^* - L$ is also a regular language.
+      \end{thm}
+    \subsubsection*{Closure Under Intersection}
+      \begin{thm}
+        If $L$ and $M$ are regular languages, then so is $L \cap M$.
+      \end{thm}
+    \subsubsection*{Closure Under Difference}
+      \begin{thm}
+        If $L$ and $M$M are regular languages, then so is $L - M$.
+      \end{thm}
+
+  \subsection*{Reverseal}
+    The \emph{reversal} of a string $a_1a_2\cdot{a_n}$ is the string written
+    backwards, that is $a_na_{n-1}\cdots{a_1}$. We use $w^R$ for the reversal
+    of string $w$. \\
+    \indent The reversal of a language $L$, written $L^R$, is the language
+    consisting of the reversals of all its strings. \\
+    \indent Reversal is another operation that preservers regular languages;
+    that is, if $L$ is a regular language, so is $L^R$. \\
+    \indent Given a language $L$ that is $L(A)$ for some finite automaton,
+    perhaps with nondeterminism and $\epsilon$-transitions, we may construct an
+    automaton for $L^R$ by:
+      \begin{enumerate}
+        \item Reverse all the arcs in the transition diagram for $A$.
+        \item Make the start state of $A$ be the only accepting state for the
+        new automaton.
+        \item Create a new start state $p_0$ with transitions on $\epsilon$ to
+        all accepting states of $A$.
+      \end{enumerate}
+    The result is an automaton that simulates $A$ ``in reverse,'' and therefore
+    accepts a string $w$ if and only if $A$ accepts $w^R$.
+      \begin{thm}
+        If $L$ is a regular language, so is $L^R$.
+      \end{thm}
+
+  \subsection*{Homomorphisms}
+    A string \emph{homomorphism} is a function on strings that works by
+    substituting a particular string for each symbol. \\
+    \indent Formally, if $h$ is a homomorphism on alphabet $\Sigma$, and
+    $w = a_1a_2\cdot{a_n}$ is a string of symbols in $\Sigma$, then
+    $h(w) = h(a_1)h(a_2)\cdots{h(a_n)}$. That is, we apply $h$ to each symbol of
+    $w$ and concatenate the results, in order. \\
+    \indent Further, we can apply a homomorphism to a language by applying it to
+    each of the strings in the language. That is, if $L$ is a language over
+    alphabet $\Sigma$, and $h$ is a homomorphism on $\Sigma$, then
+    $h(L) = \{h(w) \, | \, w$ is in $L \}$.
+      \begin{thm}
+        If $L$ is a regular language over alphabet $\Sigma$, and $h$ is a
+        homomorphism on $\Sigma$, then $h(L)$ is also regular.
+      \end{thm}
+
+  \subsection*{Inverse Homomorphisms}
+    Homomorphisms may also be applied ``backwards,'' and in this mode they also
+    preserver regular languages. That is, suppose $h$ is a homomorphism from
+    some alphabet $\Sigma$ to strings in another (possibly the same) alphabet
+    $T$. Let $L$ be a language over alphabet $T$. Then $h^{-1}(L)$, read
+    ``$h
 
 \end{document}
