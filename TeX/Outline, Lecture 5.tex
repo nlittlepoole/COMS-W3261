@@ -18,22 +18,22 @@
 \section*{Overview}
   \begin{itemize}
     \item Algebraic laws can be used to simplify regular expressions.
-    \item The pumping lemma for regular languages can be used to prove that some 
+    \item The pumping lemma for regular languages can be used to prove that some
     languages are not regular.
-    \item The set of regular languages is closed under many common operations 
+    \item The set of regular languages is closed under many common operations
     such as union, intersection, complement and reversal.
   \end{itemize}
-  
+
 \section{Algebraic Laws for Regular Expressions}
   \begin{itemize}
     \item Algebraic laws can be used to simplify regular expressions
-    \item Here are some of the most important algebraic identities for regular 
+    \item Here are some of the most important algebraic identities for regular
     expressions
       \begin{itemize}
         \item Union is commutative: $L + M = M + L$
         \item Union is associative: $(L + M) + N = L + (M + N)$
         \item Concatenation is associative: $(LM)N = L(MN)$
-        \item $\varnothing$ is the identity for union: $\varnothing + L = L + 
+        \item $\varnothing$ is the identity for union: $\varnothing + L = L +
         \varnothing = L$
         \item $\epsilon$ is the identity for concatenation: $\epsilon{L} = L
         \epsilon = L$
@@ -47,12 +47,12 @@
         \item $\epsilon^* = \epsilon$
       \end{itemize}
   \end{itemize}
-  
+
 \section{The Pumping Lemma for Regular Languages}
   \begin{itemize}
-    \item The pumping lemma for regular languages states that for every 
-    nonfinite regular language $L$, there exists a constant $n$ that depends on 
-    $L$ such that for all $w$ in $L$ with $|w| \geq n$, there exists a 
+    \item The pumping lemma for regular languages states that for every
+    nonfinite regular language $L$, there exists a constant $n$ that depends on
+    $L$ such that for all $w$ in $L$ with $|w| \geq n$, there exists a
     decomposition of $w$ into $xyz$ such that
       \begin{enumerate}
         \item $y \neq \epsilon$
@@ -60,14 +60,14 @@
         \item for all $k \geq 0$, the string $xy^kz$ is in $L$.
       \end{enumerate}
     \item Proof: See HMU, p. 129.
-    \item One important use of the pumping lemma is to prove some languages are 
+    \item One important use of the pumping lemma is to prove some languages are
     not regular.
-    \item Example: The language $L$ consisting of all strings of a's and b's of 
+    \item Example: The language $L$ consisting of all strings of a's and b's of
     the form $a^ib^i$, $i \geq 0$, is not regular.
       \begin{itemize}
-        \item The proof will be by contradiction. Assume $L$ is regular. Then by 
-        the pumping lemma there is a constant $n$ associated with $L$ such that 
-        for all $w$ in $L$ with $|w| \geq n$, $w$ can be written as $xyz$ such 
+        \item The proof will be by contradiction. Assume $L$ is regular. Then by
+        the pumping lemma there is a constant $n$ associated with $L$ such that
+        for all $w$ in $L$ with $|w| \geq n$, $w$ can be written as $xyz$ such
         that
           \begin{enumerate}
             \item $y \neq \epsilon$
@@ -75,22 +75,22 @@
             \item for all $k \geq 0$, the string $xy^kz$ is in $L$.
           \end{enumerate}
         \item Since $|xy| \leq n$, $xy = a^,$ for some $0 < m \leq n$.
-        \item Setting $k = 0$, condition (3) of the pumping lemma says $xz$ must 
+        \item Setting $k = 0$, condition (3) of the pumping lemma says $xz$ must
         also be in $L$.
         \item But $xz$ is of the form $a^pb^n$, where $p < n$.
         \item This contradicts the conclusion that $xz$ must be in $L$.
       \end{itemize}
   \end{itemize}
-  
+
 \section{Closure Properties of Regular Languages}
   \begin{itemize}
-    \item A closure property for a family of languages is a theorem that says if 
-    we apply a certain operation to the languages in the family, then the 
-    resulting language will also be in the family. For example. if we take the 
-    union of two regular langauges $L$ and $M$, then the language $L \cup M$ is 
-    also regular. We therefore say the regular languages are closed under the 
+    \item A closure property for a family of languages is a theorem that says if
+    we apply a certain operation to the languages in the family, then the
+    resulting language will also be in the family. For example. if we take the
+    union of two regular langauges $L$ and $M$, then the language $L \cup M$ is
+    also regular. We therefore say the regular languages are closed under the
     operation of union.
-    \item We can show that the regular languages are closed under the following 
+    \item We can show that the regular languages are closed under the following
     operations:
       \begin{itemize}
         \item union, intersection, complement, difference
@@ -103,14 +103,14 @@
     \item These closure properties combined with the pumping lemma can be used
     to show some languages are not regular.
   \end{itemize}
-  
+
 \section{Practice Problems}
   \begin{enumerate}
-    \item Show that the language consisting of all strings of balanced 
+    \item Show that the language consisting of all strings of balanced
     parentheses is not regular.
     \item Prove that the language consisting of all strings of $a$'s and $b$'s
     that read the same forwards as backwards is not regular.
-    \item Prove that the language $L = \{ w \, | \, w = a^ib^i$ where $i$ is not 
+    \item Prove that the language $L = \{ w \, | \, w = a^ib^i$ where $i$ is not
     equal to $j \}$ is not regular.
   \end{enumerate}
 
