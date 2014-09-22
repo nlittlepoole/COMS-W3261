@@ -48,6 +48,14 @@ Regular Expressions}
         \item $\epsilon^* = \epsilon$
       \end{itemize}
   \end{itemize}
+  \subsection{Class Notes}
+    Simplifying regular expressions:
+    \begin{align*}
+      & \epsilon + a + (\epsilon + a)(\epsilon + a)^*(\epsilon + a) \\
+      & \epsilon + a + (\epsilon + a)a^*(\epsilon + a)              \\
+      & \epsilon + a + a^*                                          \\
+      & a^*
+    \end{align*}
 
 \section{The Pumping Lemma for Regular Languages}
   \begin{itemize}
@@ -88,7 +96,7 @@ Regular Expressions}
     \item A closure property for a family of languages is a theorem that says if
     we apply a certain operation to the languages in the family, then the
     resulting language will also be in the family. For example. if we take the
-    union of two regular langauges $L$ and $M$, then the language $L \cup M$ is
+    union of two regular languages $L$ and $M$, then the language $L \cup M$ is
     also regular. We therefore say the regular languages are closed under the
     operation of union.
     \item We can show that the regular languages are closed under the following
