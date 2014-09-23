@@ -1,0 +1,157 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+\usepackage{tipa}
+\usetikzlibrary{arrows,automata}
+\begin{document}
+
+\title{COMS W3261 \\ Computer Science Theory \\ Lecture 7\\ Context-Free 
+Grammars}
+\author{Alexander Roth}
+\date{2014 -- 09 -- 24}
+\maketitle
+
+\section*{Outline}
+  \begin{itemize}
+    \item Review
+    \item Definition of a context-free grammar
+    \item Derivations
+    \item Leftmost and rightmost derivations
+    \item Parse trees
+    \item Ambiguity
+  \end{itemize}
+  
+\section{Overview}
+  \begin{itemize}
+    \item We now begin the study of context-free languages, the next family of
+    languages in the Chomsky hierarchy that properly includes the class of
+    regular languages.
+    \item A context-free language is defined by a context-free grammar, a
+    formalism that generates the strings in the language of the grammar.
+    \item Context-free grammars are a key formalism for describing the syntactic
+    structure of programming languages. They are also useful in the study of
+    natural languages.
+    \item In this lecture we define what a context-free grammar is and show how
+    it defines a language.
+  \end{itemize}
+  
+\section{Definition of a Context-Free Grammar (CFG)}
+  \begin{itemize}
+    \item A CFG is a formalism for defining a language.
+    \item A CFG has four components $(V, T, P, S)$ where
+      \begin{itemize}
+        \item $V$ is a finite set of variables called nonterminals, sometimes 
+        called syntactic categories. Each variable represents a language.
+        \item $T$ is a finite set of symbols called terminals. The set of 
+        terminals is the alphabet of the language defined by the grammar.
+        \item $P$ is a finite set of productions, rewrite rules of the $A 
+        \rightarrow \alpha$ where $A$ is a nonterminal and $\alpha$ is a string
+        (possibly empty) of nonterminals and terminals.
+        \item $S$ is a nonterminal, called the start symbol.
+      \end{itemize}
+    \item Example grammar G1:
+      \begin{enumerate}
+        \item $V = \{ s \}$
+        \item $T = \{ ( \, ,) \}$
+        \item $P$ is the set with two productions
+          \[ s \rightarrow s \, ( \, s \, ) \]
+          \[ s \rightarrow \epsilon \]
+        We shall see that G1 generates the language consisting of all strings of
+        balanced parentheses.
+      \end{enumerate}
+  \end{itemize}
+
+\section{Derivations}
+  \begin{itemize}
+    \item A grammar is used to define a language.
+    \item Example of a derivation of $(\,)(\,)$ from $S$ in G1:
+      \begin{align*}
+        s & \implies s \, (\,s\,)            \\
+          & \implies s \, (\,s\,) \, (\,s\,) \\
+          & \implies      (\,s\,) \, (\,s\,) \\
+          & \implies      (\,   ) \, (\,s\,) \\
+          & \implies      (\,   ) \, (\,   ) \\ 
+      \end{align*}
+    \item This derivation show that $(\,\,)(\,\,)$ is string in the language
+    defined by G1. In each step of the derivation a nonterminal symbol $s$ in a
+    sentential form is replaced by the string on the right hand side of a 
+    production that has $s$ on the left hand side.
+    \item $L(G)$, the set of all strings of terminals that can be derived from
+    the start symbol of a grammar $G$, is the language defined by $G$.
+    \item We often call a string in $L(G)$ a sentence of $L(G)$.
+    \item A string of terminals and nonterminals that can be derived from the 
+    start symbol of a grammar is called a sentential form.
+  \end{itemize}
+  
+\section{Leftmost and Rightmost Derivations}
+  \begin{itemize}
+    \item A derivation in which at each step we replace the leftmost nonterminal
+    by one of its production bodies is called a leftmost derivation.
+      \begin{itemize}
+        \item The derivation above is a leftmost derivation of $(\,)(\,)$ from
+        $s$ in $G1$.
+      \end{itemize}
+    \item A rightmost derivation is one in which at each step we replace the
+    rightmost nonterminal by one of its production bodies.
+      \begin{itemize}
+        \item Here is a rightmost derivation of $(\,)(\,)$ from $s$ in G1:
+          \begin{align*}
+            S & \implies s \, (\,s\,)            \\
+              & \implies s \, (\,\,)             \\
+              & \implies s \, (\,s\,) \, (\,\,)  \\
+              & \implies s \, (\,   ) \, (\,\,)  \\
+              & \implies      (\,   ) \, (\,   ) \\ 
+          \end{align*}
+      \end{itemize}
+  \end{itemize}
+  
+\section{Parse Trees}
+  \begin{itemize}
+    \item A derivation can be represented by a parse tree.
+    \item Let $G = (V, T, P, S)$ be a CFG. A parse tree for $G$ is a tree in
+    which:
+      \begin{itemize}
+        \item Each interior node is labeled by a nonterminal in $V$.
+        \item Each leaf is labeled by a nonterminal, or a terminal, or
+        $\epsilon$
+        \item If an interior node is labeled by a nonterminal $A$ and its 
+        children are labeled $X_1,X_2,\ldots,X_k$, then $A \rightarrow 
+        X_1X_2\ldots{X_k}$ is a production in $P$.
+      \end{itemize}
+    \item The \emph{yield} of a parse tree is the string obtained by
+    concatenating the labels of the leaves from the left.
+    \item Derivations, parse trees, leftmost derivations, rightmost derivations,
+    and recursive inference are equivalent.
+    \item A parser for a grammar $G$ is a program that takes as input a string
+    and produces as output a parse tree for the string or a message saying that
+    the string cannot be generated by $G$.
+    \item A parser generator is a program that takes as input a grammar $G$ and
+    produces as output a parser for $G$. YACC is a widely used parser generator.
+  \end{itemize}
+
+\section{Ambiguity}
+  \begin{itemize}
+    \item A grammar $G$ is ambiguous if there is a sentence in $L(G)$ with two
+    or more distinct parse trees.
+    \item The following grammar $G2$ for arithmetic expressions is ambiguous
+    because $a + a * a$ has two parse trees. \\
+      \[ E \rightarrow E + E | E * E | (E) | a \]
+    \item We can remove the ambiguity by specifying the associativity and
+    precedence of the $+$ and $*$.
+    \item The grammar $G3$ below is unambiguous and makes $*$ have higher
+    precedence than $+$ and makes both $*$ and $+$ left associative.
+      \begin{align*}
+        E & \rightarrow E + T \quad | \, T \\
+        T & \rightarrow T * F \quad | \, F \\
+        F & \rightarrow ( E ) \quad | \, a \\
+      \end{align*}
+    \item A context-free language $L$ is inherently ambiguous if it cannot be 
+    generated by an unambiguous grammar.
+  \end{itemize}
+
+\end{document}
