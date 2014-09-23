@@ -1,0 +1,140 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+\usepackage{tipa}
+\usetikzlibrary{arrows,automata}
+\begin{document}
+
+\title{COMS W3261 \\ Computer Science Theory \\ Lecture 6\\ Decision Problems
+for Regular Expressions; Mimizing States}
+\author{Alexander Roth}
+\date{2014 -- 09 -- 22}
+\maketitle
+
+\section*{Overview}
+  \begin{itemize}
+    \item Many common decision problems for representations of regular
+    languages are decidable.
+    \item Every regular set has a minimum-state DFA (unique up to renaming of
+    states).
+  \end{itemize}
+
+\section{Decision Problems for Regular Languages}
+  \begin{itemize}
+    \item We can ask whether a representation of a language has a given
+    property. Such a question is often called a \emph{decision problem}.
+    \item If there is an algorithm to answer the question, we say that problem
+    is \emph{decidable}. For decidable problems we are interested in how
+    quickly a question can be answered as a function of the size of the
+    representation of the language.
+    \item The \emph{emptiness problem} is to decide whether the language
+    denoted by a given representation is empty.
+      \begin{itemize}
+        \item Given a finite automaton for a regular language, we can answer
+        the emptiness problem by determining whether there is a path from the
+        start state to a final state. This can be answered in O($n^2$) time
+        where $n$ is the number of states in the automaton.
+      \end{itemize}
+    \item The \emph{membership problem} is to decide whether a particular
+    string is in the language denoted by a given representation.
+      \begin{itemize}
+        \item Given a DFA $D$ for a regular language and an input string $w$,
+        we can answer the membership problem by simulating $D$ processing $w$
+        beginning in the start state. This can be answered in O($|w|$) time.
+      \end{itemize}
+  \end{itemize}
+  \subsection{Class Notes}
+    Given a DFA $D$, is $L(D) = \emptyset$? Is $L(D) = \Sigma^*$?
+
+
+\section{Testing Equivalence of States}
+  \begin{itemize}
+    \item Given a DFA $D$ for a regular language, we say two distinct states
+    $p$ and $q$
+    \item This says the two states $\delta^*(p, w)$ and $\delta^*(q, w)$ are
+    either both accepting or both nonaccepting.
+    \item If two states of a DFA are not equivalent, then we say they are
+    \emph{distinguishable}.
+    \item Here is what is known as \emph{the table-filing algorithm} for
+    computing all pairs of distinguishable states of a DFA:
+      \begin{itemize}
+        \item Input: A DFA $D = (Q, \Sigma, \delta, q_0, F)$.
+        \item Output: a table $T$ of all pairs of distinguishable states.
+        \item Method: \\
+        for all states $p$ and $q$ do \\
+        \indent \quad if $p$ is final and $q$ is nonfinal \\
+        \indent \quad \quad add $\{p, q\}$ to $T$ \\
+        \indent for all states $p$ and $q$ do \\
+        \indent \quad for all input symbols $a$ do \\
+        \indent\quad\quad if $\delta(p,a)$ and $\delta(q,a)$ are in $T$ then \\
+        \indent\quad\quad\quad add $\{p, q\}$ to $T$ \\
+        until no more pairs can be added to $T$
+      \end{itemize}
+    \item Theorem: If two states $p$ and $q$ are not distinguishable by the
+    table-filling algorithm, then $p$ and $q$ are equivalent.
+  \end{itemize}
+  \subsection{Class Notes}
+
+
+\section{Testing Equivalence of DFA's}
+  \begin{itemize}
+    \item We can use the table-filing algorithm to test the equivalence of two
+    DFA's by testing the equivalence of their start states.
+    \item The DFA's are equivalent iff their start states are equivalent.
+  \end{itemize}
+
+\section{Minimizing the Number of States in a DFA}
+  \begin{itemize}
+    \item We can use the table-filing algorithm as a subroutine to minimize the
+    number of states in a DFA.
+    \item The minimization algorithm:
+      \begin{itemize}
+        \item Input: a DFA $A = (Q_A, \Sigma, \delta_A, q_A, F_A)$.
+        \item Output: an equivalent minimum-state DFA $B = (Q_B, \Sigma,
+        \delta_B, q_B, F_B)$
+        \item Method:
+          \begin{enumerate}
+            \item Eliminate any state that cannot be reached from the start
+            state.
+            \item Compute the sets of all equivalent states.
+            \item Partition the states into blocks so that
+              \begin{itemize}
+                \item all states in the same block are equivalent and
+                \item no pair of states from different blocks are equivalent.
+              \end{itemize}
+            \item Construct the minimum-state DFA $B$ as follows:
+              \begin{enumerate}
+                \item $Q_B$ is the set of blocks of equivalent states.
+                \item If $R$ and $S$ are blocks containing the states $p$ and
+                $q$ of $A$, respectively, then $\delta_B(R, a) = S$ if
+                $\delta_A(p, a) = q$.
+                \item $q_B$ is the block containing $q_A$.
+                \item A state $S$ is in $F_B$ if $S$ contains a state in $F_A$.
+              \end{enumerate}
+          \end{enumerate}
+      \end{itemize}
+    \item Thereom: $L(B) = L(A)$ and no DFA equivalent to $A$ has fewer states
+    than $B$.
+  \end{itemize}
+  \subsection{Class Notes}
+    \begin{description}
+      \item[Input:] DFA $D$
+      \item[Output:] an equivalent DFA with the smallest possible number of
+      states.
+      \item[Method:]
+        \begin{enumerate}
+          \item Remove all inaccessible states from $D$.
+          \item Compute all equivalent states.
+          \item Partition states into maximal equivalent blocks.
+          \item From the equivalent blocks, construct a DFA.
+        \end{enumerate}
+    \end{description}
+  What is the fastest way to determine if two regular expressions are
+  equivalent?
+
+\end{document}
