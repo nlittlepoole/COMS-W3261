@@ -9,6 +9,7 @@
 \usepackage{tipa}
 \usetikzlibrary{arrows,automata}
 \begin{document}
+\newcommand*{\xml}[1]{\texttt{<#1>}}
 
 \title{COMS W3261 \\ Computer Science Theory \\ Lecture 7\\ Context-Free 
 Grammars}
@@ -65,6 +66,17 @@ Grammars}
         balanced parentheses.
       \end{enumerate}
   \end{itemize}
+  \subsection*{Class Notes}
+    \textbf{Example of a CFG}: \\
+    \xml{sentence}    $\rightarrow$ \xml{noun phrase}\xml{verb phrase} \\
+    \xml{noun phrase} $\rightarrow$ girl \\
+    \xml{noun phrase} $\rightarrow$ cat  \\
+    \xml{verb phrase} $\rightarrow$ \xml{verb}\xml{noun phrase} \\
+    \xml{verb}        $\rightarrow$ likes
+    \begin{enumerate}
+      \item $V$ is the finite set of variables called nonterminals.
+      \item $T$ is the alphabet for strings. Can be called a sentence.
+      \item $P$ is the finite set of rewrite rules
 
 \section{Derivations}
   \begin{itemize}
@@ -87,7 +99,19 @@ Grammars}
     \item A string of terminals and nonterminals that can be derived from the 
     start symbol of a grammar is called a sentential form.
   \end{itemize}
-  
+  \subsection*{Class Notes}
+    \xml{sentence} \\
+    $\rightarrow$ cat \xml{verb phrase}                   \\
+    $\rightarrow$ cat \xml{verb} \xml{noun phrase}        \\
+    $\rightarrow$ cat likes \xml{noun phrase}      \\
+    $\rightarrow$ cat likes girl                   \\
+    \textbf{Example:} \\
+    $G: \quad S \rightarrow aSa \, | bSb \, | \epsilon$ \\
+    $S$ $\rightarrow$ a$S$a     \\
+        $\rightarrow$ ab$S$ba   \\
+        $\rightarrow$ abb$S$bba \\
+        $\rightarrow$ abb bba   \\ \\
+        
 \section{Leftmost and Rightmost Derivations}
   \begin{itemize}
     \item A derivation in which at each step we replace the leftmost nonterminal
@@ -109,6 +133,8 @@ Grammars}
           \end{align*}
       \end{itemize}
   \end{itemize}
+  \subsection*{Class Notes}
+    Every parse tree has a unique leftmost and rightmost derivation.
   
 \section{Parse Trees}
   \begin{itemize}
