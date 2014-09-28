@@ -1,0 +1,410 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage[T1]{fontenc}
+\usepackage{indentfirst}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+\usepackage{tipa}
+\usetikzlibrary{arrows,automata}
+\begin{document}
+
+\title{COMS W3261 \\ Computer Science Theory \\ Chapter 6 Notes}
+\author{Alexander Roth}
+\date{2014--09--27}
+\maketitle
+\theoremstyle{definition}
+\newtheorem{thm}{Theorem}
+
+\section*{Pushdown Automata}
+  The context-free languages have a type of automaton that defines them. This
+  automaton, called a ``pushdown automaton,'' is an extension of the
+  nondeterministic finite automaton with $\epsilon$-transitions, which is one of
+  the ways to define the regular languages. It is essentially an $\epsilon$-NFA
+  with the addition of a stack. The stack can be read, pushed, and popped only
+  at the top, just like the ``stack'' data structure.
+
+\section*{Definition of the Pushdown Automaton}
+  \subsection*{Informal Induction}
+    The pushdown automaton is in essence a nondeterministic finite automaton
+    with $\epsilon$-transitions permitted and one additional capability: a stack
+    on which it can store a string of ``stack symbols''. This stack allows the
+    automaton to ``remember'' an infinite amount of information. \\
+    \indent Push-down automata recognize all and only the context-free
+    languages. \\
+    \indent A ``finite-state control'' reads inputs, one symbol at a time. The
+    pushdown automaton is allowed to observer the symbol at the top of the stack
+    and to base its transition on its current state, the input symbol, and the
+    symbol at the top of stack. Alternatively, it may make a ``spontaneous''
+    transition, using $\epsilon$ as its input instead of an input symbol. In one
+    transition, the pushdown automaton:
+      \begin{enumerate}
+        \item Consumes from the input the symbol that it uses in the transition.
+        If $\epsilon$ is used for the input, then no input symbol is consumed.
+        \item Goes to a new state, which may or may not be the same as the
+        previous state.
+        \item Replaces the symbol at the top of the stack by any string. The
+        string could be $\epsilon$, which corresponds to a pop of the stack. It
+        could be the same symbol that appeared at the top of the stack
+        previously; i.e., no change to the stack is made. It could also replace
+        the top stack symbol by one other symbol, which in effect changes the
+        top of the stack but does not push or pop it. Finally, the top stack
+        symbol could be replaced by two or more symbols, which has the effect of
+        (possibly) changing the top stack symbol, and then pushing one or more
+        new symbols onto the stack.
+      \end{enumerate}
+
+  \subsection*{The Formal Definition of Pushdown Automata}
+    Our formal notation for a \emph{pushdown automaton} (PDA) involves seven
+    components. We write the specification of a PDA $P$ as follows:
+      \[ P = (Q,\Sigma,\Gamma,\delta,q_0,Z_0,F) \]
+    The components have the following meanings:
+      \begin{description}
+        \item[$Q$:] A finite set of \emph{states}, like the states of a finite
+        automaton.
+        \item[$\Sigma$:] A finite set of \emph{input symbols}, also analogous to
+        the corresponding components of a finite automaton.
+        \item[$\Gamma$:] A finite \emph{stack alpahbet}. This component, which
+        has no finite-automaton analog, is the set of symbols that we are
+        allowed to push onto the stack.
+        \item[$\delta$:] The \emph{transition function}. As for a finite
+        automaton, $\delta$ governs the behavior of the automaton. Formally, $
+        \delta$ takes as arguments a triple $\delta(q,aX)$, where:
+          \begin{enumerate}
+            \item $q$ is a state in $Q$.
+            \item $a$ is either an input symbol in $\Sigma$ or $a = \epsilon$,
+            the empty string, which is assumed not to be an input symbol.
+            \item $X$ is a stack symbol, that is, a member of $\Gamma$.
+          \end{enumerate}
+        The output of $\delta$ is a finite set of pairs $(p,\gamma)$, where $p$
+        is the new state, and $\gamma$ is the string of stack symbols that
+        replace $X$ at the top of the stack.
+        \item[$q_0$:] The \emph{start state}. The PDA is in this state before
+        making any transitions.
+        \item[$F$:] The set of \emph{accepting states}, or \emph{final states}.
+      \end{description}
+
+    \subsubsection*{No ``Mixing and Matching''}
+      There may be several pairs that are options for a PDA in some situation.
+      for instance suppose $\delta(q,aX) = \{(p,Y,Z),(r,\epsilon)\}$. When
+      making a move of the PDA, we have to choose one pair in its entirety; we
+      cannot pick a state from one and a stack-replacement strings from another.
+
+  \subsection*{A Graphical Notation for PDA's}
+    Sometimes, a diagram, generalizing the transition diagram of a finite
+    automaton, will make aspects of the behavior of a given PDA clearer. We
+    shall therefore introduce and subsequently use a \emph{transition diagram}
+    for PDA's in which:
+      \begin{enumerate}
+        \item[a)] The nodes correspond to the states of the PDA>
+        \item[b)] An arrow labeled \emph{Start} indicates the start state, and
+        doubly circled states are accepting, as for finite automata.
+        \item[c)] The arcs correspond to transitions of the PDA in the following
+        sense. An arc labeled $a$, $X/\alpha$ from state $q$ to state $p$ means
+        that $\delta(q,a,X)$ contains the pair $(p,\alpha)$, perhaps among other
+        pairs. That is, the arc label tells what input is used and also gives
+        the old and new tops of the stacks.
+      \end{enumerate}
+    Conventionally, we use $Z_0$ as the start symbol for the stack.
+
+  \subsection*{Instantaneous Descriptions of a PDA}
+    Intuitively, the PDA goes from configuration to configuration, in response
+    to input symbols (or sometimes $\epsilon$), but unlike the finite automaton,
+    where the state is the only thing that we need to know about the automaton,
+    the PDA's configuration involves both the state and the contents of the
+    stack. Being arbitrarily large, the stack often more important part of the
+    total configuration of the PDA at any time. \\
+    \indent Thus, we shall represent the configuration of a PDA by a triple
+    $(q,w,\gamma)$, where
+      \begin{enumerate}
+        \item $q$ is the state,
+        \item $w$ is the remaining input, and
+        \item $\gamma$ is the stack contents.
+      \end{enumerate}
+    Conventionally, we show the top of the stack at the left end of $\gamma$ and
+    the bottom at the right end. Such a triple is called an \emph{instantaneous
+    description}, or ID, of the pushdown automaton. \\
+    \indent For finite automata, the $\hat{\delta}$ notation was sufficient to
+    represent sequences of instantaneous descriptions through which a finite
+    automaton moved since the ID for a finite automaton is just its state.
+    However, for PDA's we need a notation that describes changes in the state,
+    the input, and stack. Thus we adopt the ``turnstile'' notation for
+    connection pairs of ID's that represent one or many moves of a PDA. \\
+    \indent Let $P = (Q,\Sigma,\Gamma,\delta,q_0,Z_0,F)$ be a PDA. Define
+    $\underset{P}{\vdash}$, or just $\vdash$ when $P$ is understood as follows.
+    Suppose $\delta(q,a,X)$ contains $(p,\alpha)$. The for all strings $w$ in
+    $\Sigma^*$ and $\beta$ in $\Gamma^*$:
+      \[ (q,aw,X\beta)\vdash(p,w,\alpha\beta) \]
+    This move reflects the idea that, by consuming $a$ (which may be $\epsilon$)
+    from the input and replacing $X$ on top of the stack by $\alpha$, we can go
+    from state $q$ to state $p$. \\
+    \indent We also use the symbols $\underset{P}{\overset{*}{\vdash}}$, or $
+    \overset{*}{\vdash}$ when the PDA $P$ is understood, to represent zero or
+    more moves of the PDA. \\
+    \indent There are three important principles about ID's and their
+    transitions that we shall need in order to reason about PDA's:
+      \begin{enumerate}
+        \item If a sequence of ID's (\emph{computation}) is legal for a PDA $P$,
+        then the computation formed by adding the same additional input string
+        to the end of the input (second component) in each ID is also legal.
+        \item If a computation is legal for a PDA $P$, then the computation
+        formed by adding the same additional stack symbols below the stack in
+        each ID is also legal.
+        \item If a computation is legal for a PDA $P$, and some tail of the
+        input is not consumed, then we can remove this tail from the input in
+        each ID, and the resulting computation will still be legal.
+      \end{enumerate}
+    Intuitively, data that $P$ never looks at cannot affect its computation.
+    Thus, we conclude:
+      \begin{thm}
+        If $P = (Q,\Sigma,\Gamma,\delta,q_0,Z_0,F)$ is a PDA, and $(q,x,\alpha)
+        \overset{*}{\underset{P}{\vdash}} (p,y,\beta)$, then for any strings $w$
+        in $\Sigma^*$ and $\gamma$ in $\Gamma^*$, it is also true that
+          \[
+            (q,xw,\alpha\gamma)\overset{*}{\underset{P}{\vdash}}(p,yw,\beta
+            \gamma)
+          \]
+      \end{thm}
+    Note that if $\gamma = \epsilon$, then we have a formal statement of
+    principle (1) above, and if $w = \epsilon$, then we have the second
+    principle.
+      \begin{thm}
+        If $P = (Q,\Sigma,\Gamma,\delta,q_0,Z_0,F)$ is a PDA, and
+          \[
+            (q,xw,\alpha)\overset{*}{\underset{P}{\vdash}}(p,yw,\beta)
+          \]
+        then it is also true that $(q,x,\alpha)\overset{*}{\underset{P}{\vdash}}
+        (p,y,\beta)$.
+      \end{thm}
+
+\section*{The Languages of a PDA}
+  We have assumed that a PDA accepts its input by consuming it and entering an
+  accepting state. We call this approach ``acceptance by final state.'' There is
+  a second approach to defining the language of a PDA that has important
+  applications. We may also define for any PDA the language ``accepted by empty
+  stack,'' that is, the set of strings that cause the PDA to empty its stack,
+  starting from the initial ID. \\
+  \indent These two methods are equivalent, in the sense that a language $L$ has
+  a PDA that accepts it by final state if and only if $L$ has a PDA that accepts
+  it by empty stack. However, for a given PDA $P$, the languages that $P$
+  accepts by final state and by empty stack are usually different.
+
+  \subsection*{Acceptance by Final State}
+    Let $P = (Q,\Sigma,\Gamma,\delta,q_0,Z_0,F)$ be a PDA. Then $L(P)$, the
+    \emph{language accepted by P by final state} is
+      \[
+        \{ w \, | \, (q_0,w,Z_0)\overset{*}{\underset{P}{\vdash}}(q,\epsilon,
+        \alpha)\}
+      \]
+    for some state $q$ in $F$ and any stack string $\alpha$. That is, starting
+    in the initial ID with $w$ waiting on the input, $P$ consumes $w$ from the
+    input and enters an accepting state. The contents of the stack at that time
+    is irrelevant.
+
+  \subsection*{Acceptance by Empty Stack}
+    For each PDA $P = (Q,\Sigma,\Gamma,\delta,q_0,Z_0,F)$, we also define
+      \[
+        N(P) = \{ w \, | \, (q_0,w,Z_0) \overset{*}{\vdash}(q,\epsilon,
+        \epsilon)
+      \]
+    for any state $q$. That is, $N(P)$ is the set of inputs $w$ that $P$ can
+    consume and at the same time empty its stack. \\
+    \indent Since the set of accepting states is irrelevant, we shall sometimes
+    leave off the last (seventh) component from the specification of a PDA $P$,
+    if all we care about is the language that $P$ accepts by empty stack. Thus,
+    we would write $P$ as a six-tuple $(Q,\Sigma,\Gamma,\delta,q_0,Z_0)$.
+
+  \subsection*{From Empty Stack to Final State}
+    \begin{thm}
+      If $L = N(P_N)$ for some PDA $P_N = (Q,\Sigma,\Gamma,\delta_N,q_0,Z_0)$,
+      then there is a PDA $P_F$ such that $L = L(P_F)$.
+    \end{thm}
+
+  \subsection*{From Final State to Empty Stack}
+    \begin{thm}
+      Let $L$ be $L(P_F)$ for some PDA
+      $P_F = (Q,\Sigma,\Gamma,\delta_F,q_0,Z_0,F)$.
+    \end{thm}
+
+\section*{Equivalence of PDA's and CFG's}
+  To prove that the languages defined by PDA's are exactly the context-free
+  languages, we must prove the following three classes of languages:
+    \begin{enumerate}
+      \item The context-free languages, i.e., the languages defined by CFG's.
+      \item The languages that are accepted by final state by some PDA.
+      \item The languages that are accepted by empty stack by some PDA.
+    \end{enumerate}
+  are all the same class.
+
+  \subsection*{From Grammars to Pushdown Automata}
+    Given a CFG $G$, we construct a PDA that simulates the leftmost derivations
+    of $G$. Any left-sentential form that is not a terminal string can be
+    written as $xA\alpha$, where $A$ is the leftmost variable, $x$ is whatever
+    terminals appear to its left, and $\alpha$ is the string of terminals and
+    variables that appear to the right of $A$. We call $A\alpha$ the \emph{tail}
+    of this left-sentential form. If a left-sentential form consists of
+    terminals only, then its tail is $\epsilon$. \\
+    \indent The idea behind the construction of a PDA from a grammar is to have
+    the PDA simulate the sequence of left-sentential forms that the grammar uses
+    to generate a given terminal string $w$. The tail of each sentential form
+    $xA\alpha$ appears on the stack, with $A$ at the top. At that time, $x$ will
+    be ``represented'' by our having consumed $x$ from the input, leaving
+    whatever of $w$ follows its prefix $x$. That is, if $w = xy$, then $y$ will
+    remain on the input. \\
+    \indent Suppose that PDA is in an ID $(q,y,A\alpha)$, representing a
+    left-sentential form $xA\alpha$. It guesses the production to use to expand
+    $A$, say $A \rightarrow \beta$. The move of the PDA is to replace $A$ on the
+    top of the stack by $\beta$, entering ID $(q,y,\beta\alpha)$. Note that
+    there is only one state, $q$, for this PDA. \\
+    \indent Now $(q,y,\beta\alpha)$ may not be a representation of the next
+    left-sentential form, because $\beta$ may have a prefix of terminals. In
+    fact, $\beta$ may have a prefix of terminals. Whatever terminals appear at
+    the beginning of $\beta\alpha$ need to be removed, to expose the next
+    variable at the top of the stack. These terminals are compared against the
+    next input symbols, to make sure our guesses at the leftmost derivation of
+    input string $w$ are correct; if not, this branch of the PDA dies. \\
+    \indent If we succeed in this way to guess a leftmost derivation of $w$,
+    then we shall eventually reach the left-sentential form $w$. At that point,
+    all the symbols on the stack have either been expanded (if they are
+    variables) or matched against the input (if they are terminals). The stack
+    is empty, and we accept by empty stack. \\
+    \indent Let $G = (V,T,Q,S)$ be a CFG. Construct the PDA $P$ that accepts
+    $L(G)$ by empty stack as follows:
+      \[ P = (\{q\},T,V\cup T,\delta,q,S) \]
+    where transition function $\delta$ is defined by:
+      \begin{enumerate}
+        \item For each variable $A$,
+          \[
+            \delta(q,\epsilon,A) = \{(q,\beta) \, | \, A \rightarrow \beta \, \,
+            \text{is a production of} \, \, G \}
+          \]
+        \item For each terminal $a$, $\delta(q,a,a) = \{(q,\epsilon)\}$.
+      \end{enumerate}
+      \begin{thm}
+        If PDA $P$ is constructed from CFG $G$ by the construction above, then
+        $N(P) = L(G)$.
+      \end{thm}
+
+  \subsection*{From PDA's to Grammars}
+    Now, we complete the proofs of equivalence by showing that for every PDA
+    $P$, we can find a CFG $G$ whose language is the same language that $P$
+    accepts by empty stack. The idea behind the proof is to recognize that the
+    fundamental event in the history of a PDA's processing of a given input is
+    the net popping of one symbol off the stack, while consuming some input. A
+    PDA may change state as it pops stack symbols, so we should also note the
+    state it enters when it finally pops a level off its stack. \\
+    \indent For example, some input $x_1$ is read while $Y_1$ is popped. We
+    should emphasize that this ``pop'' is the net effect of (possibly) many
+    moves. For example, the first move may change $Y_1$ to some other symbol
+    $Z$. The next move may replace $Z$ by $UV$, later moves have the effect of
+    popping $U$, and then other moves pop $V$. The net effect is that $Y_1$ has
+    been replaced by nothing; i.e., it has been popped, and all the input
+    symbols consumed so far constitute $x_1$. \\
+    \indent We suppose that the PDA starts out in state $p_0$, with $Y_1$ at the
+    top of the stack. After all the moves whose net effect is to pop $Y_1$, the
+    PDA is in state $p_1$. It then proceeds to (net) pop $Y_2$, while reading
+    input string $X_2$ and winding up, perhaps after many moves in state $p_2$
+    with $Y_2$ off the stack. The computation proceeds until each of the symbols
+    on the stack is removed. \\
+    \indent Our construction of an equivalent grammar uses variables each of
+    which represents an ``event'' consisting of:
+      \begin{enumerate}
+        \item The net popping of some symbol $X$ from the stack, and
+        \item A change in state from some $p$ at the beginning to $q$ when $X$
+        has finally been replaced by $\epsilon$ on the stack.
+      \end{enumerate}
+    We represent such a variable by the composite symbol $\lbrack pXq \rbrack$.
+    Remember that this sequence of characters is our way of describing
+    \emph{one} variables it is not five grammar symbols.
+      \begin{thm}
+        Let $P = (Q,\Sigma,\Gamma,\delta,q_0,Z_0)$ be a PDA. Then there is a
+        context-free grammar $G$ such that $L(G) = N(P)$.
+      \end{thm}
+
+\section*{Deterministic Pushdown Automata}
+  While PDA's are by definition allowed to be nondeterministic, the
+  deterministic subcase is quite important. In particular, parsers generally
+  behave like deterministic PDA's, so the class of languages that can be
+  accepted by these automata is interesting for the insights it give us into
+  what constructs are suitable for use in programming languages.
+
+  \subsection*{Definition of a Deterministic PDA}
+    Intuitively, a PDA is deterministic if there is never a choice of move in
+    any situation. These choices are of two kinds. If $\delta(q,a,X)$ contains
+    more than one pair, then surely the PDA is nondeterministic becuase we can
+    choose mong these pairs when deciding on the next move. However, even if
+    $\delta(q,a,X)$ is always a singleton, we could still have a choice between
+    using a real input symbol or making a move on $\epsilon$. Thus, we define a
+    PDA $P = (Q,\Sigma,\Gamma,q_0,Z_0,F)$ to be \emph{deterministic} (DPDA), if
+    and only if the following conditions are met:
+      \begin{enumerate}
+        \item $\delta(q,a,X)$ has at most one member for any $q$ in $Q$, $a$ in
+        $\Sigma$ or $a = \epsilon$, and $X$ in $\Gamma$.
+        \item If $\delta(q,a,X)$ is nonempty, for some $a$ in $\Sigma$, then
+        $\delta(q,\epsilon,X)$ must be empty.
+      \end{enumerate}
+
+  \subsection*{Regular Langauges and Deterministic PDA's}
+    The DPDA's accept a class of languages that is between the regular languages
+    and the CFL's.
+      \begin{thm}
+        If $L$ is a reuglar language, then $L = L(P)$ for some DPDA $P$.
+      \end{thm}
+    If we want the DPDA to accept by empy stack, then we find that our
+    language-recognizing capability is rather limited. Say that language $L$ has
+    the \emph{prefix property} if there are no two different strings $x$ and $y$
+    in $L$ such that $x$ is a prefix of $y$.
+      \begin{thm}
+        A language $L$ is $N(P)$ for some DPDA $P$ if and only if $L$ has the
+        prefix property and $L$ is $L(P^\prime)$ for some DPDA $P^\prime$.
+      \end{thm}
+
+  \subsection*{DPDA's and Context-Free Languages}
+    The languages accepted by DPDA's by final state properly include the regular
+    languages, but are properly included in the CFL's.
+
+  \subsection*{DPDA's and Ambiguous Grammars}
+    \begin{thm}
+      If $L = N(P)$ for some DPDA $P$, then $L$ has an unambiguous context-free
+      grammar.
+    \end{thm}
+    \begin{thm}
+      If $L = L(P)$ for some DPDA $P$, then $L$ has an unambiguous CFG.
+    \end{thm}
+
+\section*{Summary of Chapter 6}
+  \begin{description}
+    \item[Pushdown Automata] A PDA is a nondeterministic finite automaton
+    coupled with a stack that can be used to store a string of arbitrary lenght.
+    The stack can be read and modified only at its top.
+    \item[Moves of a Pushdown Automata] A PDA chooses its next move based on its
+    current state, the next input symbol, and the symbol at the top of its
+    stack. It may also choose to make a move independent of the input symbol and
+    without consuming that symbol from the input. Being nondeterministic, the
+    PDA may have some finite number of choices of move; each is a new state and
+    a string of stack symbols with which to replace the symbol currently on top
+    of the stack.
+    \item[Acceptance by Pushdown Automata] There are two ways in whcih we may
+    allow the PDA to signal acceptance. One is by entering an accepting state;
+    the other by emptying its stack. These methods are equivalent, in the sense
+    that any language accepted by one method is acceted (by some other PDA) by
+    the other method.
+    \item[Instantaneous Descriptions] We use an ID consisting of the state,
+    remaining input, and stack contents to describe the ``current condition'' of
+    a PDA. A transition function $\vdash$ between ID's represents sinle moves by
+    a PDA.
+    \item[Pushdown Automata and Grammars] The languages accepted by PDA's either
+    by final state or by empty stack, are exactly the context-free languages.
+    \item[Deterministic Pushdown Automata] The two modes of acceptance -- final
+    state and empty stack -- are not the same for DPDA's. Rather, the languages
+    accepted by empty stack are exactly those of the languages accepted by final
+    state that have the prefix property: no string in the language is a prefix
+    of another word in the language.
+    \item[The Languages Accepted by DPDA's] All the regular languages are
+    accepted (by final state) by DPDA's and there are nonregular languages
+    accepted by DPDA's. The DPDA languages are context-free languages, and in
+    fact are languages that have unambiguous CFG's. Thus teh DPDA languages lie
+    strictly between the regular languages and the context-free languages.
+  \end{description}
+\end{document}
