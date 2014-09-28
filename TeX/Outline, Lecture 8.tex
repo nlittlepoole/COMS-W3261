@@ -1,0 +1,265 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+\usepackage{tipa}
+\usetikzlibrary{arrows,automata}
+\begin{document}
+\newcommand*{\xml}[1]{\texttt{<#1>}}
+
+\title{COMS W3261 \\ Computer Science Theory \\ Lecture 8\\ Pushdown Automata}
+\author{Alexander Roth}
+\date{2014 -- 09 -- 29}
+\maketitle
+
+\section*{Outline}
+  \begin{enumerate}
+    \item Examples of context-free grammars
+    \item Pushdown automata (PDA)
+    \item Instantaneous descriptions of PDA's
+    \item The language of a PDA
+    \item Deterministic PDA
+    \item From a CFG to an equivalent PDA
+    \item From a PDA to an equivalent CFG
+  \end{enumerate}
+  
+\section{Examples of Context-Free Grammars}
+  \begin{enumerate}
+    \item Even-length palindromes: $S \rightarrow aSa \, | \, bSb \, | \, 
+    \epsilon$
+    \item Odd-length palindromes: $S \rightarrow aSa \, | \, bSb \, | \, a \, | 
+    \, b$
+    \item Palindromes with a center marker: $S \rightarrow aSA \, | \, bSb \, | 
+    \, c$
+    \item Prefix notation: $E \rightarrow  + E E \, | \, * E E \, | \, a$
+    \item Postfix notation: $E \rightarrow E E + \, | \, E E * \, | \, a$
+    \item Balanced parentheses: $S \rightarrow ( S ) S \, | \, \epsilon$
+    \item Arithmetic expressions over \texttt{id}'s and \texttt{num}'s 
+    (ambiguous):
+      \[
+         E \rightarrow E + E \, | \, E * E \, | \, (E) \, | \, \texttt{id} \, | 
+        \, \texttt{num} 
+      \]
+    \item Arithmetic expressions over \texttt{id}'s and \texttt{num}'s 
+    (unambiguous):
+      \begin{align*}
+        E \rightarrow E + T \, &| \, T \\
+        T \rightarrow T * F \, &| \, F \\
+        F \rightarrow ( E ) \, &| \, \texttt{id} \, | \,  \texttt{num}
+      \end{align*}
+    \item Regular expressions over $\{ a, b \}$ (ambiguous):
+      \[
+         R \rightarrow R + R \, | \, RR \, | \, R^* \, | (R) \, | \, a \, | \, b 
+        \, | \, \epsilon \, | \, \varphi
+      \]
+    \item If-then, if-then-else statements (ambiguous):
+      \begin{align*}
+        S &\rightarrow \text{if} \, c \, \text{then} \, S                     \\
+        S &\rightarrow \text{if} \, c \, \text{then} \, S \, \text{else} \, S \\
+        S &\rightarrow \text{other\_stat}
+      \end{align*}
+  \end{enumerate}
+  
+\section{Pushdown Automata}
+  \begin{itemize}
+    \item A pushdown automaton is an $\epsilon$-NFA with a pushdown stack 
+    (last-in, first-out stack).
+    \item Pushdown automata are to context-free languages as finite automata are
+    to regular languages: that is to say, pushdown automata define exactly the
+    context-free languages.
+    \item There are seven components to a PDA $P = (Q,\Sigma,\Gamma,
+    \delta,q_0,Z_0,F)$:
+      \begin{enumerate}
+        \item $Q$ is a finite set of states.
+        \item $\Sigma$ is a finite set of input symbols (the input alphabet).
+        \item $\Gamma$ is a finite set of stack symbols (the stack alphabet).
+        \item $\delta$ is a transition function from $(Q \times (\Sigma \cup 
+        \{ \epsilon \} \cup \Gamma)$ to subsets of $(Q \times \Gamma^*)$.
+          \begin{itemize}
+            \item Suppose $\delta(q, a, X)$ contains $(p, \gamma)$. Then 
+            whenever $P$ is in state $q$, looking at the input symbol $a$ with 
+            $X$ on top of the stack, $P$ may go into state $q$, move to the next 
+            input symbol, and replace $X$ on top of the stack by the string $
+            \gamma$.
+            \item The second component, $a$, may be $\epsilon$ in which case $P$
+            makes the move without looking at the input symbol and does not move 
+            to the next input symbol.
+            \item Note that if $P$ is nondeterministic, there may be more than 
+            one pair in $\delta(q,a,X)$. If $P$ is nondeterministic, there may 
+            be a pair in $\delta(q,a,X)$ where $a$ is a symbol in $\Sigma$ and 
+            also a pair in $\delta(q,\epsilon,X)$.
+          \end{itemize}
+        \item $q_0$ is the start state.
+        \item $Z_0$ is the start stack symbol.
+        \item $F$ is the set of final (accepting states).
+      \end{enumerate}
+  \end{itemize}
+
+\section{Instantaneous Descriptions of PDA's}
+  \begin{itemize}
+    \item We can represent a configure of the PDA $P$ above by a triple $(q,w,
+    \gamma)$ where:
+      \begin{itemize}
+        \item $q$ is the state of the finite-state control.
+        \item $w$ is the string of remaining input symbols.
+        \item $\gamma$ is the string of symbols on the stack. If $\gamma = XYZ$, 
+        then $X$ is on top of the stack.
+      \end{itemize}
+    \item Suppose $\delta(q,a,X)$ contains $(p,\alpha)$. Then to represent a 
+    single move of $P$ using this transition we write
+      \[ (q,aw,X\beta) |- (p,w,\alpha\beta) \]
+    for all strings $w$ in $\Sigma^*$ and $\beta$ in $\Gamma^*$. Note that $a$ 
+    may be $\epsilon$.
+  \end{itemize}
+  
+\section{The Language of a PDA}
+  \begin{itemize}
+    \item A PDA $P = (Q, \Sigma, \Gamma, \delta, q_0, Z_0, F)$ can define a 
+    language two ways.
+    \item Acceptance by final state: $P$ can accept an input string $w$ by 
+    reading all of it during a sequence of moves and entering a final state at 
+    the end.
+      \begin{itemize}
+        \item Formally, we define $L(P)$, the language accepted by $P$ by final 
+        state, to be the set of input strings $w$ such that $P$ can go from its 
+        initial ID $(q_0,w,Z_0)$ in a sequence of zero or more moves to an 
+        accepting ID of the form $(q,\epsilon,\alpha)$ where $q$ is a final 
+        state and $\alpha$ is any stack string (perhaps empty).
+      \end{itemize}
+    \item Acceptance by empty (null) stack: $P$ can accept an input string by
+    reading all of it and emptying its stack.
+      \begin{itemize}
+        \item Formally, we define $N(P)$, the language accepted by $P$ by empty
+        stack, to be the set of input strings $w$ such that $P$ can go from its
+        initial ID $(q_0,w,Z_0)$ in a sequence of zero or more moves to an
+        accepting ID of the form $(q,\epsilon,\epsilon)$ for any state $q$.
+        \item Note that the final state of a PDA accepting by empty stack are 
+        irrelevant.
+      \end{itemize}
+    \item These two modes of acceptance are equivalent. That is, a language $L$ 
+    has a PDA that accepts it by final state iff $L$ has a PDA that accepts it 
+    by empty stack.
+  \end{itemize}
+
+\section{Deterministic Pushdown Automata}
+  \begin{itemize}
+    \item A PDA is deterministic (DPDA) if there is never a choice for a next 
+    move in any instantaneous description.
+    \item More precisely, a PDA $(Q,\Sigma,\Gamma,\delta,q_0,Z_0,F)$ is 
+    deterministic if:
+      \begin{enumerate}
+        \item $\delta(q,a,X)$ has at most one member of any $q$ in $Q$, $a$ in 
+        $\Sigma \cup \{\epsilon\}$ and $X$ in $\Gamma$.
+        \item If $\delta(q,a,X)$ is nonempty for some $a$ in $\Sigma$, then 
+        $\delta(q,\epsilon,X)$ must be empty.
+      \end{enumerate}
+    \item A language that can be recognized by a DPDA is called a deterministic 
+    context-free language.
+    \item A DPDA can recognize $\{ \, wcw^R \, | \, w$ is any string of $a$'s 
+    and $b$'s $\}$.
+    \item A PDA can recognize $\{ \, ww^R \, | w$ is any string of $a$'s and $b
+    $'s $\}$, but no DPDA can recognize this language.
+    \item Thus, unlike finite automata, pushdown automata with their 
+    nondeterminism are strictly more powerful than deterministic pushdown 
+    automata.
+    \item Note that, if $L$ is a regular language, then $L$ can be recognized by 
+    a DPDA.
+    \item Since a DPDA can recognize the non-regular language $\{ \, wcw^R \, | 
+    w$ is any string of $a$'s and $b$'s $\}$, DPDA are strictly more powerful 
+    than finite automata.
+  \end{itemize}
+
+\section{From a CFG to an Equivalent PDA}
+  \begin{itemize}
+    \item Given a CFG $G$, we can construct a PDA $P$ such that $N(P) = L(G)$.
+    \item The PDA will simulate leftmost derivations of $G$.
+    \item Algorithm to construct a PDA for a CFG
+      \begin{itemize}
+        \item Input: A CFG $G = (V,T,Q,S)$.
+        \item Output: a PDA $P$ such that $N(P) = L(G)$.
+        \item Method: Let $P = (\{q\},T,V\cup{T},\delta,q,S)$ where
+          \begin{enumerate}
+            \item $\delta(q,\epsilon,A) = \{(q,\beta) | A \rightarrow \beta$ is 
+            in $Q \}$ for each nonterminal $A$ in $V$.
+            \item $\delta(q,a,a) = \{(q,\epsilon)\}$ for each terminal $a$ in 
+            $T$.
+          \end{enumerate}
+      \end{itemize}
+    \item For a given input string $w$, the PDA can simulate a leftmost 
+    derivation for $w$ in $G$.
+    \item We can prove that $N(P) = L(G)$ by showing that $w$ is in $N(P)$ iff 
+    $w$ is in $L(G)$:
+      \begin{itemize}
+        \item If part: If $w$ is in $L(G)$, then there is a leftmost derivation
+          \[ 
+            S = Y_1 \Rightarrow Y_2 \Rightarrow \cdots Y_i \Rightarrow \cdots 
+            \Rightarrow Y_n = w
+          \]
+        Suppose the sentential form $\gamma_i = x_i\alpha_i$ where $x_i$ is a 
+        prefix of $w$ and $\alpha_i$ is a sequence of input and stack symbols 
+        for $1 \leq i \leq n$. We can show by induction on $i$ that if $P$ 
+        simulates this leftmost derivation by the sequence of moves
+          \[ (q,w,S) |-^* (q,y_i,\alpha_i), \]
+        then $x_iy_i = w$. \\ 
+        This shows that if $S \overset{*}{\Rightarrow} w$, then $(q,w,S) |-^* 
+        (q,\epsilon,\epsilon)$. Thus, $L(G)$ is contained in $N(P)$.
+        \item Only-if part: if $(q,x,A) |-^*(q,\epsilon,\epsilon)$ then $A 
+        \overset{*}{\Rightarrow} x$. \\
+        We can prove this statement by induction on the number of moves made by 
+        $P$. \\
+        This shows that if $(q,x,A) |-^*(q,\epsilon,\epsilon)$, then $S 
+        \overset{*}{\Rightarrow} w$. Thus, $N(P)$ is contained in $L(G)$.
+      \end{itemize}
+    \item We can now conclude $N(P) = L(G)$. Thus, every context-free language 
+    can be recognized by a PDA.
+  \end{itemize}
+
+\section*{From a PDA to an equivalent CFG}
+  \begin{itemize}
+    \item We now show that every language recognized by a PDA can be generated 
+    by a context-free grammar.
+    \item Given a PDA $P$, we can construct a CFG $G$ such that $L(G) = N(P)$.
+    \item The basic idea of the proof is to generate the strings that cause $P$ 
+    to go from state $q$ to state $p$, popping a symbol $X$ off the stack, by a 
+    nonterminal of the form $\lbrack qXp \rbrack$.
+    \item Algorithm to construct a CFG for a PDA
+      \begin{itemize}
+        \item Input: a PDA $P = (Q,\Sigma,\Gamma,\delta,q_0,Z_0,F)$.
+        \item Output: a CFG $G = (V,\Sigma,R,S)$ such that $L(G) = N(P)$.
+        \item Method:
+          \begin{enumerate}
+            \item Let the nonterminal $S$ be the start symbol of $G$. The other 
+            nonterminals in $V$ will be symbols of the form $\lbrack pXq \rbrack
+            $ where $p$ and $q$ are states in $Q$, and $X$ is a stack symbol in 
+            $\Gamma$.
+            \item The set of productions $R$ is constructed as follows:
+              \begin{itemize}
+                \item For all states $p$, $R$ has the production $S \rightarrow 
+                \lbrack q_0Z_0p\rbrack$.
+                \item If $\delta(q,aX)$ contains $(r,Y_1Y_2\ldots{}Y_k)$, then 
+                $R$ has the productions
+                  \[ 
+                    \lbrack qXr_k \rbrack \rightarrow a \lbrack rY_1r_1 \rbrack
+                    \lbrack r_1Y_2r_2 \rbrack \ldots \lbrack r_{k-1}Y_kr_k 
+                    \rbrack
+                  \]
+                for all lists of states $r_1, r_2, \ldots, r_k$.
+              \end{itemize}
+          \end{enumerate}
+        \item We can prove that $\lbrack qXp \rbrack \overset{*}{\Rightarrow} w$ 
+        iff $(q,w,X) |-^* (p,\epsilon,\epsilon)$.
+        \item From this, we have $\lbrack q_0Z_0p \rbrack \overset{*}
+        {\Rightarrow} w$ iff $(q_0,w,Z_0) |-^* (p,\epsilon,\epsilon)$, so we can 
+        conclude $L(G) = N(P)$.
+      \end{itemize}
+    \item Sections 6 and 7 allow us to conclude that family of languages 
+    generated by context-free grammars is the same as the family of languages
+    recognized by pushdown automata.
+    \item In summary, the regular languages are a proper subset of deterministic
+    CFL's which are a proper subsets of all CFL's.
+  \end{itemize}
+\end{document}
