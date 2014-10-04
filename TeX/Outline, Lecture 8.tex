@@ -63,6 +63,11 @@
         S &\rightarrow \text{other\_stat}
       \end{align*}
   \end{enumerate}
+  \subsection*{Class Notes}
+    \textbf{Membership Problem} \\
+    Given a CFG $G$ and a string $w$ is $w$ in $L(G)$? \\
+    \textbf{Parsing Problem} \\
+    Given $G$ and $w$, if $w$ is in $L(G)$, produce a parse tree form.
   
 \section{Pushdown Automata}
   \begin{itemize}
@@ -98,6 +103,8 @@
         \item $F$ is the set of final (accepting states).
       \end{enumerate}
   \end{itemize}
+  \subsection*{Class Notes}
+  $\epsilon$ means we pop from the stack. \texttt{abcba}, where we have $x = $ \texttt{ab} and $x^R = $ \texttt{ba}, and \texttt{c} is the center marker.
 
 \section{Instantaneous Descriptions of PDA's}
   \begin{itemize}
@@ -111,7 +118,7 @@
       \end{itemize}
     \item Suppose $\delta(q,a,X)$ contains $(p,\alpha)$. Then to represent a 
     single move of $P$ using this transition we write
-      \[ (q,aw,X\beta) |- (p,w,\alpha\beta) \]
+      \[ (q,aw,X\beta) \vdash (p,w,\alpha\beta) \]
     for all strings $w$ in $\Sigma^*$ and $\beta$ in $\Gamma^*$. Note that $a$ 
     may be $\epsilon$.
   \end{itemize}
@@ -172,7 +179,8 @@
     w$ is any string of $a$'s and $b$'s $\}$, DPDA are strictly more powerful 
     than finite automata.
   \end{itemize}
-
+  \subsection*{Class Notes}
+    A PDA is deterministic if it has at least one next node.
 \section{From a CFG to an Equivalent PDA}
   \begin{itemize}
     \item Given a CFG $G$, we can construct a PDA $P$ such that $N(P) = L(G)$.
