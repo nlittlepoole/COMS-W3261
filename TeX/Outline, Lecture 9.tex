@@ -1,0 +1,243 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+\usepackage{tipa}
+\usetikzlibrary{arrows,automata}
+\begin{document}
+\newcommand*{\xml}[1]{\texttt{<#1>}}
+
+\title{COMS W3261 \\ Computer Science Theory \\ Lecture 9\\ Equivalence of CFG's 
+and PDA's}
+\author{Alexander Roth}
+\date{2014 -- 09 -- 29}
+\maketitle
+
+\section*{Outline}
+  \begin{itemize}
+    \item From a CFG to a PDA.
+    \item From a PDA to a CFG
+    \item Eliminating useless symbols from a CFG
+    \item Eliminating $\epsilon$-productions
+    \item Eliminating unit productions
+    \item Chomsky normal form
+  \end{itemize}
+  
+\section{From a CFG to an equivalent PDA}
+  \begin{itemize}
+    \item Given a CFG $G$, we can construct a PDA $P$ such that $N(P) = L(G)$.
+    \item The PDA will simulate leftmost derivations of $G$.
+    \item Algorithm to construct a PDA for a CFG
+      \begin{itemize}
+        \item Input: a CFG $G = (V,T,Q,S)$.
+        \item Output: a PDA $P$ such that $N(P) = L(G)$.
+        \item Method: Let $P = (\{q\},T,V\cup T,\delta,q,S)$ where
+          \begin{enumerate}
+            \item $\delta(q,\epsilon,A) = \{(q,\beta)|A\rightarrow\beta$ is 
+            in $Q \}$ for each nonterminal $A$ in $V$.
+            \item $\delta(q,a,a) = \{(q,\epsilon)\}$ for each terminal $a$ in 
+            $T$.
+          \end{enumerate}
+      \end{itemize}
+    \item For a given input string $w$, the PDA simulates a leftmost derivation
+    for $w$ in $G$.
+    \item We can prove that $N(P) = L(G)$ by showing that $w$ is in $N(P)$ iff 
+    $w$ is in $L(G)$:
+      \begin{itemize}
+        \item If part: If $w$ is in $L(G)$, then there is a leftmost derivation
+          \[ S = Y_1 \Rightarrow Y_2 \Rightarrow \cdots \Rightarrow Y_n = w \]
+        We show by induction on $i$ that $P$ simulates this leftmost derivation
+        by the sequence of moves 
+          \[ (q,w,S) \overset{*}{\vdash} (q,y_i,\alpha_i) \]
+        such that if $\gamma_i = x_i\alpha_i$, then $x_iy_i = w$.
+        \item Only-if part: If $(q,x,A) \overset{*}{\vdash} (q,\epsilon,
+        \epsilon)$, then $A \overset{*}{\Rightarrow} x$. \\
+        We can prove this statement by induction on the number of moves made by 
+        $P$.
+      \end{itemize}
+  \end{itemize}
+
+\section{From a PDA to an equivalent CFG}
+  \begin{itemize}
+    \item Given a PDA $P$, we can construct a CFG $G$ such that $L(G) = N(P)$.
+    \item The basic idea of the proof is to generate the strings that cause $P$
+    to go from state $q$ to state $p$, popping a symbol $X$ off the stack, by a 
+    nonterminal of the form $\lbrack qXp \rbrack$.
+    \item Algorithm to construct a CFG for a PDA
+      \begin{itemize}
+        \item Input: a PDA $P = (Q,\Sigma,\Gamma,\delta,q_0,Z_0,F)$.
+        \item Output: a CFG $G = (V,\Sigma,R,S)$ such that $L(G) = N(P)$.
+        \item Method:
+          \begin{enumerate}
+            \item Let the nonterminal $S$ be the start symbol of $G$. The other 
+            nonterminals in $V$ will be symbols of the form $\lbrack pXq 
+            \rbrack$ where $p$ and $q$ are states in $Q$, and $X$ is a stack 
+            symbol in $\Gamma$.
+            \item The set of productions $R$ is constructed as follows:
+              \begin{itemize}
+                \item For all states $p$, $R$ has the production $S \rightarrow 
+                \lbrack q_0Z_0p \rbrack$.
+                \item If $\delta(q,a,X)$ contains $(r,Y_1Y_2\ldots Y_k)$, then 
+                $R$ has the productions
+                  \[ 
+                    \lbrack qXr_k \rbrack \rightarrow a\lbrack rY_1r_1\rbrack
+                    \lbrack r_1Y_2r_2 \rbrack  \ldots \lbrack r_{k-1}Y_kr_k 
+                    \rbrack
+                  \]
+                for all lists of states $r_1,r_2,\ldots,r_k$.
+              \end{itemize}
+          \end{enumerate}
+        \item We can prove that $\lbrack qXp \rbrack \overset{*}{\Rightarrow} w$
+        iff $(q,w,X) \overset{*}{\vdash} (p,\epsilon,\epsilon)$.
+        \item From this, we have $\lbrack q_0Z_0p \rbrack \overset{*}
+        {\Rightarrow} w$ iff $(q_0,w,Z_0) \overset{*}{\vdash} (p,\epsilon,
+        \epsilon)$, so we can conclude $L(G) = N(P)$.
+      \end{itemize}
+  \end{itemize}
+  
+\section{Eliminating Useless Symbols from a CFG}
+  \begin{itemize}
+    \item A symbol $X$ is \emph{useful} for a CFG if there is a derivation of 
+    the form $S \overset{*}{\Rightarrow} \alpha X\beta \overset{*}{\Rightarrow} 
+    w$ for some strings of terminals $w$. 
+    \item If $X$ is not useful, then we say $X$ is \emph{useless}.
+    \item To be useful, a symbol $X$ needs to be
+      \begin{enumerate}
+        \item \emph{generating}; that is, $X$ needs to be able to drive some 
+        string of terminals.
+        \item \emph{reachable}; that is, there needs to be a derivation of the 
+        form $S \overset{*}{\Rightarrow} \alpha{X}\beta$ where $\alpha$ and $\beta
+        $ are strings of nonterminals and terminals.
+      \end{enumerate}
+    \item To eliminate useless symbols from a grammar, we
+      \begin{enumerate}
+        \item identify the non-generating symbols and eliminate all productions 
+        containing one or more of these symbols, and then
+        \item eliminate all productions containing symbols that are not reachable 
+        from the start symbol.
+      \end{enumerate}
+    \item In the grammar
+      \begin{align*}
+        S &\rightarrow AB \quad | \quad a \\
+        A &\rightarrow b
+      \end{align*}
+    $S,A,a$, and $b$ are generating. $B$ is not generating. \\
+    Eliminating the productions containing the non-generating symbols, we get
+      \begin{align*}
+        S &\rightarrow a \\
+        A &\rightarrow b
+      \end{align*}
+    Now we see $A$ is not reachable from $S$, so we can eliminate the second 
+    production to get
+      \[ S \rightarrow a \]
+    \item The generating symbols can be computed inductively bottom-up from the 
+    set of terminal symbols.
+    \item The reachable symbols can be computed inductively starting from $S$.
+  \end{itemize}
+  
+\section{Eliminating $\epsilon$-productions from a CFG}
+  \begin{itemize}
+    \item If a language $L$ has a CFG, then $L - \{\epsilon\}$ has a CFG without 
+    any $\epsilon$-productions.
+    \item A nonterminal $A$ in a grammar is \emph{nullable} if $A \overset{*}
+    {\Rightarrow} \epsilon$.
+    \item The nullable nonterminals can be determined iteratively.
+    \item We can eliminate all $\epsilon$-productions in a grammar as follows:
+      \begin{itemize}
+        \item Eliminate all productions with $\epsilon$ bodies.
+        \item Suppose $A \rightarrow X_1X_2\ldots{}X_k$ is a production and $m$ of 
+        the $kX_i$'s are nullable. Then add the $2^m$ versions of this production 
+        where the nullable $X_i$'s are present or absent. (But if all symbols are 
+        nullable, do not add an $\epsilon$-production.)
+      \end{itemize}
+    \item Let us eliminate the $\epsilon$-productions from the grammar $G$
+      \begin{align*}
+        S &\rightarrow AB \\
+        A &\rightarrow aAA \, | \, \epsilon \\
+        B &\rightarrow bBB \, | \, \epsilon \\
+      \end{align*}
+    $S$, $A$, and $B$ are nullable. \\
+    For the production $S\rightarrow{AB}$ we add the productions $S\rightarrow{A} 
+    \, | \, B$ \\
+    For the production $A\rightarrow{aAA}$ we add the productions $A
+    \rightarrow{aA} \, | \, a$ \\
+    For the production $B\rightarrow{bBB}$ we add the productions $B
+    \rightarrow{bB} \, | \, b$ \\
+    The resulting grammar $H$ with no $\epsilon$-production is
+      \begin{align*}
+        S &\rightarrow AB  \, | \,  A \, | \, B \\
+        A &\rightarrow aAA \, | \, aA \, | \, a \\
+        B &\rightarrow bBB \, | \, bB \, | \, b
+      \end{align*}
+    We can prove that $L(H) = L(G) - \{\epsilon\}$.
+  \end{itemize}
+
+\section{Eliminating Unit Productions from a CFG}
+  \begin{itemize}
+    \item A \emph{unit} production is one of the form $A \rightarrow B$ where both 
+    $A$ and $B$ are nonterminals.
+    \item Let us assume we are given a grammar $G$ with no $\epsilon$-productions.
+    \item From $G$ we can create an equivalent grammar $H$ with no unit 
+    productions as follows.
+      \begin{itemize}
+        \item Define $(A, B)$ to be a unit pair if $A \overset{*}{\Rightarrow} B$ 
+        in $G$.
+        \item We can inductively construct all unit pairs for $G$.
+        \item For each unit pair $(A,B)$ in $G$, we add to $H$ the productions $A 
+        \rightarrow \alpha$ where $B \rightarrow \alpha$ is a nonunit production 
+        of $G$.
+      \end{itemize}
+    \item Consider the standard grammar $G$ for arithmetic expressions:
+      \begin{align*}
+        E &\rightarrow E + T \, | \, T \\
+        T &\rightarrow T * F \, | \, F \\
+        F &\rightarrow ( E ) \, | \, a
+      \end{align*}
+    The unit pairs are $(E,E)$, $(E,T)$, $(E,F)$, $(T,T)$, $(T,F)$, $(F,F)$. \\
+    The equivalent grammar $H$ with no unit productions is:
+      \begin{align*}
+        E &\rightarrow E + T \, | \, T * F \, | \, ( E ) \, | \, a \\
+        T &\rightarrow T * F \, | \, ( E ) \, | \, a               \\
+        F &\rightarrow ( E ) \, | \, a                             \\
+      \end{align*}
+  \end{itemize}
+  
+\section{Putting a CFG into Chomsky Normal Form}
+  \begin{itemize}
+    \item A grammar $G$ is in Chomsky Normal Form if each production in $G$ is one 
+    of two forms:
+      \begin{enumerate}
+        \item $A \rightarrow BC$ where $A$, $B$, and $C$ are nonterminals, or
+        \item $A \rightarrow a$ where $a$ is a terminal.
+      \end{enumerate}
+    \item We will further assume $G$ has no useless symbols.
+    \item Every context-free language without $\epsilon$ can be generated by a 
+    Chomsky Normal Form grammar.
+    \item Let us assume we have a CFG $G$ with no useless symbols, $\epsilon$-
+    productions, or unit productions. We can transform $G$ into an equivalent 
+    Chomsky Normal Form grammar as follows:
+      \begin{itemize}
+        \item Arrange that all bodies of length two or more consist only of 
+        nonterminals.
+        \item Replace bodies of length three or more with a cascade of 
+        fproductions, each with a body of two nonterminals.
+      \end{itemize}
+    \item Applying these two transformations to the grammar $H$ above, we get:
+      \begin{align*}
+        E &\rightarrow EA \, | \, TB \, | \, LC \, | a \\
+        A &\rightarrow PT                              \\
+        P &\rightarrow +                               \\
+        B &\rightarrow MF                              \\
+        M &\rightarrow *                               \\
+        L &\rightarrow (                               \\
+        C &\rightarrow ER                              \\
+        R &\rightarrow )                               \\
+        T &\rightarrow TB \, | \, LC \, | \, a         \\
+        F &\rightarrow LC \, | \, a                    \\
+      \end{align*}
+  \end{itemize}
+\end{document}
