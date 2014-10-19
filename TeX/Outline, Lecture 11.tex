@@ -56,7 +56,8 @@ Decision Properties of CFL's}
   
 \section{Nonclosure Properties of CFL's}
   \begin{itemize}
-    \item The context-free languages are not closed under the following operations:
+    \item The context-free languages are not closed under the following 
+    operations:
       \begin{itemize}
         \item Intersection
           \begin{itemize}
@@ -78,8 +79,11 @@ Decision Properties of CFL's}
           \end{itemize}
       \end{itemize}
   \end{itemize}
+  \subsection*{Class Notes}
+    \[ L = \{ a^nb^nc^n \, | \, n \geq 0 \} \] Prove $L$ is Context Free! \\
+    half$(L) = \{ x \, | \, xy$ is in $L$ and $|x| = |y| \}$.
   
-\section{Cocke-Younger-Kasami Algorithm for Testing Membership in a CFL}
+\section{Cocke -- Younger -- Kasami Algorithm for Testing Membership in a CFL}
   \begin{itemize}
     \item Input: a Chomsky normal form CFG $G = (V,T,P,S)$ and a string $w = 
     a_1a_2\ldots{a_n}$ in $T^*$.
@@ -104,6 +108,9 @@ Decision Properties of CFL's}
 \section{Testing Emptiness of a CFG}
   \begin{itemize}
     \item Problem: Given a CFG $G$, is $L(G)$ empty?
+      \begin{itemize}
+        \item A problem is decidable if there is an algorithm to solve it.
+      \end{itemize}
     \item Emptiness problem is decidable: determine whether the start symbol of
     $G$ is generating.
       \begin{itemize}
@@ -131,5 +138,11 @@ Decision Properties of CFL's}
         \item Given a CFG $G = (V,T,P,s)$, is $L(G) = T^*$?
       \end{enumerate}
   \end{itemize}
+
+\section{Class Notes}
+  \begin{enumerate}
+    \item Given a CNF CFG $G$ and an input string $w$ is $w$ in $L(G)$? This is
+    decidable. Runs in $O(|w|^3)$ time.
+  \end{enumerate}
 
 \end{document}

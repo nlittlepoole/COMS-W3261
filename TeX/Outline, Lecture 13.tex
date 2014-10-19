@@ -1,0 +1,100 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+\usepackage{tipa}
+\usetikzlibrary{arrows,automata}
+\begin{document}
+\newcommand*{\xml}[1]{\texttt{<#1>}}
+\theoremstyle{definition}
+\newtheorem{thm}{Theorem}
+
+\title{COMS W3261 \\ Computer Science Theory \\ Lecture 13\\ Variants of Turing Machines}
+\author{Alexander Roth}
+\date{2014 -- 10 -- 15}
+\maketitle
+\section*{Outline}
+  \begin{enumerate}
+    \item Review
+    \item Programming techniques for Turing machines
+    \item Models of computation equivalent to Turing machines
+  \end{enumerate}
+  
+\section{Review: Recursive and Recursively Enumerable Languages}
+  \begin{itemize}
+    \item A language $L$ is \emph{recursively enumerate} if $L = L(M)$ for some TM 
+    $M$.
+    \item We sometimes say a language is Turing-recognizable if some TM recognizes 
+    it.
+    \item We say that a language $L$ is \emph{recursive} if $L = L(M)$ for some 
+    Turing machine $M$ such that
+      \begin{enumerate}
+        \item If $w$ is in $L$, then $M$ accepts $w$ and therefore halts.
+        \item If $w$ is not in $L$, then $M$ eventually halts but never enters 
+        an accepting state.
+      \end{enumerate}
+    \item A language $L$ is said to be \emph{decidable} if it is a recursive 
+    language.
+    \item A language $L$ is said to be \emph{undecidable} if it is not a 
+    recursive language.
+  \end{itemize}
+
+\section{Programming Techniques for Turing Machines}
+  \begin{itemize}
+    \item Turing machines are exactly as powerful as conventional computers.
+    \item To make the behavior of a Turing machine clearer, we use the finite-
+    state control of a Turing machine to hold a finite amount of data. One way to 
+    do this is to use states with multiple files, where one field represents a 
+    position in the Turing machine program. and the other fields hold data 
+    elements. The number of fields in a state is always finite.
+    \item Another way to make the behavior of a Turing machine clearer, is to 
+    think of the tape as having several tracks.
+    \item We can also group states into ``subroutines''. A subroutine has its own 
+    start state, and another state which can server as a ``return'' state.
+  \end{itemize}
+  
+\section{Models of Computation Equivalent to Turing Machines}
+  \begin{itemize}
+    \item Many variants of Turing machines have been defined such as:
+      \begin{itemize}
+        \item Turing machines with a semi-infinite input tape.
+        \item Multitape Turing machines.
+        \item Turing machines with tapes having multiple tracks.
+        \item Nondeterministic Turing machines.
+      \end{itemize}
+    \item All these machines are equivalent to our definition of a 
+    deterministic Turing machines.
+    \item Other universal models of computation:
+      \begin{itemize}
+        \item Chomsky type 0 grammars. A type 0 grammar is like a context-free 
+        grammar $(V, T, P, S)$ except that productions can be of the form
+        $\alpha \rightarrow \beta$ where $\alpha$ is a string of nonterminals 
+        and terminals with at least one nonterminal and $\beta$ is any string 
+        of nonterminals and nonterminals.
+        \item Lambda calculus.
+        \item Pushdown automata with two or more stacks.
+        \item Two-counter machines.
+        \item Random access machines.
+        \item Most programming languages.
+        \item Real computers with an arbitrary amount of energy.
+      \end{itemize}
+    \item Again, all these models are computationally equivalent to our 
+    definition of a deterministic Turing machine.
+  \end{itemize}
+
+\section*{Class Notes}
+  $L_d$ -- The Diagonalization Language.
+  
+  Let $w_1$,$w_2$,$w_3$ be an enumeration of all binary strings. Let $M_1$,$M_2$,
+  $M_3$,$\ldots$ be an enumeration of all TM's.
+  
+  Let $L_d = \{w \, | \, w \notin L(M_1) \}$ for some $i$.
+
+\section*{Time Complexity of a TM}
+  $T(n) =$ maximum number of moves made by $M$ in processing an input of length over all inputs length $n$.
+  
+\end{document}

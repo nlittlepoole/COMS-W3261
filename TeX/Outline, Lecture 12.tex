@@ -1,0 +1,216 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+\usepackage{tipa}
+\usetikzlibrary{arrows,automata}
+\begin{document}
+\newcommand*{\xml}[1]{\texttt{<#1>}}
+\theoremstyle{definition}
+\newtheorem{thm}{Theorem}
+
+\title{COMS W3261 \\ Computer Science Theory \\ Lecture 12\\ Turing Machines}
+\author{Alexander Roth}
+\date{2014 -- 10 -- 13}
+\maketitle
+
+\section*{Outline}
+  \begin{enumerate}
+    \item Turing machines
+    \item Algorithms and recursive languages
+    \item Some history
+    \item Models of computation equivalent to Turing machines
+  \end{enumerate}
+  
+\section{Turing Machines}
+  \begin{itemize}
+    \item A Turing machine is a generalization of a finite automaton. At any
+    moment in time, it can be pictured as a finite-state control with a tape 
+    head reading a symbol on a square of its infinite input tape. Initially, a
+    finite length input string $a_1a_2\ldots{a_n}$ appears on the input tape
+    with the tape head reading $a_1$ and the finite control in a designated
+    initial state. The symbols of the input string appear in contiguous squares
+    of the input tape. \\
+    An infinite number of blank symbols are on the input tape to the left of 
+    $a_1$ and to the right of $a_n$.
+    \item At the beginning of a move, a Turing machine reads the symbol on the 
+    square of the input tape under the tape head and consults the transition 
+    function (its ``program'') stored in its finite-state control. During the 
+    move it makes a state transition, replaces the symbol on the input tape 
+    with another tape symbol, and shifts the tape head one square to the left 
+    or one square to the right. If it has not entered a halting state, the 
+    Turing machine then makes another move.
+    \item After a finite (but perhaps very long) number of moves the Turing 
+    machine may enter a final state and halt, in which case it is said to 
+    accept the input string $a_1a_2\ldots{}a_n$ that was originally on the 
+    input tape. However, the Turing machine may instead enter a nonfinal state 
+    and halt, or it may make an infinite sequence of moves without ever 
+    entering a final state. In both cases, it does not accept the original 
+    input string.
+    \item More formally, a nondeterministic Turing machine $M$ has seven 
+    components: $(Q, \Sigma, \Gamma, \delta, q_0, B, F)$
+      \begin{enumerate}
+        \item $Q$ is the finite set of states of the finite control.
+        \item $\Sigma$ is the finite set of input symbols.
+        \item $\Gamma$ is the finite set of tape symbols; $\Sigma$ is a subset 
+        of $\Gamma$.
+        \item $\delta$ is the transition function. It maps $(Q \times \Gamma)$ 
+        to the subsets of $(Q \times \Gamma \times \{L,R\})$. If $(p, Y, D)$ is 
+        in $\delta(q,X)$ and $M$ is in state $q$ reading the symbol $X$ on the 
+        input tape, then $M$ can
+          \begin{itemize}
+            \item go from state $q$ to state $p$,
+            \item replace the symbol $X$ on the input tape by the symbol $Y$, 
+            and
+            \item move its input head one square in the direction $D$ where $D$ 
+            can be either $L$ (for left) or $R$ (for right).
+          \end{itemize}
+        M is \emph{deterministic} if there is at most one element in $
+        \delta(q,X)$ for any state $q$ and tape symbol $X$. Unless otherwise 
+        qualified, the term ``Turing machine'' will signify a deterministic 
+        Turing machine.
+        \item $q_0$ is the start state.
+        \item $B$ is the blank symbol. $B$ is in $\Gamma$ but not in $\Sigma$.
+        \item $F$, a subset of $Q$, is the set of final accepting states. We 
+        assume there are no transitions from a final state so that when $M$ 
+        enters a final state it halts.
+      \end{enumerate}
+    \item During a sequence of moves we can represent the configuration of $M$ 
+    by an instantaneous description (ID) of the form $X_1X_2\ldots{}X_{i-1}
+    qX_iX_{i+1}\ldots{}X_n$. This ID says $M$ is in state $q$ reading the tape 
+    symbol $X_i$. To the left of $X_i$ is the string of tape symbols 
+    $X_1X_2\ldots{}X_{i-1}$. To the right of $X_i$ is the string of tape 
+    symbols $X_{i+1}\ldots{}X_n$. We do not show blanks on the input tape 
+    unless necessary.
+    \item The read head may be one input square past the right end of the input 
+    reading a blank in which case $M$ is in the ID
+      \[ X_1X_2\ldots{}X_nqB \]
+    \item Moves by $M$ are modeled by the following changes to the ID:
+      \begin{enumerate}
+        \item If $(p, Y, L)$ is in $\delta(q, X_i)$, $M$ can move to the ID
+          \[ X_1X_2\ldots{}X_{i-2}pX_{i-1}YX_{i+1}\ldots{}X_n \]
+        If $i = 1$, then $M$ moves to the blank to the left of $X_1$ in which 
+        case the ID becomes 
+          \[ pBYX_2\ldots{}X_n \]
+        If $i = n$ and $Y = B$, then $M$ replaces $X_n$ by a blank and the ID 
+        becomes
+          \[ X_1X_2\ldots{}X_{n-2}pX_{n-1} \]
+        \item If $(p, Y, R)$ is in $\delta(q, X_i)$, $M$ can move to the ID
+          \[ X_1X_2\ldots{}X_{i - 1}YpX_{i + 1}\ldots{}X_n \]
+        If $i = n$, then $M$ moves to the blank to the right of $X_n$ in which
+        case the ID becomes
+          \[ X_1X_2\ldots{}X_{n - 1}YpB \]
+        If $i = 1$ and $Y = B$, then $M$ replaces $X_1$ by a blank and the ID 
+        becomes
+          \[ pX_2\ldots{}X_n \]
+      \end{enumerate}
+    \item $L(M)$, the language accepted by $M$, is the set of strings $w$ in 
+    $\Sigma^*$ such that $q_0w\overset{*}{\vdash} \alpha{p}\beta$ for some 
+    state $p$ in $F$.
+    \item We say that a language $L$ is \emph{recursively enumerable} if 
+    $L = L(M)$ for some Turing machine $M$.
+    \item See Example 8.2, p. 329, HMU for a TM that accepts the language
+    $\{0^n1^n \, | \, n \geq 1 \}$.
+  \end{itemize}
+
+\section{Algorithms and Recursive Languages}
+  \begin{itemize}
+    \item We say that a language $L$ is \emph{recursive} if $L = L(M)$ for some 
+    Turing machine $M$ such that
+      \begin{enumerate}
+        \item If $w$ is in $L$, then $M$ accepts $w$ and therefore halts.
+        \item If $w$ is not in $L$, then $M$ eventually halts but never enters 
+        an accepting state.
+      \end{enumerate}
+    \item A Turing machine that hatls on all inputs either in an accepting or 
+    nonaccepting state provides a precise definition for the term 
+    \emph{algorihtm}. This formalizes our intuitive notion of an algorithm as a 
+    collection of simple instructions for carrying out some task.
+    \item A language $L$ is said to be \emph{decidable} if it is a recursive 
+    language.
+    \item A language $L$ is said to be \emph{undecidable} if it is not a 
+    recursive language.
+  \end{itemize}
+  \subsection*{Class Notes}
+    \begin{enumerate}
+      \item Given a CFG $G$, is $G$ ambiguous?
+      \item Given a CFG $G$, is there an equivalent unambiguous grammar?
+    \end{enumerate}
+
+\section{Some History}
+  \begin{itemize}
+    \item Hilbert's problems.
+      \begin{itemize}
+        \item In 1900, David Hilbert, the eminent mathematician of his day, 
+        presented a famous list of twenty-three problems at the International 
+        Congress of Mathematicians in Paris.
+        \item Hilbert's tenth problem was to devise a process according to 
+        which it can be determined by a finite number of operations whether a 
+        polynomial with integer coefficients (Diophantine equation) has an 
+        integral root.
+          \begin{itemize}
+            \item For example, the polynomial Diophantine equation
+              \[ 6x^3yz^2 + 3xy^2 - x^3 - 10 = 0 \]
+            over the variables $x$, $y$, and $z$ has an integral root at 
+            $x = 5$, $y = 3$, and $z = 0$. The root is said to be integral 
+            because all variables are assigned integer values.
+          \end{itemize}
+      \end{itemize}
+    \item In 1931 Kurt G\"odel published his famous incompleteness theorems
+    which basically said that in any reasonable system of formalizing the 
+    notion of provability in number theory, some true statements are 
+    unprovable. This shattered Hilbert's dream of finding a complete and 
+    consistent set of axioms for all of mathematics (Hilbert's second problem).
+    \item In 1936 Alonzo Church wrote a paper in which he devised a notation
+    called lambda calculus to define algorithms. Lambda calculus is the basis
+    for the programming language Lisp.
+    \item In 1936 Alan turing wrote a paper (``On computable numbers with an 
+    application to the Entsheidungsproblem'', Proc. London Math. Society) in 
+    which he defined Turing machines and showed that the halting problem for 
+    Turing machines is undecidable.
+      \begin{itemize}
+        \item The machine $M$ in Alan Turing's paper accepted by just halting 
+        -- there is no final state. Let $H(M)$ be the set of inputs $w$ on 
+        which his machine hatls. Turing showed that set of pairs $(M, w)$ such 
+        that $w$ is in $H(M)$ is recursively enumerable but not recursive.
+      \end{itemize}
+    \item The Church-Turing thesis hypothesizes that any function that can be 
+    computed (``effectively computable function'') can be computed on a Turing 
+    machine.
+    \item In 1970, Yuri Matiyasevich showed that no algorithm exists for 
+    testing whether a Diophantine equation has integral roots.
+  \end{itemize}
+
+\section{Models of Computation Equivalent to Turing Machines}
+  \begin{itemize}
+    \item Many variants of Turing machines have been defined such as:
+      \begin{itemize}
+        \item Turing machines with a semi-infinite input tape.
+        \item Multitape Turing machines.
+        \item Turing machines with tapes having multiple tracks.
+        \item Nondeterministic Turing machines.
+      \end{itemize}
+    \item All these machines are equivalent to our definition of a 
+    deterministic Turing machines.
+    \item Other universal models of computation:
+      \begin{itemize}
+        \item Chomsky type 0 grammars. A type 0 grammar is like a context-free 
+        grammar $(V, T, P, S)$ except that productions can be of the form
+        $\alpha \rightarrow \beta$ where $\alpha$ is a string of nonterminals 
+        and terminals with at least one nonterminal and $\beta$ is any string 
+        of nonterminals and nonterminals.
+        \item Lambda calculus.
+        \item Pushdown automata with two or more stacks.
+        \item Two-counter machines.
+        \item Random access machines.
+        \item Most programming languages.
+        \item Real computers with an arbitrary amount of energy.
+      \end{itemize}
+    \item Again, all these models are computationally equivalent to our 
+    definition of a deterministic Turing machine.
+  \end{itemize}
+\end{document}
