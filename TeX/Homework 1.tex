@@ -128,8 +128,8 @@
                   \end{itemize}
               \end{itemize}
           \end{enumerate}
-        \item We have now shown that IH1 is true for all sequences of $n$ moves, 
-        where $n \geq 0$.
+        \item We have now shown that IH1 is true for all sequences of $n$ 
+        moves, where $n \geq 0$.
         \item We now need to show that every string in $L$ is accepted by $D$. 
         To do this, we shall prove the following inductive hypothesis by 
         induction on $n$, the length of a string $w$ for $n \geq 0$: \\
@@ -374,12 +374,12 @@
     regular.
     \item[\emph{Solution:}] Let us assume that $L$ is a regular language. Then 
     $L = L(A)$ for some DFA $A$. Since $L$ can be represented by a DFA, we can
-    suppose that $A$ has $n$ states. Thus, we can apply the pumping lemma to DFA
-    $A$, where $A$ represents $L$, which is the language of any string of $a$'s
-    and $b$'s where the number of $a$'s is different from the number of $b$'s. 
-    Using the Closure of Regular Languages under Complementation, we can find a
-    complimentary language $\overline{L} = L(B)$ such that $B$ is a DFA $(Q, 
-    \Sigma, \delta, q_0, Q-F)$, that is $B$ is exactly like $A$, but the 
+    suppose that $A$ has $n$ states. Thus, we can apply the pumping lemma to 
+    DFA $A$, where $A$ represents $L$, which is the language of any string of 
+    $a$'s and $b$'s where the number of $a$'s is different from the number of 
+    $b$'s. Using the Closure of Regular Languages under Complementation, we can 
+    find a complimentary language $\overline{L} = L(B)$ such that $B$ is a DFA 
+    $(Q, \Sigma, \delta, q_0, Q-F)$, that is $B$ is exactly like $A$, but the 
     accepting states of $A$ have become nonaccepting states of $B$. In our case,
     that means the only strings in this language are all strings of equal number
     of $a$'s and $b$'s (not in any particular order). \\ \\
