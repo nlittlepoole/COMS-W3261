@@ -1,0 +1,129 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+\usepackage{tipa}
+\usetikzlibrary{arrows,automata}
+\begin{document}
+\newcommand*{\xml}[1]{\texttt{<#1>}}
+\theoremstyle{definition}
+\newtheorem{thm}{Theorem}
+\title{COMS W3261 \\ Computer Science Theory \\ Lecture 14\\ Algorithms and the
+Church-Turing Thesis}
+\author{Alexander Roth}
+\date{2014 -- 10 -- 20}
+\maketitle
+\section*{Outline}
+  \begin{enumerate}
+    \item Midterm review
+    \item Definition of an algorithm
+    \item The Church-Turing thesis
+    \item The diagonalization language $L_d$ is not RE
+    \item Reducing one problem to another
+  \end{enumerate}
+\section{Definition of Algorithm}
+  \begin{itemize}
+    \item Surprisingly, there is no universally agreed-upon definition for the
+    term ``algorithm''. Informally, we can think of an algorithm as a collection
+    of well-defined instructions for carrying out some task.
+    \item In \emph{The Art of Computer Programming}, Donald Knuth states that an
+    algorithm should have five properties.
+      \begin{enumerate}
+        \item Finiteness: An algorithm must always terminate after a finite
+        number of steps.
+        \item Definiteness: Each step of an algorithm must be precisely defined.
+        \item Input: An algorithm has zero or more inputs.
+        \item Output: An algorithm has one or more outputs, quantities which
+        have a specified relation to the inputs.
+        \item Effectiveness: All of the operations to be performed in an
+        algorithm can be done exactly and in a finite length of time.
+      \end{enumerate}
+    \item In this course we will use a Turing machine that halts on all inputs
+    as the definition of an algorithm. The term decider is sometimes used for 
+    such a Turing machine.
+      \begin{itemize}
+        \item A language $L$ that can be recognized by an algorithm is said to
+        be recursive.
+        \item If a language $L$ is recursive, we say $L$ is decidable.
+        \item If a language $L$ is not recursive, we say $L$ is undecidable.
+      \end{itemize}
+    \item In general, a Turing machine need not halt all inputs. An input on
+    which a Turing machine never halts is not in the language defined by the 
+    Turing machine.
+      \begin{itemize}
+        \item A language $L$ that can be recognized by a Turing machine is said
+        to be recursively enumerable.
+        \item The term Turing-recognizable language is sometimes used for a
+        recursively enumerable language.
+        \item Note that a language may be undecidable because it is not
+        recursive but is recursively enumerable or because it is not 
+        recursively enumerable.
+      \end{itemize}
+  \end{itemize}
+\section{The Church-Turing Thesis}
+  \begin{itemize}
+    \item A Turing machine can compute a function from an input to an output by
+    reading the input, making a sequence of moves, and then halting, leaving
+    only the output of the function on the tape.
+    \item A recursive function is one that can be computed by a Turing machine
+    that halts on all inputs.
+    \item A partial-recursive function is one that can be computed by a Turing
+    machine that need not halt on all inputs. The output of the function on an
+    input for which the Turing machine does not halt is said to be undefined.
+    \item The Church-Turing thesis says that any general way to compute will
+    allow us to compute only the partial-recursive functions. The Church-Turing 
+    thesis is unprovable because there is no precise definition for ``any
+    general way to compute.''
+    \item An informal way of expressing the Church-Turing thesis is that any
+    function that can be effectively computed can be computed by a Turing
+    machine.
+  \end{itemize}
+\section{The Diagonalization Language $L_d$ is not Recursively Enumerable}
+  \begin{itemize}
+    \item We can enumerate all binary strings.
+    \item We can enumerate all Turing machines.
+    \item We define $L_d$, the diagonalization language, as follows:
+      \begin{enumerate}
+        \item Let $w_1$, $w_2$, $w_3$, $\ldots$ be an enumeration of all binary
+        strings.
+        \item Let $M_1$, $M_2$, $M_3$, $\ldots$ be an enumeration of all Turing
+        machines.
+        \item Let $L_d = \{\,w_i\,|\,w_i$ is not in $L(M_i)\,\}$.
+      \end{enumerate}
+    \item Theorem: $L_d$ is not a recursively enumerable language.
+    \item Proof:
+      \begin{itemize}
+        \item Suppose $L_d = L(M_i)$ for some TM $M_i$.
+        \item This gives rise to a contradiction. Consider what $M_i$ will do on
+        the input $w_i$.
+          \begin{itemize}
+            \item If $M_i$ accepts $w_i$, then by definition $w_i$ cannot be in
+            $L_d$.
+            \item If $M_i$ does not accept $w_i$, then by definition $w_i$ is in
+            $L_d$.
+          \end{itemize}
+        \item Since $w_i$ can neither be in $L_d$ nor not be in $L_d$, we must
+        conclude there is no Turing machine that can define $L_d$.
+      \end{itemize}
+  \end{itemize}
+\section{Reducing One Problem to Another}
+  \begin{itemize}
+    \item If we have an algorithm to convert instance of a problem $P_1$ to
+    instances of a problem $P_2$ that have the same answer, then we say that
+    $P_1$ reduces to $P_2$.
+    \item A reduction from $P_1$ to $P_2$ must turn every instance of $P_1$ with
+    a yes answer to an instance of $P_2$ with a yes answer, and every instance 
+    of $P_1$ with a no answer to an instance of $P_2$ with a no answer.
+    \item We will frequently use this technique to show that problem $P_2$ is as
+    hard as problem $P_1$.
+    \item The direction of the reduction is important.
+    \item For example, if there is a reduction from $P_1$ to $P_2$ and if $P_1$
+    is not recursive, then $P_2$ cannot be recursive.
+    \item Similarly, if there is a reduction from $P_1$ to $P_2$ and if $P_1$ is
+    not recursively enumerable, then $P_2$ cannot be recursively enumerable.
+  \end{itemize}
+\end{document}
