@@ -1,0 +1,72 @@
+\documentclass[]{article}
+\usepackage[all]{xy}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{indentfirst}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+\usepackage{tipa}
+\usetikzlibrary{arrows,automata}
+\begin{document}
+
+\newtheorem{thm}{Theorem}
+\title{COMS W3261 \\ Computer Science Theory \\ Homework \#3}
+\author{Alexander Roth}
+\date{2014 -- 10 -- 27}
+\maketitle
+\section*{Problems}
+\begin{enumerate}
+\item Informally describe a Turing machine that accepts all strings of the form
+$\{\,a^nb^nc^n\,|\,n\geq1\,\}$. Show the sequence of ID's that your TM goes
+through starting with the input $aabbcc$.
+\item Consider the following Turing machine
+\[ M = (\{A, B, C, D\}, \{a\}, \{a, X, 0 1, \#\}, \delta, A, \#, \{D\}).\]
+Here, we are using \# for the blank symbol.
+The transition function $\delta$ is given by the following table:
+
+\begin{tabular}{c|c|c|c|c|c }
+State & $a$   & $X$    & $0$   & $1$   & $\#$   \\ \hline
+$A$   & $BXL$ & $AXR$  & $A0R$ & $A1R$ & $C\#L$ \\
+$B$   & $BaL$ & $BXL$  & $A1R$ & $B0L$ & $A1R$  \\
+$C$   & $-$   & $C\#L$ & $D0R$ & $D1R$ & $-$    \\
+$D$   & $-$   & $-$    & $-$   & $-$   & $-$
+\end{tabular}
+\begin{enumerate}
+\item Show the sequence of ID's that $M$ goes through starting with the input
+$aaaa$.
+\item Starting with an input consisting of $n$ $a$'s, $n > 0$, what string will
+this Turing machine have on its tape after it has halted?
+\item Briefly explain how the Turing machine does this computation and
+characterize the role of each state.
+\item Using big-O notation, how many moves will this Turing machine make on an
+input consisting of $n$ $a$'s before halting? Briefly justify your answer.
+\end{enumerate}
+\item Let $L = \{\,p\,|\,p$ is a polynomial over a single variable $x$ with an
+integral root $\}$. (Example: $2x^3-9x^2+16$ is a polynomial over $x$ with an
+integral root $4$ and would therefore be in $L$.) Describe at an informal level
+a Turing machine $M$ such that $L(M) = L$ showing that $L$ is recursively
+enumerable.
+\item Post's Correspondence Problems.
+\begin{enumerate}
+\item Is PCP with a single-symbol alphabet decidable? Briefly justify your
+answer.
+\item Is PCP with a two-symbol alphabet decidable? Briefly justify your answer.
+\end{enumerate}
+\item What class of languages can a Turing machine recognize if it
+\begin{enumerate}
+\item Has only two working states, and one accepting state from which it never
+makes any transitions?
+\item Never overprints a different symbol on the input tape? That is, if in the
+transition function for the Turing machine whenever $(q, Y, D)$ is in
+$\delta(p,X)$, then $Y = X$.
+\item Has only $\{0, 1, B\}$ as tape symbols?
+\item Never moves its input head left?
+\end{enumerate}
+Give a brief one or two-sentence justification for each of your answers.
+\end{enumerate}
+
+\end{document}
