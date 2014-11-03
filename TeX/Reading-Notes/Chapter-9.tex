@@ -1,0 +1,136 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage[T1]{fontenc}
+\usepackage{indentfirst}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+\usepackage{tipa}
+\usetikzlibrary{arrows,automata}
+\begin{document}
+
+\title{COMS W3261 \\ Computer Science Theory \\ Chapter 9 Notes}
+\author{Alexander Roth}
+\date{2014--11--02}
+\maketitle
+\theoremstyle{definition}
+\newtheorem{thm}{Theorem}
+\section*{Undecidability}
+\section*{A Language That Is Not Recursively Enumerable}
+Recall that a language $L$ is \emph{recursively enumerable} if $L = L(M)$ for
+some TM $M$.
+
+Our long-range goal is to prove undecidable the language consisting of pairs
+$(M,w)$ such that:
+\begin{enumerate}
+\item $M$ is a Turing machine (suitably coded, in binary) with input alphabet
+$\{0,1\}$,
+\item $w$ is a string of $0$'s and $1$'s, and
+\item $M$ accepts input $w$.
+\end{enumerate}
+If this problem with inputs restricted to the binary alphabet is undecidable,
+then surely the more general problem, where TM's may have any alphabet, is
+undecidable.
+
+We shall show that the language $L_d$, the ``diagonalization language,'' which
+consists of all those strings $w$ such that the TM represented by $w$ does not
+accept the input $w$, has no Turing machine that accepts it. Shwoing there is no
+Turing machine at all for a language is showing that it has no algorithm or TM
+that will always halt.
+
+\subsection*{Enumerating the Binary Strings}
+If $w$ is a binary string, treat $1w$ as a binary integer $i$. Then we shall
+call $w$ the $i$th string. That is, $\epsilon$, is the first string, 0 is the
+second, 1 the third, 00 the fourth, 01 the fifth, and so on. Equivalent.y,
+strings are ordered by length and strings of equal length are ordered
+lexicographically. Hereafter, we shall refer to the $i$th string as $w_i$.
+
+\subsection*{Codes for Turing Machines}
+To represent a TM $M (Q, \{0,1\}, \Gamma, \delta, q_1, B, F)$ as a binary
+string, we must first assign integers to the states, tape symbols, and
+directions $L$ and $R$.
+\begin{itemize}
+\item We shall assume the states are $q_1,q_2,\ldots,q_r$ for some $r$. The
+start state will always be $q_1$, and $q_2$ will be the only accepting state.
+\item We shall assume the tape symbols are $X_1,X_2,\ldots,X_s$ for some $s$.
+$X_1$ always will be the symbol 0, $X_2$ will be 1, and $X_3$ will be $B$, the
+blank.
+\item We shall refer to direction $L$ as $D_1$ and direction $R$ as $D_2$.
+\end{itemize}
+Since each TM $M$ can have integers assigned to its states and tape symbols in
+many different orders, there will be more than one encoding of the typical TM.
+
+Suppose one transition rule is $\delta(q_i, X_j) = (q_k, X_l, D_m)$, for some
+integers $i$, $j$, $k$, $l$, and $m$.  We shall code this rule by the string
+$0^i10^j10^k10^l10^m$. Notice that, since all of $i$, $j$, $k$, $l$, and $m$ are
+at least one, there are no occurrences of two or more consecutive $1$'s within
+the code for a single transition.
+
+A code for the entire TM $M$ consists of all the codes for the transitions, in
+some order, separated by pairs of $1$'s:
+\[ C_111C_211\cdots{C_{n-1}}11C_n \]
+where each of the $C$'s is the code for one transition of $M$.
+
+\subsection*{The Diagonalization Language}
+If $w_i$ is not a valid TM code, we shall take $M_i$ to be the TM with one state
+and no transitions. That is, for these values of $i$, $M_i$ is a Turing machine
+that immediately halts on any input. Thus, $L(M_i)$ is $\emptyset$ if $w_i$
+fails to be a valid TM code.
+
+That is,
+\begin{itemize}
+\item The language $L_d$, the \emph{diagonalization language}, is the set of
+strings $w_i$ such that $w_i$ is not in $L(M_i)$.
+\end{itemize}
+That is, $L_d$ consists of all strings $w$ such that the TM $M$ whose code is
+$w$ does not accept when given $w$ as input.
+
+$L_d$ can be represented in tabular form. The $i$th row can be thought of as the
+\emph{characteristic vector} for the language $L(M_i)$; that is, the 1's in this
+row indicate the strings that are members of this language.
+
+The diagonal values tell whether $M_i$ accepts $w_i$. To construct $L_d$, we
+complement the diagonal.
+
+The trick of complementing the diagonal to construct the characteristic vector
+of a language that cannot be the language that appears in any row is called
+\emph{diagonalization}. It works because the complement of the diagonal is
+itself a characteristic vector describing membership in some language, namely
+$L_d$.
+
+\subsection*{Proof that $L_d$ is Not Recursively Enumerable}
+There is no Turing machine that accepts language $L_d$.
+\begin{thm}
+$L_d$ is not a recursively enumerable language. That is, there is no Turing
+machine that accepts $L_d$.
+\end{thm}
+
+\section*{An Undecidable Problem That Is RE}
+\subsection*{Recursive Languages}
+WE call a language $L$ \emph{recursive} if $L = L(M)$ for some Turing machine
+$M$ such that:
+\begin{enumerate}
+\item If $w$ is in $L$, then $M$ accepts (and therefore halts).
+\item If $w$ is not in $L$, then $M$ eventually halts, although it never enters
+an accepting state.
+\end{enumerate}
+A TM of this type corresponds to our notion of an ``algorithm,'' a well-defined
+sequence of steps that always finishes and produces an answer. If we think of
+the language $L$ as a ``problem,'' then problem $L$ is called \emph{decidable}
+if it is a recursive language, and it is called \emph{undecidable} if it is not
+a recursive language.
+
+Dividing problems or languages between the decidable and those that are
+undecidable is often more important than the division between the recursively
+enumerable languages and the non-recursively-enumberal languages. The
+relationship among the three classes of languages is:
+\begin{enumerate}
+\item The recursive languages.
+\item The languages that are recursively enumerable but not recursive.
+\item The non-recursively-enumberable (\emph{non-RE}) languages.
+\end{enumerate}
+
+\subsection*{Complements of Recursive and RE languages}
+\end{document}
