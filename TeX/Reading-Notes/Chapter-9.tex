@@ -2,6 +2,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
+\usepackage{bm}
 \usepackage[T1]{fontenc}
 \usepackage{indentfirst}
 \usepackage{listings}
@@ -133,4 +134,263 @@ relationship among the three classes of languages is:
 \end{enumerate}
 
 \subsection*{Complements of Recursive and RE languages}
+If a language $L$ is RE, but $\overline{L}$, the complement of $L$, is not RE,
+then we know $L$ cannot be recursive. For if $L$ were recursive, then
+$\overline{L}$ would also be recursive and thus surely RE.
+\begin{thm}
+If $L$ is a recursive language, so is $\overline{L}$.
+\end{thm}
+\begin{thm}
+If both a language $L$ and its complement are RE, then $L$ is recursive. Note
+that then by Theorem 2, $\overline{L}$ is recursive as well.
+\end{thm}
+Of the nine possible ways to place a language $L$ and its complement
+$\overline{L}$, only the following four are possible:
+\begin{enumerate}
+\item Both $L$ and $\overline{L}$ are recursive.
+\item Neither $L$ nor $\overline{L}$ is RE.
+\item $L$ is RE but no recursive, and $\overline{L}$ is not RE.
+\item $\overline{L}$ is RE but not recursive, and $L$ is not RE.
+\end{enumerate}
+
+\subsection*{The Universal Language}
+We define $L_u$, the \emph{universal language}, to be the set of binary strings
+that encode a pair $(M, w)$, where $M$ is a TM with the binary input alphabet,
+and $w$ is a string in $(\bm{0} + \bm{1})^*$, such that $w$ is in $L(M)$. That
+is, $L_u$ is the set of strings representing a TM and an input accepted by that
+TM. There is a TM $U$, often called the \emph{universal Turing machine}, such
+that $L_u = L(U)$. Since the input to $U$ is a binary string, $U$ is in fact
+some $M_j$ in the list of binary-input Turing machines.
+
+$U$ is a multitape Turing machine. In the case of $U$, the transitions of $M$
+are stored initially on the first tape, along with the string $w$. A second tape
+is used to hold the simulated tape of $M$, using the same format as for the code
+of $M$. That is, tape symbols $X_i$ of $M$ will be represented by $0^i$, and
+tape symbols will be separated by single $1$'s. The third tape of $U$ holds the
+state of $M$, with state $q_i$ represented by $i$ $0$'s.
+
+The operation of $U$ can be summarized as follows:
+\begin{enumerate}
+\item Examine the input to make sure that the code for $M$ is a legitimate code
+for some TM. If not, $U$ halts without accepting.
+\item Initialize the second tape to contain the input $w$, in its encoded form.
+That is, for each $0$ of $w$, place 10 on the second tape, and for each 1 of
+$w$, place 100 there. Note that the blanks on the simulated tape of $M$, which
+are represented by 1000, will not actually appear on that tape; all cells beyond
+those used for $w$ will hold the blank of $U$.
+\item Place 0, the start state of $M$, on the third tape, and move the head of
+$U$'s second tape to the first simulated cell.
+\item To simulate a move of $M$, $U$ searches on its first tape for a transition
+$0^i10^j10^k10^l10^m$, such that $0^i$ is the state on tape 3, and $O^j$ is the
+tape symbol of $M$ that begins at the position on tape 2 scanned by $U$.
+\item If $M$ has no transition that matches the simulated state and tape symbol,
+no transition is found. Thus, $M$ halts in the simulated configuration, and $U$
+must do likewise.
+\item If $M$ enters its accepting state, then $U$ accepts.
+\end{enumerate}
+In this manner, $U$ simulates $M$ on $w$. $U$ accepts the coded pair $(M, w)$ if
+and only if $M$ accepts $w$.
+
+\subsection*{Undecidability of the Universal Language}
+\begin{thm}
+$L_u$ is RE but not recursive.
+\end{thm}
+Knowing that $L_u$ is undecidable (i.e., not a recursive language) is in many
+ways more value that knowing that $L_d$ is not RE. The reduction of $L_u$ to
+another problem $P$ can be used to show there is no algorithm to solve $P$,
+regardless of whether or not $P$ is not RE. However, reduction of $L_d$ to $P$
+is only possible if $P$ is not RE, so $L_d$ cannot be used to show
+undecidability for those problems that are RE but not recursive. If we want to
+show a problem not to be RE, then only $L_d$ can be used; $L_u$ is useless since
+it \emph{is} RE.
+
+\subsubsection*{THe Halting Problem}
+We could define $H(M)$ for TM $M$ to be the set of inputs $w$ such that $M$
+halts given input $w$, regardless of whether or not $M$ accepts $w$. Then, the
+\emph{halting problem} is the set of pairs $(M, w)$ such that $w$ is in $H(M)$.
+This problem/language is another example of one that is RE but not recursive.
+
+\section*{Post's Correspondence Problem}
+\subsection*{Definition of Post's Correspondence Problem}
+An instance of \emph{Post's Correspondence Problem} (PCP) consists of two lists
+of strings over some alphabet $\Sigma$; the two lists must be of equal length:
+$A$ and $B$, where $A = w_1, w_2,\ldots,w_k$ and $B = x_1,x_2,\ldots,x_k$, for
+some integer $k$. For each $i$, the pair $(w_i,x_i)$ is said to be a
+\emph{corresponding} pair.
+
+The instance of PCP \emph{has a solution}, if there is a sequence of one or more
+integers $i_1, i_2,\ldots,i_m$ that, when interpreted as indexes for strings in
+the $A$ and $B$ lists, yield the same string. That is,
+$w_{i_1},w_{i_2},\ldots,w_{i_m} = x_{i_1},x_{i_2},\ldots,x_{i_m}$. Thus,
+$i_1,i_2,\ldots,i_m$ is a \emph{solution} to this instance of PCP.
+
+\subsubsection*{Partial Solutions}
+The possible \emph{partial soultions} of PCP instances are sequences of indexes
+$i_1, i_2, \ldots, i_r$ such that one of $w_{i_1}, w_{i_2}, \cdots, w_{i_r}$ and
+$x_{i_1}, x_{i_2}, \cdots, x_{i_r}$ is a prefix of the other, although the two
+strings are not equal. Notice that if a sequence of integers is a solution, then
+every prefix of that sequence must be a partial solution. Thus, understanding
+what the partial solutions are allows us to argue about what solutions there
+might be.
+
+However, because PCP is undecidable, there is no algorithm to compute all the
+partial solutions. Thus, there can be an infinite number of them.
+
+\subsection*{The ``Modified'' PCP}
+In the modified PCP, there is the additional requirement on a solution that the
+first pair on the $A$ and $B$ lists must be the first pair in the solution. An
+instance of MCPCP is two lists $A = w_1, w_2, \ldots, w_k$ and $B =
+x_1,x_2,\ldots,x_k$, and a solution is a list of 0 or more integers
+$i_1,i_2,\ldots,i_m$ such that
+\[ w_1w_{i_1}w_{i_2}\cdots w_{i_m} = x_1x_{i_1}x_{i_2}\cdots x_{i_m} \]
+
+Notice that the pair $(w_1,x_1)$ is forced to be at the beginning of the two
+strings, even though the index 1 is not mentioned at the front of the list that
+is the solution.
+
+AN important step in showing PCP is undecidable is reducing MPCP to PCP.
+
+We are given an instance of MPCP with lists $A = w_1,w_2,\ldots,w_k$ and $B =
+x_1,x_2,\ldots,x_k$. We assume $*$ and \$ are symbols not present in the
+alphabet $\Sigma$ of this MPCP instance. We construct a PCP instance $C =
+y_0,y_1,\ldots,y_{k+1}$ and $D = z_0,z_1,\ldots,z_{k+1}$ as follows:
+\begin{enumerate}
+\item For $i = 1,2,\ldots,k$, let $y_i$ be $w_i$ with a $*$ after each symbol of
+$w_i$, and let $z_i$ be $x_i$ with a $*$ before each symbol of $x_i$.
+\item $y_0 = *y_1$ and $z_0 = z_1$.
+\item $y_{k+1} = \$$ and $z_{k+1} = *\$$.
+\end{enumerate}
+
+\begin{thm}
+MPCP reduces to PCP.
+\end{thm}
+
+\subsection*{Completion of the Proof of PCP Undecidability}
+Given a pair $(M, w)$, we construct an instance $(A, B)$ of MPCP such that TM
+$M$ accepts input $w$ if and only if $(A, B)$ has a solution.
+
+The essential idea is that MPCP instance $(A, B)$ simulates, in its partial
+solutions, the computation of $M$ on input $w$. Partial solutions will consist
+of strings that are prefixes of the sequence of ID's of $M$:
+$\#\alpha_1\#\alpha_2\cdots$, where $\alpha_1$ is the initial ID of $M$ with
+input $w$, and $\alpha_i \vdash \alpha_{i+1}$ for all $i$. The string from $B$
+list will always be one ID ahead of the string from the $A$ list, unless $M$
+enters an accepting state. In that case, there will be pairs to use that will
+allow the $A$ list to ``catch up'' to the $B$ list and eventually produce a
+solution.
+
+We may assume our TM never prints a blank, and never moves left from its initial
+head position. In that case, an ID of the Turing machine will always be a string
+of the form $\alpha{q}\beta$, where $\alpha$ and $\beta$ are strings of nonblank
+tape symbols, and $q$ is a state. The symbols of $\alpha$ and $\beta$ will
+correspond exactly to the contents of the cells that held the input, plus any
+cells to the right that the head has previously visited.
+
+Let $M = (Q,\Sigma,\Gamma,\delta,q_0,B,F)$ be a TM described above and let $w$
+in $\Sigma^*$ be an input string.
+\begin{enumerate}
+\item The first pair is $(\#, \#q_0w\#)$. This pair, which must start any
+solution according to the rules of MPCP, begins the simulation of $M$ on input
+$w$.
+\item Tape symbols and the separator $\#$ can be appended to both lists. In
+effect, choice of these pairs lets us extend the $A$ string to match the $B$
+string, and at the same time copy parts of the previous ID to the end of the $B$
+string.
+\item To simulate a move of $M$, we have certain pairs that reflect those moves.
+These pairs help extend the $B$ string to add the next ID, by extending the $A$
+string to match the $B$ string. However, these pairs use the state to determine
+the change in the current ID that is needed to produce the next ID. These
+changes are reflected in the ID being constructed at the end of the $B$ string.
+\item If the ID at the end of the $B$ string has an accepting state, then we
+need to allow the partial solution to become a complete solution. We do so by
+extending with ``ID's'' that are not really ID's of $M$, but represent what
+would happen if the accepting state were allowed to consume all the tape symbols
+to either side of it.
+\item Finally, once the accepting state has consumed all tape symbols, it stands
+alone as the last ID on the $B$ string. That is, the \emph{remaineder} of the
+two strings is $q\#$.
+\end{enumerate}
+
+\begin{thm}
+Post's Correspondence Problem is undecidable.
+\end{thm}
+
+\section*{Other Undecidable Problems}
+The principal technique is reducing PCP to the problem we wish to prove
+undecidable.
+\subsection*{Problems About Programs}
+We can write a program, in any conventional language, that takes as input an
+instance of PCP and searches for solutions some systematic manner, e.g., in
+order of the \emph{length} of potential solutions. Since PCP allows arbitrary
+alphabets, we should encode the symbols of its alphabet in binary or some other
+fixed alphabet.
+
+We can have our program do any particular thing we want when and if it finds a
+solution. Otherwise, the program will never perform that particular action.
+Thus, it is undecidable whether a program makes a nontrivial action. Any
+nontrivial property that involves what the program does must be undecidable.
+
+\subsection*{Undecidability of Ambiguity for CFG's}
+Let the PCP instance consist of lists $A = w_1,w_2,\ldots,w_k$ and $B =
+x_1,x_2,\ldots,x_k$. For list $A$ we shall construct a CFG with $A$ as the only
+variable. The terminals are all the symbols of the alphabet $\Sigma$ used for
+this PCP instance, plus a distinct set of \emph{index symbols}
+$a_1,a_2,\ldots,a_k$ that represents the choices of pairs of strings in a
+solution to the PCP instance. That is, the index symbol $a_i$ represents the
+choice of $w_i$ from the $A$ list or $x_i$ from the $B$ list. The productions
+for the CFG for the $A$ list are:
+\begin{align*}
+A \quad \rightarrow \quad & w_1Aa_1\,|\,w_2Aa_2\,|\,\cdots\,|\,w_kAa_k\,| \\
+                          & w_1a_1 \,|\,w_2a_2 \,|\,\cdots\,|\,w_ka_k
+\end{align*}
+We shall call this grammar $G_A$ and its language $L_A$, or \emph{the language
+for the list A}.
+
+Notice that the terminal strings derived by $G_A$ are all those of the form
+$w_{i_1}w_{i_2}\cdots w_{i_m}a_{i_m}\cdots{a_{i_2}}a_{i_1}$ for some $m \geq 1$
+and list of integers $i_1,i_2,\ldots,i_m$; each integer is in the range 1 to
+$k$. The sentential forms of $G_A$ all have a single $A$ between the strings and
+the index symbols, until we use one of the last group of $k$ productions, none
+of which has an $A$ in the body.
+
+Observer also that any terminal string derivable from $A$ in $G_A$ has a unique
+derivation.
+
+We can develop another grammar $G_B$ from the list $B = x_1,x_2,\ldots,x_k$ as
+follows:
+\begin{align*}
+B \quad \rightarrow \quad & x_1Ba_1\,|\,x_2Ba_2\,|\,\cdots\,|\,x_kBa_k\,| \\
+                          & x_1a_1 \,|\,x_2a_2 \,|\,\cdots\,|\,x_ka_k
+\end{align*}
+The language of this grammar will be referred to as $L_B$. The same observations
+of $L_A$ hold on $L_B$.
+
+Finally, we combine the languages and grammars of the two lists to form a
+grammar $G_{AB}$ for the entire PCP instance. $G_{AB}$ consists of:
+\begin{enumerate}
+\item Variable $A$, $B$, and $S$; the latter is the start symbol.
+\item Productions $S \rightarrow A\,|\,B$.
+\item All the productions of $G_A$.
+\item All the productions of $G_B$.
+\end{enumerate}
+$G_{AB}$ is ambiguous if and only if the instance $(A, B)$ of PCP has a
+solution.
+
+\subsection*{The Complement of a List Language}
+\begin{thm}
+If $L_A$ is the language of list $A$, then $\overline{L_A}$ is a context-free
+language.
+\end{thm}
+\begin{thm}
+Let $G_1$ and $G_2$ be context-free grammars, and let $R$ be a regular
+expression. Then the following are undecidable:
+\begin{enumerate}
+\item Is $L(G_1) \cap L(G_2) = \emptyset$?
+\item Is $L(G_1) = L(G_2)$?
+\item Is $L(G_1) = L(R)$?
+\item Is $L(G_1) = T^*$ for some alphabet $T$?
+\item Is $L(G_1) \subseteq L(G_2)$?
+\item Is $L(R) \subseteq L(G_1)$?
+\end{enumerate}
+\end{thm}
 \end{document}
