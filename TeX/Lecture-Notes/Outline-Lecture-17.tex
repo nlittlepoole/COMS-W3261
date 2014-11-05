@@ -1,0 +1,97 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+\usepackage{tipa}
+\usetikzlibrary{arrows,automata}
+\begin{document}
+\newcommand*{\xml}[1]{\texttt{<#1>}}
+\theoremstyle{definition}
+\newtheorem{thm}{Theorem}
+\title{COMS W3261 \\ Computer Science Theory \\ Lecture 17 \\ Undecidable
+Problems}
+\author{Alexander Roth}
+\date{2014 -- 11 -- 5}
+
+\maketitle
+\section*{Outline}
+\begin{itemize}
+\item Encodings
+\item Undecidable problems about Turing machines
+\item Undecidable problems about context-free languages
+\end{itemize}
+
+\section{Encodings}
+\begin{itemize}
+\item In this course, we have defined a problem as a question of deciding
+whether a given string is a member of some particular language.
+\item In formulating questions as membership problems for languages, we may need
+to encode objects, such as Turing machines and the inputs they process, as
+strings over some fixed alphabet, such as $\{ 0, 1 \}$. Often the details of the
+encoding are not important as long as a Turing machine can decode the encoding
+so we will sometimes use the notation $<M>$ to represent an encoding of a Turing
+machine $M_i$ without describing in detail how this encoding has been done.
+\item For example, using this notation, we can represent the universal language
+$L_u$ as $\{ <(M,w)>\,|\,<M>$ is an encoding of a Turing machine $M$, $<w>$ is
+an encoding of an input string $w$ and $M$ accepts $w\}$.
+\item If it is clear from the context, we will regard strings as the Turing
+machines and input strings they represent. Thus, we will often write $L_u =
+\{\,(M,w)\,|\,M$ is a Turing machine and $M$ accepts $w\}$.
+\end{itemize}
+
+\section{Undecidable Problems about Turing Machines}
+\begin{itemize}
+\item Definte $L_e$ to be $\{ M\,|\,L(M) = \emptyset \}$. In words, $L_e$ is the
+language consisting of all encoded Turing machines whose language is empty.
+\begin{itemize}
+\item We can now show that $L_e$ is not recursively enumerable. See HMU Section
+9.3.2 for a proof.
+\end{itemize}
+\item Define $L_{ne}$ to be $\{\,M\,|\,L(M) \neq \emptyset \}$. $L_{ne}$ is the
+complement of $L_e$.
+\begin{itemize}
+\item We can show the $L_{ne}$ is recursively enumerable but not recursive.
+Again, see HMU Section 9.3.2 for a proof.
+\item We have just state that $L_{ne}$ is not recursive. If $L_e$ were
+recursively enumerable, both it and $L_{ne}$ would be recursive because $L_{e}$
+and $L_{ne}$ are complements of each other. This is the reason why $L_e$ cannot
+be recursively enumerable.
+\end{itemize}
+\item The Halting Problem
+\begin{itemize}
+\item In Alan Turing's original formulation of Turing machines acceptance was
+just by halting not necessarily by halting in a final state.
+\item We can define $H(M)$ for a Turing machine $M$ to be the set of input
+strings $w$ such that $M$ halts on $w$ in either a final or a nonfinal state.
+\item The famous \emph{halting problem} is the set of pairs $\{(M,w)\,|\,w$ is
+in $H(M)\}$.
+\item We can show the halting problem is recursively enumerable but not
+recursive.
+\end{itemize}
+\end{itemize}
+
+\section{Undecidable Problems about Context-free Languages}
+\begin{itemize}
+\item We have already shown that it is undecidable whether a context-free
+grammar is ambiguous. The proof technique we used was to reduce Post's
+Correspondence Problem to the ambiguity problem for CFG's.
+\item We can also use this proof technique to show a number of important
+problems about context-free languages are undecidable.
+\item Let $G$ and $H$ be CFG's, and let $R$ be a regular expression. The
+following problems are undecidable:
+\begin{enumerate}
+\item Is $L(G) \cap L(H) = \emptyset$?
+\item Is $L(G) = L(H)$?
+\item Is $L(G) = L(R)$?
+\item Is $L(G) = \Sigma^*$ for some alphabet $\Sigma$?
+\item Is $L(G) \subseteq L(H) = \emptyset$?
+\item Is $L(R) \subseteq L(G) = \emptyset$
+\end{enumerate}
+\item Proofs of these results are in HMU Section 9.5.3.
+\end{itemize}
+
+\end{document}
