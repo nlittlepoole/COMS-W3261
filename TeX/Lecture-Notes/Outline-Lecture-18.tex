@@ -1,0 +1,142 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+\usepackage{tipa}
+\usetikzlibrary{arrows,automata}
+\begin{document}
+\newcommand*{\xml}[1]{\texttt{<#1>}}
+\theoremstyle{definition}
+\newtheorem{thm}{Theorem}
+\title{COMS W3261 \\ Computer Science Theory \\ Lecture 17 \\ Undecidable
+Problems}
+\author{Alexander Roth}
+\date{2014 -- 11 -- 10}
+
+\maketitle
+
+\section*{Outline}
+\begin{itemize}
+\item Rice's Theorem
+\item Time complexity
+\item The classes P and NP
+\item Polynomial-time reductions
+\item NP-complete problems
+\end{itemize}
+
+\section{Rice's Theorem}
+\begin{itemize}
+\item We showed that the language $L_e = \{\,M\,|\,L(M) = \emptyset\,\}$ is not
+recursively enumerable, and hence is undecidable.
+\item We showed that the language $L_{ne} = \{\,M\,|\,L(M) \neq \emptyset\,\}$
+is recursively enumerable but not recursive, and hence is undecidable.
+\item The undecidability of these languages is a special case of a more general
+theorem about Turing machines languages known as Rice's Theorem.
+\item Rice's Theorem
+\begin{itemize}
+\item A \emph{property} of the recursively enumerable languages is a set of
+recursively enumerable languages.
+\item For example, under this definition a language being context free is a
+property of the recursively enumerable languages: the set of all CFL's is a
+subset of the recursively enumerable languages.
+\item A property is \emph{trivial} if it is either the empty set or it is the
+set of all recursively enumerable languages.
+\item Rice's Theorem: Every nontrivial property of the recursively enumerable
+languages is undecidable.
+\item Section 9.3.3 of HMU has a proof of Rice's Theorem.
+\item Rice's Theorem does not pinpoint why a property is undecidable. It could
+be recursively enumerable and not recursive, or it could be not recursively
+enumerable.
+\end{itemize}
+\item From Rice's theorem, we can conclude a number of problems about Turing
+machine languages that are undecidable:
+\begin{enumerate}
+\item Is the language accepted by a TM empty?
+\item Is the language accepted by a TM finite?
+\item Is the language accepted by a TM regular?
+\item Is the language accepted by a TM context free?
+\end{enumerate}
+\end{itemize}
+
+\section{Time Complexity}
+\begin{itemize}
+\item We now limit our attention to recursive languages and ask the question
+``How quickly can a Turing machine determine whether a given input string $w$ is
+a given recursive language $L$?''
+\item We say that a function $T(n)$ is $O(f(n))$ \lbrack read ``big-$O$ of
+$f(n)$''\rbrack if there exists an integer $n_0$ and a constant $c > 0$ such
+that for all integers $n \geq n_0$, we have $T(n) \leq cf(n)$.
+\item Big-$O$ notation allows us to ignore constant factors and just focus on
+asymptotic behavior. E.g., $T(n) = 2n^2$ is $O(n^2)$.
+\item Big-$O$ notation allows us to ignore low-order terms. E.g., $T(n) = 2n^2 +
+3n + 4$ is $O(n^2)$.
+\item A Turing machine $M$ is of time complexity $T(n)$ if on any input of
+length $n$, $M$ halts after making at most $T(n)$ moves.
+\item Note that time complexity is a worst-case measure. If a Turing machine $M$
+is of time complexity $T(n)$, then it makes at most $T(n)$ moves on every input
+of length $n$.
+\end{itemize}
+
+\section{The Classes P and NP}
+\begin{itemize}
+\item We define P to be the set of languages $L$ such that $L = L(M)$ for some
+deterministic Turing machine $M$ of time complexity $T(n)$ where $T(n)$ is a
+polynomial function of $n$.
+\item NP is the set of language $L$ such that $L = L(M)$ for some
+nondeterministic Turing machine $M$ where on any input of length $n$, there are
+no sequences of more than $T(n)$ moves of $M$ where $T(n)$ is a polynomial
+function of $n$.
+\item The question of whether P = NP is one of the most important open problems
+in computer science and mathematics.
+\item The Clay Mathematics Institute has identified the P vs NP question as one
+of its sever Millennium Prize Problems and offers a one million dollar prize for
+its solution.
+\end{itemize}
+
+\section{Polynomial-Time Reductions}
+\begin{itemize}
+\item In our study of problems that can be solved in polynomial time, we
+restrict ourselves to polynomial-time reductions.
+\item A polynomial-time reduction is an algorithm that maps any instance $I$ of
+problem $A$ into an instance $J$ of problem $B$ in a number of steps that is a
+polynomial function of the length of $I$ such that $I$ is in $A$ iff $J$ is in
+$B$.
+\item Note that in a polynomial-time reduction of the length of $J$ must be a
+polynomial function of the length of $I$.
+\end{itemize}
+
+\section{NP-Complete Problems}
+\begin{itemize}
+\item A language $L$ is NP-complete if
+\begin{enumerate}
+\item $L$ is in NP and
+\item For every language $L^\prime$ in NP there is a polynomial-time reduction
+of $L^\prime$ to $L$.
+\end{enumerate}
+\item A language satisfying condition (2) is said to be NP-hard.
+\item If $A$ is NP-complete, $B$ is in NP, and there is a polynomial-time
+reduction of $A$ to $B$, then $B$ is NP-complete.
+\item If any one NP-complete problem is in P, then P=NP.
+\item An equivalent definition of the NP-complete languages is that they are the
+set of languages for which the membership of an input string in the language can
+be checked for correctness, given a certificate, in deterministic polynomial
+time in the length of the input.
+\item Examples of problems in P
+\begin{itemize}
+\item Determining whether a set of integers has a subset whose sum is negative.
+\item Finding the cheapest path between a pair of nodes in a graph.
+\item Lots of others.
+\end{itemize}
+\item Examples of problems in NP not known to be in P or to be NP-complete
+\begin{itemize}
+\item Determining whether two graphs are isomorphic.
+\item Not that many others.
+\end{itemize}
+\item A problem is said to be \emph{intractable} if it cannot be solved in
+polynomial time.
+\end{itemize}
+\end{document}
