@@ -5,6 +5,7 @@
 \usepackage{amsthm}
 \usepackage{enumitem}
 \usepackage{indentfirst}
+\usepackage{hhline}
 \usepackage{listings}
 \usepackage{multirow}
 \usepackage{tikz}
@@ -23,13 +24,39 @@
 \item Informally describe a Turing machine that accepts all strings of the form
 $\{\,a^nb^nc^n\,|\,n\geq1\,\}$. Show the sequence of ID's that your TM goes
 through starting with the input $aabbcc$.
+\item[\emph{Solution:}] Let us construct the TM that will accept the language $\{\,a^nb^nc^n\,|\,n\geq1\,\}$. Initially, it is given a finite sequence of $a$'s, $b$'s, and $c$'s on its tape, preceded and followed by an infinity of blanks. Alternatively, the TM will change an $a$ to an $X$, a $b$ to a $Y$, and a $c$ to a $Z$, until all $a$'s, $b$'s and $c$'s have been matched.
+
+Starting at the left end of the tape, it will change an $a$ to an $X$, it then moves to the right passing over any $a$'s and $Y$'s it encounters. When it comes upon a $b$, it will change that into a $Y$ and continue to the right, ignoring any subsequent $b$'s and $Z$'s. When it comes across a $c$, it transforms the $c$ into a $Z$ and continue to the right. When it reads a $B$, it will move to left, over any $Z$'s, $c$'s, $Y$'s, $b$'s, and $a$'s it encounters. When it reaches an $X$, it looks for an $a$ to the immediate right. If that is found, it repeats the process till it accepts. If, instead, the Turing machine reads a Y, it will continue to read down the string to the right. If it reads past the string and reads a blank, it accepts the string, as there all $a$'s, $b$'s and $c$'s have been matched.
+
+The turing machine looks like this:
+\[ M = (\{q_0, q_1, q_2, q_3, q_4, q_5\}, \{a, b, c\}, \{a, b, c, X, Y, Z, B\}, \delta, q_0, B, \{q_5\} \]
+where the transition function is given by the following table:\\
+
+\begin{tabular}{c|ccccccc}
+      & \multicolumn{7}{c}{Symbol} \\
+State &$a$        &$b$        &$c$        &$X$&$Y$        &$Z$        &$B$         \\ \hhline{========}
+$q_0$ &$(q_1,X,R)$&$-$        &$-$        &$-$&$(q_0,Y,R)$&$(q_0,Z,R)$&$(q_5,B,L)$ \\
+$q_1$ &$(q_1,a,R)$&$(q_2,Y,R)$&$-$        &$-$&$(q_1,Y,R)$&$-$        &$-$ \\
+$q_2$ &$-$        &$(q_2,b,R)$&$(q_3,Z,R)$&$-$&$-$        &$(q_2,Z,R)$&$-$ \\
+$q_3$ &$-$        &$-$        &$(q_3,c,R)$&$-$&$-$        &$-$        &$(q_4,B,L)$\\
+$q_4$ &$(q_4,a,L)$&$(q_4,b,L)$&$(q_4,c,L)$&$(q_0,X,R)$&$(q_4,Y,L)$&$(q_4,Z,L)$&$-$    \\
+$q_5$ &$-$     &$-$     &$-$     &$-$     &$-$     &$-$     &$-$     \\
+\end{tabular} \\
+
+Thus, for the string $aabbcc$, we have the following sequence:
+\begin{align*}
+&q_0aabbcc\vdash{Xq_1abbcc}\vdash{Xaq_1bbcc}\vdash{XaYq_2bcc}\vdash{XaYbq_2cc}\vdash \\
+&XaYbZq_3c\vdash{XaYbZcq_3B}\vdash{XaYbZq_4cB}\vdash{XaYbq_4ZcB}\vdash{XaYq_4bZcB}\vdash \\ &Xaq_4YbZcB\vdash{Xq_4aYbZcB}\vdash{q_4XaYbZcB}\vdash{Xq_0aYbZcB}\vdash{XXq_1YbZcB}\vdash\\&XXYq_1bZcB\vdash{XXYYq_2ZcB}\vdash{XXYYZq_2cB}\vdash{XXYYZZq_3B}\vdash{XXYYZq_4ZB}\vdash\\&XXYYq_4ZZB\vdash{XXYq_4YZZB}\vdash{XXq_4YYZZB}\vdash{Xq_4XYYZZB}\vdash{XXq_0YYZZB}\vdash\\&XXYq_0YZZB\vdash{XXYYq_0ZZB}\vdash{XXYYZq_0ZB}\vdash{XXYYZZq_0B}\vdash{XXYYZq_5ZB}
+\end{align*}
+Since we have entered state $q_5$, we accept the string $aabbcc$.
+
 \item Consider the following Turing machine
-\[ M = (\{A, B, C, D\}, \{a\}, \{a, X, 0 1, \#\}, \delta, A, \#, \{D\}).\]
+\[ M = (\{A, B, C, D\}, \{a\}, \{a, X, 0, 1, \#\}, \delta, A, \#, \{D\}).\]
 Here, we are using \# for the blank symbol.
 The transition function $\delta$ is given by the following table:
 
 \begin{tabular}{c|c|c|c|c|c }
-State & $a$   & $X$    & $0$   & $1$   & $\#$   \\ \hline
+State & $a$   & $X$    & $0$   & $1$   & $\#$   \\
 $A$   & $BXL$ & $AXR$  & $A0R$ & $A1R$ & $C\#L$ \\
 $B$   & $BaL$ & $BXL$  & $A1R$ & $B0L$ & $A1R$  \\
 $C$   & $-$   & $C\#L$ & $D0R$ & $D1R$ & $-$    \\
@@ -38,34 +65,51 @@ $D$   & $-$   & $-$    & $-$   & $-$   & $-$
 \begin{enumerate}
 \item Show the sequence of ID's that $M$ goes through starting with the input
 $aaaa$.
+\item[\emph{Solution:}]
+\begin{align*}
+&Aaaaa\vdash{B\#Xaaa}\vdash{1AXaaa}\vdash{1XAaaa}\vdash{1BXXaa}\vdash\\&B1XXaa\vdash{B\#0XXaa}\vdash{1A0XXaa}\vdash{10AXXaa}\vdash{10XAXaa}\vdash\\&10XXAaa\vdash{10XBXXa}\vdash{10BXXXa}\vdash{1B0XXXa}\vdash{11AXXXa}\vdash\\&11XAXXa\vdash{11XXAXa}\vdash{11XXXAa}\vdash{11XXBXX}\vdash{11XBXXX}\vdash\\&11BXXXX\vdash{1B1XXXX}\vdash{B10XXXX}\vdash{B\#00XXXX}\vdash{1A00XXXX}\vdash\\&10A0XXXX\vdash{100AXXXX}\vdash{100XAXXX}\vdash{100XXAXX}\vdash{100XXXAX}\vdash\\&100XXXXA\#\vdash{100XXXCX\#}\vdash{100XXCX\#\#}\vdash{100XCX\#\#\#}\vdash{100CX\#\#\#\#}\vdash\\&10C0\#\#\#\#\#\vdash{100D\#\#\#\#\#}
+\end{align*}
+$M$ halts on the final state $D$ when given the string $aaaa$ as input; thus, $aaaa$ is accepted.
+
 \item Starting with an input consisting of $n$ $a$'s, $n > 0$, what string will
 this Turing machine have on its tape after it has halted?
+\item[\emph{Solution:}] The string that will be on the tape of the Turing machine will consist of a binary representation of $n$ followed by $\#^{n+1}$ where $n$ is the number of $\#$ symbols concatenated to the binary string. For example, a string consisting of 3 $a$'s (aaa) would yield a string on the tape as $11\#\#\#\#$.
+
 \item Briefly explain how the Turing machine does this computation and
 characterize the role of each state.
+
 \item Using big-O notation, how many moves will this Turing machine make on an
 input consisting of $n$ $a$'s before halting? Briefly justify your answer.
 \end{enumerate}
+
 \item Let $L = \{\,p\,|\,p$ is a polynomial over a single variable $x$ with an
 integral root $\}$. (Example: $2x^3-9x^2+16$ is a polynomial over $x$ with an
 integral root $4$ and would therefore be in $L$.) Describe at an informal level
 a Turing machine $M$ such that $L(M) = L$ showing that $L$ is recursively
 enumerable.
+
 \item Post's Correspondence Problems.
 \begin{enumerate}
 \item Is PCP with a single-symbol alphabet decidable? Briefly justify your
 answer.
+
 \item Is PCP with a two-symbol alphabet decidable? Briefly justify your answer.
 \end{enumerate}
+
 \item What class of languages can a Turing machine recognize if it
 \begin{enumerate}
 \item Has only two working states, and one accepting state from which it never
 makes any transitions?
+
 \item Never overprints a different symbol on the input tape? That is, if in the
 transition function for the Turing machine whenever $(q, Y, D)$ is in
 $\delta(p,X)$, then $Y = X$.
+
 \item Has only $\{0, 1, B\}$ as tape symbols?
+
 \item Never moves its input head left?
 \end{enumerate}
+
 Give a brief one or two-sentence justification for each of your answers.
 \end{enumerate}
 
