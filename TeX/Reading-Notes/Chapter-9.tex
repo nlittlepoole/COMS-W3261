@@ -204,11 +204,98 @@ undecidability for those problems that are RE but not recursive. If we want to
 show a problem not to be RE, then only $L_d$ can be used; $L_u$ is useless since
 it \emph{is} RE.
 
-\subsubsection*{THe Halting Problem}
+\subsubsection*{The Halting Problem}
 We could define $H(M)$ for TM $M$ to be the set of inputs $w$ such that $M$
 halts given input $w$, regardless of whether or not $M$ accepts $w$. Then, the
 \emph{halting problem} is the set of pairs $(M, w)$ such that $w$ is in $H(M)$.
 This problem/language is another example of one that is RE but not recursive.
+
+\section*{Undecidable Problems About Turing Machines}
+\subsection*{Reductions}
+In general, if we have an algorithm to convert instance of a problem $P_1$ to
+instance of a problem $P_2$ that have the same answer, then we say that $P_1$
+\emph{reduces to} $P_2$. We can use this proof to show that $P)2$ is at least as
+hard as $P_1$. Thus, if $P_1$ is not recursive, then $P_2$ cannot be recursive.
+If $P_1$ is non-RE, then $P_2$ cannot be RE.
+
+Reductions turn positive instance into positive, and negative to negative. Note
+that t is not essential that every instance of $P_2$ be the target of one or
+more instance of $P_1$.
+
+Formally, a reduction from $P_1$ to $P_2$ is a Turing machine that takes an
+instance of $P_1$ written on its tape and halts with an instance of $P_2$ on its
+tape.
+
+\begin{thm}
+If there is a reduction from $P_1$ to $P_2$, then:
+\begin{enumerate}
+\item If $P_1$ is undecidable then so is $P_2$.
+\item If $P_1$ is non-RE, then so is $P_2$.
+\end{enumerate}
+\end{thm}
+
+\subsection*{Turing Machines That Accept the Empty Language}
+Let us investigate two languages called $L_e$ and $L_{ne}$. Each consists of
+binary strings. If $L(M_i) = \emptyset$, that is, $M_i$ does not accept any
+input, then $w$ is in $L_e$. Thus, $L_e$ is the language consisting of all those
+encoded TM's whose language is not empty. On the other hand, if $L(M_i)$ is not
+the empty language, then $w$ is in $L_{ne}$. Thus, $L_{ne}$ is the language of
+all codes for Turing machines that accept at least one input string.
+
+We may define the two languages just mentioned as:
+\begin{itemize}
+\item $L_e = \{\,M\,|\,L(M)=\emptyset\,\}$
+\item $L_{ne} = \{\,M\,|\,L(M)\neq\emptyset\,\}$
+\end{itemize}
+They are complements of each other.
+
+\begin{thm}
+$L_{ne}$ is recursively enumerable.
+\end{thm}
+
+\begin{thm}
+$L_{ne}$ is not recursive.
+\end{thm}
+
+\begin{thm}
+$L_e$ is not RE.
+\end{thm}
+
+\subsubsection*{Why Problems and Their Complements are Different}
+For the language that is RE, we can design a TM that takes an input $w$ and
+searches for a reason why $w$ is in the language. Thus, for $L_{ne}$, given a TM
+$M$ as input, we set our TM looking for strings that the TM $M$ accepts, and as
+soon as we find one, we accept $M$. If $M$ is a TM with an empty language, we
+never know for certain that $M$ is not in $L_{ne}$, but we never accept $M$, and
+that is the correct response by the TM.
+
+On the other hand, for the complement problem $L_e$, which is not RE, there is
+no way ever to accept all its strings. Suppose we are given a string $M$ that is
+a TM whose language is empty. We can test inputs to the TM $M$, and we may never
+find one that $M$ accepts, yet we can never be sure that there isn't some input
+we've not yet tested, that this TM accepts. Thus, $M$ can never be accepted,
+even if it should be.
+
+\subsection*{Rice's Theorem and Properties of the RE Languages}
+A \emph{property} of the RE languages is simply a set of RE languages. All
+nontrivial properties of the RE languages are undecidable, in the sense that it
+is impossible to recognize by a Turing machine those binary strings that are
+codes for a TM whose language has the property.
+
+A property is \emph{trivial} if it is either empty or is all RE languages.
+Otherwise, it is \emph{nontrivial}. \textbf{Note} that the empty property,
+$\emptyset$, is different from the property of being an empty language,
+$\{\emptyset\}$.
+
+The typical language is infinite, and thus, cannot be written down as a finite-
+length string that could be input to a TM. Rather, we must recognize the Turing
+machines that accept those languages. Thus, if $\mathcal{P}$ is a property of
+the RE languages, the language $L_{\mathcal{P}}$ is the set of codes for the
+Turing machines $M_i$ such that $L(M_i)$ is a language in $\mathcal{P}$.
+
+\begin{thm}
+(Rice's Theorem) Every nontrivial property of the RE languages is undecidable.
+\end{thm}
 
 \section*{Post's Correspondence Problem}
 \subsection*{Definition of Post's Correspondence Problem}
@@ -393,4 +480,42 @@ expression. Then the following are undecidable:
 \item Is $L(R) \subseteq L(G_1)$?
 \end{enumerate}
 \end{thm}
+
+\section*{Summary of Chapter 9}
+\begin{description}
+\item[Recursive and Recursively Enumerable Languages:] The languages accepted by
+Turing machines are called recursively enumerable (RE), and the subset of RE
+languages that are accepted by a TM that always halts are called recursive.
+\item[Complements of Recursive and RE Languages:] The recursive languages are
+closed under complementation, and if a language and its complement are both RE,
+then both languages are actually recursive. Thus, the complement of an RE-but-
+not-recursive language can never be RE.
+\item[Decidability and Undecidability:] ``Decidable'' is a synonym for
+``recursive,'' although we tend to refer to languages are ``recursive'' and
+problems (which are languages interpreted as a question) as ``decidable.'' If a
+language is not recursive, then we call the problem expressed by that language
+``undecidable.''
+\item[The Language $L_d$:] This language is the set of strings of $0$'s and
+$1$'s that, when interpreted as a TM, are \emph{not} in the language of that TM.
+The language $L_d$ is a good example of a language that is not $RE$; i.e., no
+Turing machine accepts it.
+\item[The Universal Language:] The language $L_u$ consists of strings that are
+interpreted as a TM followed by an input for that TM. The string is in $L_u$ if
+the TM accepts that input. $L_u$ is a good example of a language that is RE but
+not recursive.
+\item[Rice's Theorem:] Any nontrivial property of the languages accepted by
+Turing machines is undecidable. For instance, the set of codes for Turing
+machines whose language is empty is undecidable by Rice's theorem. In fact, this
+language is not RE, although its complement -- the set of codes for TM's that
+accept at least one string -- is RE but not recursive.
+\item[Post's Correspondence Problem:] This question asks, given two lists of the
+same number of strings, whether we can pick a sequence of corresponding strings
+from the two lists and form the same string by concatenation. PCP is an
+important example of an undecidable problem. PCP is a good choice for reducing
+to other problems and thereby proving them undecidable.
+\item[Undecidable Context-Free-Language Problems:] By reduction from PCP, we can
+show a number of questions about CFL's or their grammars to be undecidable. For
+instance, it is undecidable whether a CFG is ambiguous, whether one CFL is
+contained in another, or whether the intersection of two CFL's is empty.
+\end{description}
 \end{document}
