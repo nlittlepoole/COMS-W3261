@@ -12,12 +12,66 @@
 \usetikzlibrary{arrows,automata}
 \begin{document}
 
-\title{COMS W3261 \\ Computer Science Theory \\ Chapter 9 Notes}
+\title{COMS W3261 \\ Computer Science Theory \\ Chapter 10 Notes}
 \author{Alexander Roth}
 \date{2014--11--08}
 \maketitle
 \theoremstyle{definition}
 \newtheorem{thm}{Theorem}
 \section*{Intractable Problems}
+Recall
+\begin{itemize}
+\item The problems solvable in polynomial time on a typical computer are exactly
+the same as the problems solvable in polynomial time on a Turing machine.
+\end{itemize}
 
+\section*{The Classes $\mathcal{P}$ and $\mathcal{NP}$}
+\subsection*{Problems Solvable in Polynomial Time}
+A Turing machine $M$ is said to be of \emph{time complexity} $T(n)$ if whenever
+$M$ is given an input $w$ of length $n$, $M$ halts after making at most $T(n)$
+moves, regardless of whether or not $M$ accepts. A language $L$ is in class
+$\mathcal{P}$ if there is some polynomial $T(n)$ such that $L = L(M)$ for some
+deterministic TM $M$ of time complexity $T(n)$.
+
+\subsection*{An Example: Kruskal's Algorithm}
+There is a well-known ``greedy'' algorithm, called \emph{Kruskal's Algorithm},
+for finding a minimum-weight spanning tree.
+\begin{enumerate}
+\item Maintain for each node the \emph{connected component} in which the node
+appears, using whatever edges of the tree have been selected so far. Initially,
+no edges are selected, so every node is then in a connected component by itself.
+\item Consider the lowest-weight edge that has not yet been considered; break
+ties any way you like. If this edge connects two nodes that are currently in
+different connected components then:
+\begin{enumerate}
+\item Select that edge for the spanning tree, and
+\item Merge the two connected components involved, by changing the component
+number of all nodes in one of the two components to be the same as the component
+number of the other.
+\end{enumerate}
+If, on the other hand, the selected edge connects two nodes of the same
+component, then this edge does not belong in the spanning tree; it would create
+a cycle.
+\item Continue considering edges until either all edges have been considered, or
+the number of edges selected for the spanning tree is one less than the number
+of nodes. Note that in the latter case, all nodes must be in one connected
+component, and we can stop considering edges.
+\end{enumerate}
+
+In the theory of intractability, we generally want to argue that a problem is
+hard, not easy, and the fact that a yes-no version of a problem is hard implies
+that a more standard version, where a full answer must be computed, is also
+hard.
+
+Problem elements must be encoded suitably to work with a Turing machine. The
+effect of this requirement is that inputs to Turing machines are generally
+slightly longer than the intuitive ``size'' of the input. However, there are two
+reasons why the difference is not significant:
+\begin{enumerate}
+\item The difference between the size as a TM input string and as an informal
+problem input is never more than a small factor, usually the logarithm of the
+input size.
+\item The length of a string representing the input is actually a more accurate
+measure of the number of bytes a real computer has to read to get its input.
+\end{enumerate}
 \end{document}
