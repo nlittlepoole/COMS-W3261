@@ -207,13 +207,7 @@ undecidable, we know that the binary PCP is undecidable.
 \begin{enumerate}
 \item Has only two working states, and one accepting state from which it never
 makes any transitions?
-\item[\emph{Solution}:] This language is context-free. We can restrict the tape
-of this Turing machine to behave like the stack of a PDA. For each input symbol
-the machine reads in, the symbol will be added to the subsequent stack, which is
-represented by the tape to the left of the input head; that is, we have the
-input head read only left to right. The Turing machine will halt when the final
-state is reached without regards to what is on the stack like a PDA accepting by
-final state.
+\item[\emph{Solution}:] This language is recursively enumerable. We can construct this Turing machine to simulate any other Turing machine by mapping the states of the larger Turing machine to the states of this machine. Furthermore, we will have this machine use the same alphabet. Thus, the new Turing machine will simulate all the actions of the larger Turing machine and halt when the original machine would have halted.
 
 \item Never overprints a different symbol on the input tape? That is, if in the
 transition function for the Turing machine whenever $(q, Y, D)$ is in
