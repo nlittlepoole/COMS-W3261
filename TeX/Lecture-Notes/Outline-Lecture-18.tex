@@ -12,8 +12,8 @@
 \newcommand*{\xml}[1]{\texttt{<#1>}}
 \theoremstyle{definition}
 \newtheorem{thm}{Theorem}
-\title{COMS W3261 \\ Computer Science Theory \\ Lecture 17 \\ Undecidable
-Problems}
+\title{COMS W3261 \\ Computer Science Theory \\ Lecture 18 \\ The Classes
+$\mathcal{P}$ and $\mathcal{NP}$}
 \author{Alexander Roth}
 \date{2014 -- 11 -- 10}
 
@@ -79,6 +79,28 @@ length $n$, $M$ halts after making at most $T(n)$ moves.
 \item Note that time complexity is a worst-case measure. If a Turing machine $M$
 is of time complexity $T(n)$, then it makes at most $T(n)$ moves on every input
 of length $n$.
+\subsection*{Class Notes}
+\subsubsection*{Big-Omega Notation}
+We say $T(n)$ is $\Omega(g(n))$ if there exists an integer $n_0$ and a constant
+$c > 0$ such that for all $n \geq n_0$, we have $T(n) \geq cg(n)$.
+\subsubsection*{Big-Theta Notation}
+We say $T(n)$ is $\Theta(g(n))$ if there exists an integer $n_0$ and a constant
+$c_1 > 0 + c_2 > 0$ such that for all n $n \geq n_0$, $c_1g(n) \geq T(n) \geq
+c_2g(n)$.
+
+A TM $M$ is of time complexity $T(n)$ if on any input of length $n$, $M$ halts
+after making at most $T(n)$ moves.
+
+\subsubsection*{Big-0 Examples}
+\begin{itemize}
+\item $O(1)$ constant time.
+\item $O(\log n)$ logarithmic time.
+\item $O((\log n)^c)$ polylogarithmic time.
+\item $O(n)$ linear time.
+\item $O(n^2)$ quadratic time.
+\item $O(n^c)$ polynomial time.
+\item $O(c^n)$ exponential time.
+\end{itemize}
 \end{itemize}
 
 \section{The Classes P and NP}
@@ -95,6 +117,11 @@ in computer science and mathematics.
 \item The Clay Mathematics Institute has identified the P vs NP question as one
 of its sever Millennium Prize Problems and offers a one million dollar prize for
 its solution.
+\subsection*{Class Notes}
+Our definition of Turing machine is usually a single tape deterministic turing
+machine. $\mathcal{NP}$ includes $\mathcal{P}$, the Recursive languages include
+$\mathcal{NP}$ and the Recursively Enumerable languages include the Recursive
+languages.
 \end{itemize}
 
 \section{Polynomial-Time Reductions}
@@ -107,6 +134,8 @@ polynomial function of the length of $I$ such that $I$ is in $A$ iff $J$ is in
 $B$.
 \item Note that in a polynomial-time reduction of the length of $J$ must be a
 polynomial function of the length of $I$.
+\subsection*{Class Notes}
+NP-Complete problems are said to be the hardest problems.
 \end{itemize}
 
 \section{NP-Complete Problems}
@@ -114,14 +143,14 @@ polynomial function of the length of $I$.
 \item A language $L$ is NP-complete if
 \begin{enumerate}
 \item $L$ is in NP and
-\item For every language $L^\prime$ in NP there is a polynomial-time reduction
+\item For every language $L^\prime$ in NP, there is a polynomial-time reduction
 of $L^\prime$ to $L$.
 \end{enumerate}
 \item A language satisfying condition (2) is said to be NP-hard.
 \item If $A$ is NP-complete, $B$ is in NP, and there is a polynomial-time
-reduction of $A$ to $B$, then $B$ is NP-complete.
+reduction of $A$ to $B$, then $B$ is NP-Complete.
 \item If any one NP-complete problem is in P, then P=NP.
-\item An equivalent definition of the NP-complete languages is that they are the
+\item An equivalent definition of the NP-Complete languages is that they are the
 set of languages for which the membership of an input string in the language can
 be checked for correctness, given a certificate, in deterministic polynomial
 time in the length of the input.
