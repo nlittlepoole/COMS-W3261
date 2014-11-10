@@ -207,7 +207,12 @@ undecidable, we know that the binary PCP is undecidable.
 \begin{enumerate}
 \item Has only two working states, and one accepting state from which it never
 makes any transitions?
-\item[\emph{Solution}:] This language is recursively enumerable. We can construct this Turing machine to simulate any other Turing machine by mapping the states of the larger Turing machine to the states of this machine. Furthermore, we will have this machine use the same alphabet. Thus, the new Turing machine will simulate all the actions of the larger Turing machine and halt when the original machine would have halted.
+\item[\emph{Solution}:] This language is recursively enumerable. We can
+construct this Turing machine to simulate any other Turing machine by mapping
+the states of the larger Turing machine to the states of this machine.
+Furthermore, we will have this machine use the same alphabet. Thus, the new
+Turing machine will simulate all the actions of the larger Turing machine and
+halt when the original machine would have halted.
 
 \item Never overprints a different symbol on the input tape? That is, if in the
 transition function for the Turing machine whenever $(q, Y, D)$ is in
