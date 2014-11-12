@@ -1,0 +1,109 @@
+\documentclass[]{article}
+\usepackage[all]{xy}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{indentfirst}
+\usepackage{hhline}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+\usepackage{tipa}
+\usetikzlibrary{arrows,automata}
+\begin{document}
+
+\newtheorem{thm}{Theorem}
+\title{COMS W3261 \\ Computer Science Theory \\ Homework \#4}
+\author{Alexander Roth}
+\date{2014 -- 11 -- 12}
+\maketitle
+
+\section*{Problems}
+\begin{enumerate}
+\item Classify each of the following languages as being (i) recursive, (ii)
+recursively enumerable but not recursive, or (iii) not recursively enumerable.
+In each case briefly justify your answer.
+\begin{enumerate}
+\item $\{\,D\,|\,D$ is a deterministic finite automaton that accepts at least
+one string with an equal number of $a$'s and $b$'s$\,\}$.
+\item[\emph{Solution}:]
+
+\item $\{\,(D_1,D_2)\,|\,D_1$ and $D_2$ are deterministic finite automata and
+$L(D_1) = L(D_2)\,\}$
+\item[\emph{Solution}:]
+
+\item $\{\,(M,w)\,|\,M$ is a Turing machine that halts on input $w\,\}$.
+\item[\emph{Solution}:]
+
+\item $\{\,(M_1,M_2)\,|\,M_1$ and $M_2$ are Turing machines and $L(M_1) =
+L(M_2)\,\}$
+\item[\emph{Solution}:]
+
+\end{enumerate}
+
+\item Boolean expressions
+\begin{enumerate}
+\item Describe an algorithm in high-level pseudocode to evaluate a boolean
+expression given a truth assignment to its variables. Describe how your
+algorithm evaluates the boolean expression $x \vee \neg(y \wedge z)$ for the
+truth assignment $T(x) = 0$, $T(y) = 0$, $T(z) = 1$. (1 is true, 0 is false)
+\item[\emph{Solution}:]
+
+\item What is the time complexity of your algorithm?
+\item[\emph{Solution}:]
+
+\item Describe an algorithm in high-level pseudocode to determine whether a
+boolean expression always evaluates to true on all truth assignments to its
+variables (is a tautology). Illustrate how your algorithm performs on the
+boolean expression $x \vee \neg (y \wedge x)$.
+\item[\emph{Solution}:]
+
+\item What is the time complexity of your algorithm?
+\item[\emph{Solution}:]
+
+\end{enumerate}
+
+\item The game PEBBLES is played on an $k \times n$ chessboard. Initially each
+square of the chessboard has a black pebble, or a white pebble, or no pebble.
+You play the game by removing pebbles one at a time. You win the game if you can
+end up with a board in which each column contains only pebbles of a single color
+and each row contains at least one pebble.
+\begin{enumerate}
+\item Show that the set of winnable PEBBLES game is in NP. Hint: Describe a
+nondeterministic polynomial-time algorithm to  determine whether a given PEBBLES
+board is winnable.
+\item[\emph{Solution}:]
+
+\item Given a boolean expression $E$ in 3-CNF with $k$ clauses and $n$
+variables, construct the following $k \times n$ board: If literal $x_i$ is in
+clause $c_j$, put a black pebble in column $x_i$, row $c_j$. If literal $\neg
+x_i$ is in clause $c_j$, put a white pebble in column $x_i$, row $c_j$. Show
+that $E$ is satisfiable if and only if this PEBBLES game is winnable.
+\item[\emph{Solution}:]
+
+\item What can you conclude from showing (a) and (b)?
+\item[\emph{Solution}:]
+\end{enumerate}
+
+\item A polynomial-time verifier for a language $L$ is an algorithm $V$ such
+that $L = \{\,w\,|\,V$ accepts $(w,c)$ in polynomial time for some polynomial-
+length string $c$ called a certificate or proof of membership in $L\,\}$. Show
+that NP is equivalent to the class of languages that have polynomial-time
+verifiers.
+\item[\emph{Solution}:]
+
+\item The classes P and NP
+\begin{enumerate}
+\item Show that if language $A$ is NP-complete and $A$ is in P, then P=NP.
+\item[\emph{Solution}:]
+
+\item Show that if $A$ is NP-complete and $A$ is polynomially reducible to a
+language $B$ in NP, then $B$ is NP-complete.
+\item[\emph{Solution}:]
+
+\end{enumerate}
+\end{enumerate}
+
+\end{document}
