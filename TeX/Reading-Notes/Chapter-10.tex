@@ -74,4 +74,104 @@ input size.
 \item The length of a string representing the input is actually a more accurate
 measure of the number of bytes a real computer has to read to get its input.
 \end{enumerate}
+
+\subsection*{Nondeterministic Polynomial Time}
+A language $L$ is in the class $\mathcal{NP}$ if there is a nondeterministic TM
+$M$ and a polynomial time complexity $T(n)$ such that $L = L(M)$, and when $M$
+is given an input of length $n$, there are no sequences of more than $T(n)$
+moves of $M$.
+
+\subsection*{An $\mathcal{NP}$ Example: The Traveling Salesman Problem}
+Consider the \emph{Traveling Salesman Problem (TSP)}. The input to TSP is the
+same as to MWST, a graph with integer weights on the edges, and a weight limit
+$W$. The question asked is whether the graph has a ``Hamilton circuit'' of total
+weight at most $W$. A \emph{Hamilton circuit} is a set of edges that connect the
+nodes into a single cycle, with each node appearing exactly once.
+
+\subsection*{Polynomial-Time Reductions}
+In the theory of intractability, we shall use \emph{polynomial-time reductions}
+only. A reduction from $P_1$ to $P_2$ is polynomial-time if it takes time that
+is some polynomial in the length of the $P_1$ instance. The $P_2$ instance will
+be of a length that is polynomial in the length of the $P_1$ instance.
+
+\subsection*{NP-Complete Problems}
+Let $L$ be a language. We say $L$ is \emph{NP-complete} if the following
+statements are true about $L$:
+\begin{enumerate}
+\item $L$ is in $\mathcal{NP}$.
+\item For every language $L^\prime$ in $\mathcal{NP}$ there is a polynomial-time
+reduction of $L^\prime$ to $L$.
+\end{enumerate}
+
+\begin{thm}
+If $P_1$ is NP-complete, $P_2$ is in $\mathcal{NP}$, and there is a polynomial-
+time reduction of $P_1$ to $P_2$, then $P_2$ is NP-complete.
+\end{thm}
+
+\subsubsection*{NP-Hard Problems}
+Some problems $L$ are so hard that although we can prove condition (2) of the
+definition of NP-completeness (every language in $\mathcal{NP}$ reduces to $L$
+in polynomial time), we cannot prove condition (1): that $L$ is in
+$\mathcal{NP}$. If so, we call $L$ \emph{NP-hard}. It is generally acceptable to
+use ``intractable'' to mean ``NP-hard.''
+
+\section*{An NP-Complete Problem}
+\subsection*{The Satisfiability Problem}
+The \emph{boolean expressions} are built from:
+\begin{enumerate}
+\item Variables whose values are boolean; i.e., they either have the value 1
+(true) or 0 (false).
+\item Binary operators $\wedge$ and $\vee$, standing for the logical AND and OR
+of two expressions.
+\item Unary operator $\neg$ standing for logical negation.
+\item Parentheses to group operators and operands, if necessary to alter the
+default precedence of operators: $\neg$ highest, then $\wedge$, and finally
+$\vee$.
+\end{enumerate}
+A \emph{truth assignment} for a given boolean expression $E$ assigns either true
+or false to each of the variables mentioned in $E$. The \emph{value} of
+expression $E$ given a truth assignment $T$, denoted $E(T)$, is the result of
+evaluting $E$ with each variable $x$ replaced by the value $T(x)$ that $T$
+assigns to $x$.
+
+A truth assignment $T$ \emph{satisfies} boolean expression $E$ if $E(T) = 1$;
+i.e., the truth assignment $T$ makes expression $E$ true. A boolean expression
+$E$ is said to be \emph{satisfiable} if there exists ast least one truth
+assignment $T$ that satisfies $E$.
+
+The \emph{satisfiability problem} is:
+\begin{itemize}
+\item Given a boolean expression, is it satisfiable?
+\end{itemize}
+
+\subsection*{Representing SAT Instances}
+Since there are an infinite number of symbols that could in principle appear in
+a boolean expression, we have a familiar problem of having to devise a code with
+a fixed, finite alphabet to represent expressions with arbitrarily large number
+of variables. Only then can we talk about SAT as a ``problem,'' that is, as a
+language over a fixed alphabet consisting of codes for those boolean expressions
+that are satisfiable. The code wee shall use is as follows:
+\begin{enumerate}
+\item The symbols $\wedge$, $\vee$, $\neg$, $($, and $)$ are represented by
+themselves.
+\item The variable $x_i$ is represented by the symbol $x$ followed by $0$'s and
+$1$'s that represent $i$ in binary.
+\end{enumerate}
+Thus, the alphabet for the SAT problem/language has only eight symbols. All
+instance of SAT are strings in this fixed, finite alphabet.
+
+Notice that the length of a coded boolean expression is approximately the same
+as the number of positions in the expression, counting each variable occurrence
+as 1.
+
+\subsection*{NP-Completeness of the SAT Problem}
+To prove a problem is NP-complete, we need first to show that it is in
+$\mathcal{NP}$. Then, we must show that every language in $\mathcal{NP}$ reduces
+to the problem in question In general, we show the second part by offering a
+polynomial-time reduction from some other NP-complete problem, and then invoking
+Cook's Theorem.
+
+\begin{thm}
+(Cook's Theorem) SAT is NP-complete.
+\end{thm}
 \end{document}
