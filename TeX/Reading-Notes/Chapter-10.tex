@@ -174,4 +174,40 @@ Cook's Theorem.
 \begin{thm}
 (Cook's Theorem) SAT is NP-complete.
 \end{thm}
+
+\section*{Summary of Chapter 10}
+\begin{description}
+\item[The Classes $\mathcal{P}$ and $\mathcal{NP}$] $\mathcal{P}$ consists of
+all those languages or problems accepted by some Turing machine that runs in
+some polynomial amount of time, as a function of its input length.
+$\mathcal{NP}$ is the class of languages or problems that are accepted by
+nondeterministic TM's with a polynomial bound on the time taken along any
+sequence of nondeterministic choices.
+\item[The $\mathcal{P} = \mathcal{NP}$ Question] It is unknown whether or not
+$\mathcal{P}$ and $\mathcal{NP}$ are really the same classes of languages,
+although we suspect strongly that there are languages in $\mathcal{NP}$ that are
+not in $\mathcal{P}$.
+\item[Polynomial-Time Reductions] If we can transform instance of one problem in
+polynomial time into instances of a second problem that has the same answer --
+yes or no -- then we say the first problem is polynomial-time reducible to the
+second.
+\item[NP-Complete Problems] A language is NP-complete if it is in
+$\mathcal{NP}$, and there is a polynomial-time reduction from each language in
+$\mathcal{NP}$ to the language in question. We believe strongly that none of the
+NP-complete problems are in $\mathcal{P}$, and the fact that no one has ever
+found a polynomial-time algorithm for any of the thousands of known NP-complete
+problems is mutually re-enforcing evidence that none are in $\mathcal{P}$.
+\item[NP-Complete Satisfiability Problems] Cook's theorem showed the first NP-
+complete problem -- whether a boolean expression is satisfiable -- by reducing
+all problems in $\mathcal{NP}$ to the SAT problem in polynomial time. In
+addition, the problem remains NP-complete even if the expression is restricted
+to consist of a product of clauses, each of which consists of only three
+literals -- the problem 3SAT.
+\item[Other NP-Complete Problems] There is a vast collection of known NP-
+complete problems; each is proved NP-complete by a polynomial-time reduction
+from some previously known NP-complete problem. We have given reductions that
+show the following problems NP-complete: the independent set, node cover,
+directed and undirected versions of the Hamilton circuit problem, and the
+traveling-salesman problem.
+\end{description}
 \end{document}
