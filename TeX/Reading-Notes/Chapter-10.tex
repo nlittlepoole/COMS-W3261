@@ -175,6 +175,65 @@ Cook's Theorem.
 (Cook's Theorem) SAT is NP-complete.
 \end{thm}
 
+\section*{A Restricted Satisfiability Problem}
+\subsection*{Normal Forms for Boolean Expressions}
+The following are three essential definitions:
+\begin{itemize}
+\item A \emph{literal} is either a variable, or a negated variable.
+\item A \emph{clause} is the logical OR of one or more literals.
+\item A boolean expression is said to be in \emph{conjunctive normal form} or
+\emph{CNF} if it is the AND of clauses.
+\end{itemize}
+
+An expression is said to be in \emph{k-conjunctive normal form} ($k$-CNF) if it
+is the product of clauses, each of which is the sum of exactly $k$ distinct
+literals. For instance, $(x+\overline{y})(y+\overline{z})(z+\overline{x})$ is in
+2-CNF, because each of its clauses has exactly two literals.
+
+\begin{itemize}
+\item CSAT is the problem: given a boolean expression in CNF, is it satisfiable?
+\item $k$SAT is the problem: given a boolean expression in $k$-CNF, is it
+satisfiable?
+\end{itemize}
+
+\subsection*{Converting Expressions to CNF}
+Two boolean expressions are said to be \emph{equivalent} if they have the same
+result on any truth assignment to their variables. If two expressions are
+equivalent, then surely either both are satisfiable
+
+Our first step is to push $\neg$'s below $\wedge$'s and $\vee$'s. The rules we
+need are:
+\begin{enumerate}
+\item $\neg(E\wedge F)\rightarrow \neg(E)\vee \neg(F)$. This rule, one of
+\emph{DeMorgan's laws}, allows us to push $\neg$ below $\wedge$. Note that as a
+side-effect, the $\wedge$ is changed to an $\vee$.
+\item $\neg(E\vee F) \rightarrow \neg(E) \wedge \neg(F)$. The other ``DeMorgan's
+law'' pushes $\neg$ below $\vee$. The $\vee$ is changed to $\wedge$ as a side-
+effect.
+\item $\neg(\neg(E)) \rightarrow E$. This \emph{law of double negation} cancels
+a pair of $\neg$'s that apply to the same expression.
+\end{enumerate}
+
+\begin{thm}
+Every boolean expression $E$ is equivalent to an expression $F$ in which the
+only negations occur in literals; i.e., they apply directly to variables.
+Moreover, the length of $F$ is linear in the number of symbols of $E$ and $F$
+can be constructed from $E$ in polynomial time.
+\end{thm}
+
+\subsection*{NP-Completeness of CSAT}
+Now, we need to take an expression $E$ that is the AND and OR of literals and
+convert it to CNF.
+
+\begin{thm}
+CSAT is NP-complete.
+\end{thm}
+
+\subsection*{NP-Completeness of 3SAT}
+\begin{thm}
+3SAT is NP-complete
+\end{thm}
+
 \section*{Summary of Chapter 10}
 \begin{description}
 \item[The Classes $\mathcal{P}$ and $\mathcal{NP}$] $\mathcal{P}$ consists of
