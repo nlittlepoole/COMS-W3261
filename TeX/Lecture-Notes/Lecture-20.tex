@@ -1,0 +1,113 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+\usepackage{tipa}
+\usetikzlibrary{arrows,automata}
+\begin{document}
+\newcommand*{\xml}[1]{\texttt{<#1>}}
+\theoremstyle{definition}
+\newtheorem{thm}{Theorem}
+\title{COMS W3261 \\ Computer Science Theory \\ Lecture 20 \\ NP and Co-NP}
+\author{Alexander Roth}
+\date{2014 -- 11 -- 17}
+\maketitle
+
+\section*{Outline}
+\begin{enumerate}
+\item Review: SAT is NP-Complete
+\item CSAT is NP-Complete
+\item 3SAT is NP-Complete
+\item Co-NP
+\item SAT and SMT Solvers
+\end{enumerate}
+
+\section{Review: SAT is NP-Complete}
+\begin{itemize}
+\item SAT is the language $\{\,E\,|\,E$ is a satisfiable boolean expression
+$\,\}$.
+\item We have shown that SAT is NP-complete by (1) showing SAT is in NP and (2)
+showing that every language in NP can be reduced to SAT in polynomial time.
+\end{itemize}
+
+\section{CSAT is NP-Complete}
+\begin{itemize}
+\item A boolean expression is in conjunctive normal form (CNF) if it is the
+logical AND (conjunction) of clauses where a clause is the logical OR of one or
+more literals. (Colloquially, the AND of ORs.)
+\item We define CSAT as the language $\{\,E\,|\,E$ is a satisfiable CNF boolean
+expression $\,\}$.
+\item We can prove that CSAT is NP-Complete.
+\begin{itemize}
+\item First, we need to show that CSAT is in NP. But this is easy because a CNF
+boolean expression is a special case of a boolean expression and SAT is in NP.
+\item Second, we need to show we can reduce an instance of $E$ of SAT into an
+instance $F$ of CSAT in polynomial time such that $E$ is satisfiable iff $F$ is
+satisfiable. However, this part of the proof is a bit more complicated because
+we need to do the reduction in polynomial time.
+\begin{itemize}
+\item Two boolean expressions are equivalent if they have the same value on
+every truth assignment.
+\item However, just converting a boolean expression $E$ to an equivalent CNF
+boolean expression $E^\prime$ may make $E^\prime$ exponentially longer and thus
+take exponential time (in the length of $E$).
+\item To avoid this exponential blow-up, we can transform $E$ into another not
+necessarily equivalent boolean expression $F$ but with the property that $E$ is
+satisfiable iff $F$ is satisfiable. Moreover, we can do this transformation in
+time polynomial in the length of $E$. Section 10.3 of HMU has the details.
+\end{itemize}
+\end{itemize}
+\end{itemize}
+
+\section{3SAT is NP-Complete}
+\begin{itemize}
+\item A boolean expression is in $k$-CNF if it is the logical AND of clauses
+each one of which is the logical OR of exactly $k$ distinct literals. for
+example, $(w\vee\neg x\,\vee y)\wedge(x\vee\neg y \vee z)$ is in 3-CNF.
+\item We define $k$SAT as the language $\{\,E\,|\,E$ is a satisfiable $k$-CNF
+boolean expression $\,\}$.
+\item We can show that 1SAT and 2SAT are in P but $k$SAT is NP-Complete for $k
+\geq 3$.
+\end{itemize}
+
+\section{Co-NP}
+\begin{itemize}
+\item P is closed under complement but is not known whether NP is closed under
+complement.
+\item CO-NP is the set of languages whose complements are in NP.
+\item A language is co-NP-Complete if it is in Co-NP and if every language in
+Co-NP is polynomial-time reducible to it.
+\begin{itemize}
+\item The language consisting of boolean expressions that are tautologies is Co-
+NP-Complete.
+\end{itemize}
+\item It is widely believed that none of the NP-complete languages have their
+complements in NP.
+\item Thus, it is believed no NP-Complete language is in Co-NP.
+\begin{itemize}
+\item We suspect NP $\neq$ Co-NP because we can prove NP = Co-NP iff there is
+some NP-complete problem whose complements is in NP.
+\end{itemize}
+\end{itemize}
+
+\section{SAT and SMT Solvers}
+\begin{itemize}
+\item Even though SAT is NP-Complete (a worst-case result), software tools
+called SAT solvers have been developed using various algorithms and heuristics
+that seem to work well for instances of large practical SAT problems arising in
+areas such as electronic design automation, model checking, software
+verification, and artificial intelligence.
+\item Satisfiability Modulo Theories (SMT) are generalizations of SAT where an
+SMT instance is a formula in first-order logic in which some function and
+predicate symbols have additional interpretations. A simple example would be an
+instance of SAT in which some of the binary variables are replaced by linear
+inequalities. Many SMT solvers have been built. In a typical use of an SMT
+solver, we would translate various kinds of assertions attached to a program
+into SMT formulas to see if the assertions are always true. SMT solvers allow a
+richer set of questions to be posed than is possible with SAT solvers.
+\end{itemize}
+\end{document}
