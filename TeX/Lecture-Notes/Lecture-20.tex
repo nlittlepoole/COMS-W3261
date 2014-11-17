@@ -110,4 +110,40 @@ solver, we would translate various kinds of assertions attached to a program
 into SMT formulas to see if the assertions are always true. SMT solvers allow a
 richer set of questions to be posed than is possible with SAT solvers.
 \end{itemize}
+
+\section*{Class Notes}
+Proving an NP-Complete problem is NP-Complete:
+Suppose we have a problem $L^\prime$. We must:
+\begin{enumerate}
+\item show that $L^\prime$ is in $\mathcal{NP}$.
+\item Reduce $L^\prime$ to an NP-complete problem $L$.
+\end{enumerate}
+CNF is the AND of a bunch of clauses. (The AND of OR's).
+
+Consider $E = x_1y_1 + x_2y_2 + x_3y_3$ in disjunctive normal form. Map into
+conjunctive normal form. Transform into an equivalent boolean expression $F$
+\begin{align*}
+F = &(x_1+x_2+x_3)(y_1+x_2+x_3)(x_1+y_2+x_3)\wedge \\
+    &(y_1+y_2+x_3)(x_1+x_2+y_3)(x_1+x_2+y_3)\wedge \\
+    &(x_1+y_2+y_3)(y_1+y_2+y_3)
+\end{align*}
+OR of $n$ AND's + each AND has 2 vars. AND of $2^n$ clauses of $n$ vars.
+
+Step 1.
+\begin{align*}
+E &= \neg((\neg(x+y))(\overline{x}+y)) \\
+&\Rightarrow \neg(\neg(x+y))+\neg(\overline{x}+y) \\
+&\Rightarrow x+y + \neg(\overline{x}+y) \\
+&\Rightarrow x + y + x\overline{y}
+\end{align*}
+
+Step 2. Transform the resulting expression $E$ of length $n$ into an expression
+$F$ such that
+\begin{enumerate}
+\item $F$ is in CNF and has at most $n$ clauses.
+\item $F$ is constructible from $E$ in $O(|E|)$ time.
+\item A truth assignment $T$ for $E$ makes $E$ satisfiable iff there exists an
+extension $S$ of $T$ that makes $F$ true.
+\end{enumerate}
+
 \end{document}
