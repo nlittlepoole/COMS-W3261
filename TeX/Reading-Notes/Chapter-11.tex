@@ -1,0 +1,43 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{bm}
+\usepackage[T1]{fontenc}
+\usepackage{indentfirst}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+\usepackage{tipa}
+\usetikzlibrary{arrows,automata}
+\begin{document}
+
+\title{COMS W3261 \\ Computer Science Theory \\ Chapter 11 Notes}
+\author{Alexander Roth}
+\date{2014--11--17}
+\maketitle
+\theoremstyle{definition}
+\newtheorem{thm}{Theorem}
+
+\section*{Additional Classes of Problems}
+\section*{Complements of Languages in $\mathcal{NP}$}
+The class of languages $\mathcal{P}$ is closed under complementation. It is not
+known whether $\mathcal{NP}$ is closed under complementation.
+
+\subsection*{The Class of Lagnuages Co-$\mathcal{NP}$}
+Co-$\mathcal{NP}$ is the set of languages whose complements are in
+$\mathcal{NP}$Every language $\mathcal{P}$ has its complement also in
+$\mathcal{P}$, and therefore in $\mathcal{NP}$. We believe that none of the NP-
+Complete problem have their complements in $\mathcal{NP}$, and therefore no NP-
+Complete problem is in Co-$\mathcal{NP}$. Likewise, we believe the complements
+of NP-Complete problems, which are by definition in Co-$\mathcal{NP}$, are not
+in $\mathcal{NP}$.
+
+\subsection*{NP-Complete Problems and Co-$\mathcal{NP}$}
+Let us assume that $\mathcal{P} \neq \mathcal{NP}$. We could have $\mathcal{NP}$
+and co-$\mathcal{NP}$ are equal, but larger than $\mathcal{P}$.
+\begin{thm}
+$\mathcal{NP} =$ Co-$\mathcal{NP}$ if an only if there is some NP-complete
+problem whose complement is in $\mathcal{NP}$.
+\end{thm}
+\end{document}
