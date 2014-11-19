@@ -1,0 +1,195 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+\usepackage{tipa}
+\usetikzlibrary{arrows,automata}
+\begin{document}
+\newcommand*{\xml}[1]{\texttt{<#1>}}
+\theoremstyle{definition}
+\newtheorem{thm}{Theorem}
+\title{COMS W3261 \\ Computer Science Theory \\ Lecture 21 \\ Introduction to the Lambda Calculus}
+\author{Alexander Roth}
+\date{2014 -- 11 -- 19}
+\maketitle
+
+\section*{Outline}
+\begin{enumerate}
+\item History of the lambda calculus
+\item CFG for the lambda calculus
+\item Function abstraction
+\item Function application
+\item Free and bound variables
+\item Beta reductions
+\item Evaluating a lambda expression
+\item Currying
+\item Renaming bound variables by alpha reduction
+\item Eta conversion
+\item Substitutions
+\item Disambiguating lambda expressions
+\end{enumerate}
+
+\section{History of the Lambda Calculus}
+\begin{itemize}
+\item The lambda calculus was introduced in the 1930s by the logician Alonzo Church at Princeton University as a mathematical system for defining computable functions.
+\item Alan Turing (who was Church's PhD student) showed that the lambda calculus is equivalent in definitional power to that of Turing machines.
+\item The lambda calculus serves as the model of computation for functional programming languages and has applications to artificial intelligence, proof systems, and logic.
+\item The programming language Lisp was developed by John McCarthy at MIT in 1958 around the lambda calculus.
+\item Haskell, considered by many as one of the purest functional programming languages, was developed by Simon Peyton Jones, Paul Houdak, Phil Wadles and others in the late 1980s and early 90s.
+\item Many established languages such as C++ and Java and many new languages such as Ruby and Python have adopted lambda expressions as anonymous functions from the lambda calculus.
+\item Because of its simplicity, lambda calculus is a very useful tool for the study and analysis of programming languages.
+\end{itemize}
+
+\section{CFG for the Lambda Calculus}
+\begin{itemize}
+\item The central concept in lambda calculus is an expression which we can think of as a program that when evaluated using beta reductions returns a result consisting of another lambda calculus expression.
+\item Here is a grammar for lambda expressions:
+\[\texttt{expr}\rightarrow\lambda\,\texttt{variable}\,.\,\texttt{expr}\,|\,\texttt{expr}\,\texttt{expr}\,|\,\texttt{variable}\,|\,(\,\texttt{expr}\,)\,|\,\texttt{constant} \]
+\item A \texttt{variable} is an identifier.
+\item A \texttt{constant} is a built-in function such as addition or multiplication, or a constant such as an integer or boolean. However, as we shall see, all programing language constructs can be implemented as functions with the pure lambda calculus so these constants are unnecessary. However, we will use some constants for notational simplicity.
+\end{itemize}
+
+\section{Function Abstraction}
+\begin{itemize}
+\item A function abstraction, often called a lambda abstraction, is a lambda expression that defines a function.
+\item A function abstraction consists of four parts: a lambda followed by a variable, a period, and then an expression as in $\lambda x.expr$.
+\item In the function abstraction $\lambda x.expr$ the variable $x$ is the formal parameter of the function and $expr$ is the body of the function.
+\item For example, the function abstraction $\lambda x.+x 1$ defines a function of $x$ that adds $x$ to $1$. Parentheses can be added to lambda expressions for clarity. Thus, we could have written this function abstraction as $\lambda x.(\,+\,x\,1\,)$ or even as $(\lambda x.(\,+\,x\,1\,))$.
+\item In C, this function definition might be written as
+\lstinputlisting[language=C]{../code/addOne.c}
+\item Note that unlike C the lambda abstraction does not give a name to the function. The lambda abstraction does not give a name to the function. The lambda expression itself is the function.
+\item We say that $\lambda x.expr$ \emph{binds} the variable $x$ in $expr$ and that $expr$ is the \emph{scope} of the variable.
+\end{itemize}
+
+\section{Function Application}
+\begin{itemize}
+\item A function application, often called a lambda application, consists of an expression followed by an expression: \texttt{expr expr}. The first expression is a function abstraction and the second expression is the argument to which the function is applied. All functions in lambda calculus have exactly one argument. Multiple-argument functions are represented by currying, which we shall explain below.
+\item For example, the lambda expression $\lambda x.(\,+\,x\,1\,)\,2$ is an application of the function $\lambda x.(\,+\,x\,1\,)$ to the argument $2$.
+\item This function application $\lambda x.(\,+\,x\,1\,)\,2$ can be evaluated by substituting the argument $2$ for the formal parameter $x$ in the body $(+x1)$. Doing this we get $(\,+\,2\,1\,)$. This substitution is called a \emph{beta reduction}.
+\item Beta reductions are like macro substitutions in C. To do beta reductions correctly, we may need to rename bound variables in lambda expressions to avoid name clashes.
+\item Function application associates left-to-right; thus, $f\,g\,h=(f\,g)h$.
+\item Function application binds more tightly than $\lambda$; thus, $\lambda x.f\,g\,x=(\lambda x.(f\,g)x)$.
+\item Functions in the lambda calculus are first-class citizens; that is to say, functions can be used as arguments to functions and functions can return functions as results.
+\end{itemize}
+
+\section{Free and Bound Variables}
+\begin{itemize}
+\item In the function definition $\lambda x.x$, the variable $x$ in the body of the definition (the second $x$) is \emph{bound} because its first occurrence in the definition is $\lambda x$.
+\item A variable that is not bound in $expr$ is said to be \emph{free} in $expr$. In the function $(\lambda x.xy)$, the variable $x$ in the body of the function is bound and the variable $y$ is free.
+\item Every variable in a lambda expression is either bound or free. Bound and free variables have quite a different status in functions.
+\item In the expression $(\lambda x.x)(\lambda y.yx)$:
+\begin{itemize}
+\item The variable $x$ in the body of the leftmost expression is bound to the first lambda.
+\item The variable $y$ in the body of the second expression is bound to the second lambda.
+\item The variable $x$ in the body of the second expression is free.
+\item Note that $x$ in the second expression is independent of the $x$ in the first expression.
+\end{itemize}
+\item In the expression $(\lambda x.xy)(\lambda y.y)$:
+\begin{itemize}
+\item The variable $y$ in the body of the leftmost expression is free.
+\item The variable $y$ in the body of the second expression is bound to the second lambda.
+\end{itemize}
+\item Given an expression $e$, the following rule define FV$(e)$, the set of free variables in $e$:
+\begin{itemize}
+\item If $e$ is a variable $x$, then FV$(x) = \{x\}$.
+\item If $e$ is of the form $\lambda x.y$, then FV$(e) =$ FV$(y) - \{x\}$.
+\item If $e$ is of the form $xy$, then FV$(e) =$ FV$(x)\,\,\cup$ FV$(y)$.
+\end{itemize}
+\item An expression with no free variables is said to be \emph{closed}.
+\end{itemize}
+
+\section{Beta Reductions}
+\begin{itemize}
+\item A function application $\lambda x.e\,f$ is evaluated by substituting the argument $f$ for all free occurrences of the formal parameter $x$ in the body $e$ of the function definition $\lambda x.e$.
+\item We will use the notation $\lbrack f/x\rbrack e$ to indicate that $f$ is to be substituted for all free occurrences of $x$ in the expression $e$.
+\item Examples:
+\begin{enumerate}
+\item $(\lambda x.x)y \rightarrow \lbrack y/x \rbrack x = y$.
+\item $(\lambda x.xzx)y \rightarrow \lbrack y/x \rbrack xzx = yzy$.
+\item $(\lambda x.z)y \rightarrow \lbrack y/x \rbrack z = z$ since the formal parameter $x$ does not appear in the body $z$.
+\end{enumerate}
+\item This substitution in a function application is called a \emph{beta reduction} and we use a right arrow to indicate it.
+\item If $expr1 \rightarrow expr2$, we say that $expr1$ \emph{reduces} to $expr2$ in one step.
+\item In general, $(\lambda x.e)f \rightarrow \lbrack f/x \rbrack e$ means that applying the function $(\lambda x.e)$ to the argument expression $f$ reduces to the expression $\lbrack f/x \rbrack e$ where the argument expression $f$ is substituted for the function's formal parameter $x$ in the function body $e$.
+\item A lambda calculus expressions (aka a ``program'') is ``run'' by computing a final result by repeatedly applying beta reductions. We use $\overset{*}{\rightarrow}$ to denote the reflexive and transitive closures of $\rightarrow$; that is, zero or more applications of beta reductions.
+\item Examples:
+\begin{enumerate}
+\item $(\lambda x.x)y \rightarrow y$ (illustrating that $\lambda x.x$ is the identity function).
+\item $(\lambda x.xx)(\lambda y.y) \rightarrow (\lambda y.y)(\lambda y.y) \rightarrow (\lambda y.y)$; thus, we can write $(\lambda x.xx)\overset{\rightarrow}{*}(\lambda y.y)$. Note that here we have applied a function to a function as an argument and the result is a function.
+\end{enumerate}
+\end{itemize}
+
+\section{Evaluting a Lambda Expression}
+\begin{itemize}
+\item A lambda calculus expression can be thought of as a program which can be executed by evaluating it. Evaluation is done by repeatedly finding a reducible expression (called a redex) and reducing it by a function evaluation until there are no more redexes.
+\item Example 1: The lambda expression $(\lambda x.x)y$ in its entirety is a redex that reduces to $y$.
+\item Example 2: The lambda expression $(+(*\,1\,2)(-\,4\,3))$ has two redexes: $(*\,1\,2)$ and $(-\,4\,3)$. If we choose to reduce the first redex , we get $(+\,2\,(-\,4\,3))$. We can then reduce $(+\,2(-\,4\,3))$ to get $(+\,2\,1)$. Finally we can reduce $(+\,2\,1)$ to get 3.
+\item Note that if we had chosen the second redex to revaluate first, we would have ended up with the same result:
+\[ (+(*\,1\,2)(-\,4\,3))\rightarrow(+(*\,1\,2)\,1)\rightarrow(+\,2\,1)\rightarrow 3 \]
+\end{itemize}
+
+\section{Currying}
+\begin{itemize}
+\item All functions in lambda calculus are prefix and take exactly one argument.
+\item If we want to apply a function to more than one argument, we can use a technique called \emph{currying} that treats a function applied to more than one argument to a sequence of applications of one-argument functions. For example, to express the sum of 1 and 2, we can write $(+\,1\,2)$ as $((+\,1)\,2)$ where the expression $(+\,1)$ denotes the function that adds 1 to its argument. Thus $((+\,1)\,2)$ means the function $+$ is applied to the argument 1 and the result is a function $(+\,1)$ that adds 1 to its argument: $(+\,1\,2)=((+\,1)\,2)\rightarrow 3$
+\end{itemize}
+
+\section{Renaming Bound Variables by Alpha Reduction}
+\begin{itemize}
+\item The name of a formal parameter in a function definition is arbitrary. We can use any variable to name a parameter, so that the function $\lambda x.x$ is equivalent to $\lambda y.y$ and $\lambda z.z$. This kind of renaming is called \emph{alpha reduction}.
+\item Note that we cannot rename free variables in expressions.
+\item Also note that we cannot change the name of a bound variable in an expression to conflict with the name of a free variable in that expression.
+\end{itemize}
+
+\section{Eta Conversion}
+\begin{itemize}
+\item The two lambda expressions $(\lambda x.+\,1\,x)$ and $(+\,1)$ are equivalent in the sense that these expressions behave in exactly the same way when they are applied to an argument -- they ad 1 to it. $\eta$-conversion is a rule that expresses this equivalence.
+\item In general, if $x$ does not occur free in the function $F$, then $(\lambda x.F\,x)$ is $\eta$-convertible to $F$.
+\end{itemize}
+
+\section{Substitutions}
+\begin{itemize}
+\item For a beta reduction, we introduced the notation $\lbrack f/x \rbrack e$ to indicate that the expression $f$ is to be substituted for all free occurrences of the formal parameter $x$ in the expression $e$:
+\[ (\lambda x.e)\,f\rightarrow\lbrack f/x \rbrack e \]
+\item To avoid name clashes in a substitution $\lbrack f/x \rbrack e$, first rename the bound variables in $e$ and $f$ so they become distinct. Then perform the textual substitution of $f$ for $x$ in $e$.
+\begin{itemize}
+\item For example, consider the substitution $\lbrack y(\lambda x.x)/x \rbrack\,\lambda y.(\lambda x.x)yx$.
+\item After renaming all the bound variables to make them all distinct we get $\lbrack y(\lambda u.u)/x\rbrack\,\lambda v.(\lambda w.w)vx$.
+\item Then doing the substitution we get $\lambda v.(\lambda w.w)v(y(\lambda u.u))$.
+\end{itemize}
+\item The rules for substitution are as follows. We assume $x$ and $y$ are distinct variables, and $e$, $f$ and $g$ are expressions.
+\begin{itemize}
+\item For variables
+\begin{align*}
+\lbrack e/x \rbrack x &= e \\
+\lbrack e/x \rbrack y &= y
+\end{align*}
+\item For function applications
+\[ \lbrack e/x \rbrack(f\,g) = (\lbrack e/x \rbrack f)(\lbrack e/x \rbrack g) \]
+\item For function abstractions
+\begin{align*}
+\lbrack e/x \rbrack(\lambda x.f) &= \lambda x.f \\
+\lbrack e/x \rbrack(\lambda y.f) &= \lambda y.\lbrack e/x \rbrack f
+\end{align*}
+provided $y$ is not free in $e$ (this is called the ``freshness'' condition).
+\end{itemize}
+\item Examples
+\begin{enumerate}
+\item $\lbrack y/y \rbrack (\lambda x.x) = \lambda x.f$
+\item $\lbrack y/x \rbrack ((\lambda x.y) = (\lbrack y/x \rbrack(\lambda x.y))(\lbrack y/x \rbrack x) = (\lambda x.y)y$
+\item Note that the freshness condition does not allow us to make the substitution $\lbrack y/x \rbrack(\lambda y.x) = \lambda y.(\lbrack y/x \rbrack x) = \lambda y.y$ because $y$ is free in the expression $y$.
+\end{enumerate}
+\end{itemize}
+
+\section{Disambiguating Lambda Expressions}
+\begin{itemize}
+\item The grammar we gave in section 4 for lambda expressions is ambiguous. A few simple rules will remove the ambiguities.
+\item Function application is left associative: $f\,g\,h = ((f\,g)\,h)$
+\item Function application binds more tightly than lambda: $\lambda x.f\,g\,x = (\lambda x.(f\,g)\,x)$
+\item The body in a function abstraction extends as far to the right as possible: $\lambda x.+\,x\,1=\lambda x.(+\,x\,1)$.
+\end{itemize}
+\end{document}
