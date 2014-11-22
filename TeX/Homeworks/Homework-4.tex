@@ -28,18 +28,30 @@ In each case briefly justify your answer.
 \begin{enumerate}
 \item $\{\,D\,|\,D$ is a deterministic finite automaton that accepts at least
 one string with an equal number of $a$'s and $b$'s$\,\}$.
-\item[\emph{Solution}:]
+\item[\emph{Solution}:] This language is recursive. We can simulate a DFA $D$
+that accepts at least one string with an equal number of $a$'s and $b$'s, and we
+can create a Turing machine $M$ that simulates this DFA. Thus, $M$ will always
+halt whenever $D$ halts, which occurs either when it accepts the string or
+rejects said string.
 
 \item $\{\,(D_1,D_2)\,|\,D_1$ and $D_2$ are deterministic finite automata and
 $L(D_1) = L(D_2)\,\}$
-\item[\emph{Solution}:]
+\item[\emph{Solution}:] This language is recursive. We can construct a Turing
+machine $M$ that simulates the table-filling algorithm that determines if two
+DFA's are equivalent. Thus, we can check for equivalence between $D_1$ and
+$D_2$; if we find that $L(D_1) = L(D_2)$, $M$ will halt and accept, otherwise it
+will halt without accepting.
 
 \item $\{\,(M,w)\,|\,M$ is a Turing machine that halts on input $w\,\}$.
-\item[\emph{Solution}:]
+\item[\emph{Solution}:] This language is recursively enumerable. We can
+construct a Turing machine $Q$ that simulates the Turing machine $M$. Thus, we
+can simulate $M$ on $Q$. However, we do not know if $M$ will ever halt; thus,
+$Q$ may never halt unless $M$ halts and accepts. Therefore, it is recursively
+enumerable.
 
 \item $\{\,(M_1,M_2)\,|\,M_1$ and $M_2$ are Turing machines and $L(M_1) =
 L(M_2)\,\}$
-\item[\emph{Solution}:]
+\item[\emph{Solution}:] Not Recursively enumerable or Recursively Enumerable
 
 \end{enumerate}
 
@@ -49,7 +61,17 @@ L(M_2)\,\}$
 expression given a truth assignment to its variables. Describe how your
 algorithm evaluates the boolean expression $x \vee \neg(y \wedge z)$ for the
 truth assignment $T(x) = 0$, $T(y) = 0$, $T(z) = 1$. (1 is true, 0 is false)
-\item[\emph{Solution}:]
+\item[\emph{Solution}:] We can construct a parse tree where the leafs of the
+tree are all literals of the boolean expression, and any negation we have found
+on the way gets pushed down to the literals. From there, we can traverse up the
+tree, evaluating the truth values as we go. Once we reach the top of the tree,
+we have figured out the truth values for the whole boolean expression.
+
+We can construct a parse tree for $x \vee \neg(y \wedge z)$ as follows: \\
+\Tree [.$\vee$ [.$x$ ] [.$\vee$ [.$\overline{y}$ ] [.$\overline{z}$ ] ] ] \\
+Now, we read up the tree. Thus, $(\overline{y} \vee \overline{z})$ becomes $(1
+\vee 0)$, which evaluates to $1$. From there, we have $(x \vee 1)$, which is
+true.
 
 \item What is the time complexity of your algorithm?
 \item[\emph{Solution}:]
@@ -61,7 +83,7 @@ boolean expression $x \vee \neg (y \wedge x)$.
 \item[\emph{Solution}:]
 
 \item What is the time complexity of your algorithm?
-\item[\emph{Solution}:]
+\item[\emph{Solution}:] The time complexity to build the parse tree
 
 \end{enumerate}
 
@@ -88,20 +110,33 @@ that $E$ is satisfiable if and only if this PEBBLES game is winnable.
 \end{enumerate}
 
 \item A polynomial-time verifier for a language $L$ is an algorithm $V$ such
-that $L = \{\,w\,|\,V$ accepts $(w,c)$ in polynomial time for some polynomial-
-length string $c$ called a certificate or proof of membership in $L\,\}$. Show
-that NP is equivalent to the class of languages that have polynomial-time
-verifiers.
+that $L = \{\,w\,|\,V$ accepts $(w,c)$ in polynomial time for some
+polynomial-length string $c$ called a certificate or proof of membership in
+$L\,\}$. Show that NP is equivalent to the class of languages that have
+polynomial-time verifiers.
 \item[\emph{Solution}:]
 
 \item The classes P and NP
 \begin{enumerate}
 \item Show that if language $A$ is NP-complete and $A$ is in P, then P=NP.
-\item[\emph{Solution}:]
+\item[\emph{Solution}:] Suppose $A$ is both NP-complete and in $P$. Then all
+languages $L$ is $\mathcal{NP}$ reduces in polynomial-time to $A$.
 
 \item Show that if $A$ is NP-complete and $A$ is polynomially reducible to a
 language $B$ in NP, then $B$ is NP-complete.
-\item[\emph{Solution}:]
+\item[\emph{Solution}:] We need to show that every language $L$ in
+$\mathcal{NP}$ polynomial-time reduces to $B$. We know that there is a
+polynomial-time reduction of $L$ to $A$, since $A$ is already NP-complete. Thus,
+a string $w$ in $L$ of length $N$ is converted to a string $x$ in $A$ of length
+at most $p(n)$ where $p(n)$ is the polynomial time reduction.
+
+We know that there is a polynomial-time reduction of $A$ to $B$; this reduction
+takes polynomial time $q(m)$. This reduction transforms $x$ to some string $y$
+in $B$, taking time at most $q(p(n))$. Thus, the transformation of $w$ to $y$
+takes time at most $p(n) + q(p(n))$, which is a polynomial. Therefore, $L$ is
+polynomial-time reducible to $B$. Since $L$ could be any language in
+$\mathcal{NP}$, we know that all of $\mathcal{NP}$ polynomial-time reduces to
+$B$; thus, $B$ is NP-complete.
 
 \end{enumerate}
 \end{enumerate}
