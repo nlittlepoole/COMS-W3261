@@ -1,4 +1,5 @@
 clnzr.py
 clean-wrap.sh
-line_wrapper.py
 committer.sh
+line_wrapper.py
+templater
