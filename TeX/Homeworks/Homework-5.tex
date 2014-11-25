@@ -1,0 +1,59 @@
+\documentclass[]{article}
+\usepackage[all]{xy}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{indentfirst}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+\usepackage{tipa}
+\begin{document}
+
+\newtheorem{thm}{Theorem}
+\title{Computer Science Theory \\ COMS W3261 \\ Homework 5}
+\author{Alexander Roth}
+\date{2014 -- 11 -- 25}
+\maketitle
+\section*{Problems}
+\begin{enumerate}
+\item Using the following grammar for lambda calculus expressions
+\[ E \rightarrow \lambda \text{var}.E\,|\,E\,E\,|\,(E)\,|\,\text{var} \]
+constructs a parse tree for the expression
+\[ (\lambda x.\lambda y.x\,y)\lambda z.z \]
+Use the standard disambiguating conventions for lambda expressions in constructing your parse tree.
+\item[\emph{Solution}:]
+
+\item Consider the lambda-calculus expression $(\lambda x.(\lambda y.x)x)((\lambda z.z)(\lambda w.(\lambda v.v)w))$.
+\begin{enumerate}
+\item Identify all redexes in this expression.
+\item[\emph{Solution}:]
+
+\item Evaluate this expression using normal order evaluation.
+\item[\emph{Solution}:]
+
+\item Evaluate this expression using applicative order evaluation.
+\item[\emph{Solution}:]
+\end{enumerate}
+
+
+\item Evaluate the lambda expression $(\lambda x.(\lambda y.(x(\lambda x.x\,y))))y$. Describe all the steps in your evaluation.
+
+\item Let $G$ be the lambda abstraction
+\[ G = (\lambda f.\lambda x.f(f\,x)) \]
+Evaluate the lambda expression $G\,G$.
+\item[\emph{Solution}:]
+
+\item Let add, one, and two be the following lambda expressions:
+\begin{align*}
+\text{add} &= \lambda m.\lambda n.\lambda f.\lambda x.m\,f(n\,f\,x) \\
+\text{one} &= \lambda f.\lambda x.f\,x \\
+\text{two} &= \lambda f.\lambda x.f(f\,x)
+\end{align*}
+Evaluate (add one two).
+\item[\emph{Solution}:]
+\end{enumerate}
+
+\end{document}
