@@ -1,0 +1,239 @@
+\documentclass[]{article}
+\usepackage[all]{xy}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{indentfirst}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+\usepackage{tipa}
+\begin{document}
+
+\newtheorem{thm}{Theorem}
+\title{Computer Science Theory \\ COMS W3261 \\ Lecture 22}
+\author{Alexander Roth}
+\date{2014 -- 11 -- 24}
+\maketitle
+
+\section*{Outline}
+\begin{enumerate}
+\item Normal form
+\item Reduction strategies
+\item The Church-Rosser theorems
+\item The Y combinator
+\item Implementing factorial using the Y combinator
+\end{enumerate}
+
+\section{Normal Form}
+\begin{itemize}
+\item An expression containing no possible beta reductions is said to be in
+normal form. A normal form expression is one containing no redexes (reducible
+expressions), that is, one with no subexpressions of the form $(\lambda
+x.f\,g)$.
+\item Examples of normal form expressions:
+\begin{itemize}
+\item $x$ where $x$ is a variable.
+\item $x\,e$ where $x$ is a variable and $e$ is a normal form expression.
+\item $\lambda x.e$ where $x$ is a variable and $e$ is a normal form expression.
+\end{itemize}
+\item The expression $(\lambda x.x\,x)(\lambda x.x\,x)$ does not have a normal
+form because it is a redex that always evaluates to itself. We can think of this
+expression as a representation for an infinite loop.
+\end{itemize}
+
+\section{Reduction Strategies}
+\begin{itemize}
+\item A reduction strategy specifies the order in which beta reductions for a
+lambda expression are made.
+\item Some reduction orders for a lambda expression may yield a normal form
+while other orders may not. For example, consider the given expression
+\[ (\lambda x.1)((\lambda x.x\,x)(\lambda x.x\,x)) \]
+This expression has two redexes:
+\begin{enumerate}
+\item The entire expression is a redex in which we can apply the function
+$(\lambda x.1)$ to the argument $((\lambda x.x\,x)(\lambda x.x\,x))$ to yield
+the normal form 1. This redex is the leftmost outermost redex in the given
+expression.
+\item The subexpression $((\lambda x.x\,x)(\lambda x.x\,x))$ is also a redex in
+which we can apply the function $(\lambda x.x\,x)$ to the argument $(\lambda
+x.x\,x)$. Note that this redex is the leftmost innermost redex in the given
+expression. But if we evaluate this redex we get same subexpression: $(\lambda
+x.x\,x)(\lambda x.x\,x)\rightarrow(\lambda x.x\,x)(\lambda x.x\,x)$. Thus,
+continuing to evaluate the leftmost innermost redex will not terminate and no
+normal form will result.
+\end{enumerate}
+\item As a second example, consider the expression
+\[ (\lambda x.\lambda y.y)((\lambda z.z\,z)(\lambda z.z\,z)) \]
+This expression has two redexes:
+\begin{enumerate}
+\item The entire expression is a redex in which we apply the function $(\lambda
+x.\lambda y.y)$ to the argument $((\lambda z.z\,z)(\lambda z.z\,z))$ to yield
+the normal form $(\lambda y.y)$. This redex is the leftmost outermost redex in
+the given expression.
+\item The subexpression $((\lambda z.z\,z)(\lambda z.z\,z))$ is also a redex in
+which we apply the function $(\lambda z.z\,z)$ to the argument $(\lambda
+z.z\,z)$. Note that this redex is the leftmost innermost redex in the given
+expression. But if we evaluate this redex we get the same subexpression:
+$((\lambda z.z\,z)(\lambda z.z\,z))\rightarrow((\lambda z.z\,z)(\lambda z.z))$.
+Thus, continuing to evaulate the leftmost innermost redex will not terminate and
+no normal will result.
+\end{enumerate}
+\item There are two common reduction orders for lambda expression: normal order
+evaluation and applicative order evaluation
+\begin{description}
+\item[Normal order evaluation]:
+\begin{itemize}
+\item In normal order evaluation we always reduce the leftmost outermost redex
+at each step.
+\item The first reduction order in each of the two examples above is a normal
+order evaluation.
+\item A remarkable property of lambda calculus is that every lambda expression
+has a unique normal form if one exists. Moreover, if an expression has a normal
+form, then normal order evaluation will always find it.
+\end{itemize}
+\item[Applicative order evaluation]:
+\begin{itemize}
+\item In applicative order evaluation we always reduce the leftmost innermost
+redex at each step.
+\item Applicative order evaluates the arguments of a function before evaluating
+the function itself.
+\item The second reduction order in each of the two examples above isa n
+applicative order evaluation.
+\item Thus, even though an expression may have a normal form, applicative order
+evaluation may fail to find it.
+\end{itemize}
+\end{description}
+\end{itemize}
+
+\section{The Church-Rosser Theorems}
+\begin{itemize}
+\item A remarkable property of lambda calculus is that every expression has a
+unique normal form if one exists.
+\item \textbf{Church-Rosser Theorem I:} If $e\overset{*}{\rightarrow}f$ and
+$e\overset{*}{\rightarrow}g$ by any two reduction orders, then there always
+exists a lambda expression $h$ such that $f\overset{*}{\rightarrow}h$ and
+$g\overset{*}{\rightarrow}h$.
+\begin{itemize}
+\item A corollary of this theorem is that no lambda expression can be reduced to
+two distinct normal forms. To see this, suppose $f$ and $g$ are in normal form.
+The Church-Rosser theorem says there must be an expression $h$ such that $f$ and
+$g$ are each reducible to $h$. Since $f$ and $g$ are in normal form, they cannot
+have any redexes so $f = g = h$.
+\item This corollary says that all reduction sequences that terminate will
+always yield the same result and that result must be a normal form.
+\item The term \emph{confluent} is often applied to a rewriting system that has
+the Church-Rosser property.
+\end{itemize}
+\item \textbf{Church-Rosser Theorem II:} If $e\overset{*}{\rightarrow}f$ and $f$
+is in normal form, then there exists a normal order reduction sequence from $e$
+to $f$.
+\end{itemize}
+
+\section{The Y Combinator}
+\begin{itemize}
+\item The $Y$ combinator (sometimes called the paradoxical combinator) is a function that takes a function $G$ as an argument and returns $G(YG)$. With repeated applications we can get $G(G(YG)), G(G(G(YG))),\ldots$.
+\item We can implement recursive functions using the $Y$ combinator.
+\item $Y$ is defined as follows:
+\[(\lambda f.(\lambda x.f(x\,x))(\lambda x.f(x\,x)))\]
+\item Let us evaluate $YG$ where $G$ is an expression:
+\begin{align*}
+(\lambda f.(\lambda x.f(x\,x))(\lambda x^\prime.f(x\prime\,x^\prime)))G &\rightarrow(\lambda x.G(x\,x))(\lambda x^\prime.G(x^\prime\,x^\prime)) \\
+& \rightarrow G((\lambda x^\prime.G(x^\prime\,x^\prime))(\lambda x^\prime.G(x^\prime\,x^\prime))) \\
+& \leftrightarrow G((\lambda f.(\lambda x.f(x\,x))(\lambda x.f(x\,x)))G) \\
+& = G(YG)
+\end{align*}
+\item Thus, $YG \overset{*}{\rightarrow} G(YG)$; that is, $YG$ reduces to a call of $G$ on $(YG)$.
+\item We will use $Y$ to implement recursive functions.
+\item $Y$ is an example of a fixed-point combinator.
+\end{itemize}
+
+\section{Implementing Factorial using the Y Combinator}
+\begin{itemize}
+\item If we could name lambda abstractions, we could define the factorial function with the following recursive definition:
+\[ FAC = (\lambda n.IF\,(=\,n\,0)\,1\,(*\,n\,(FAC\,(-\,n\,1)))) \]
+where $IF$ is a conditional function.
+\item However, functions in lambda calculus cannot be named; they are anonymous.
+\item But we can express recursion as the fixed-point of a function $G$. To do this, let us simplify the essence of the problem. We begin with a skeletal recursive definition:
+\[ FAC = \lambda n.(\ldots FAC \ldots) \]
+\item By performing the beta abstraction on $FAC$, we can transform its definition to:
+\begin{align*}
+FAC &= (\lambda f.(\lambda n.(\ldots f \ldots)))\, FAC \\
+    &= G\,FAC
+\end{align*}
+where
+\[ G = \lambda f.\lambda n.IF\,(=\,n\,0)\,1\,(*\,n\,(f\,(-\,n\,1))) \]
+Beta abstraction is just the reverse of beta reduction.
+\item The equation
+\[ FAC = G\,FAC \]
+says that when the function $G$ is applied to $FAC$, the result is $FAC$. That is, $FAC$ is a fixed-point of $G$.
+\item We can use the $Y$ combinator to implement $FAC:$
+\[ FAC = Y\,G \]
+\item As an example, let's compute $FAC\,1$:
+\begin{align*}
+FAC\,1 &= Y\,G\,1      \\
+&= G\,(Y\,G)\,1 \\
+&= \lambda f.\lambda n.IF\,(=\,n\,0)\,1\,(*\,n\,(f\,(-\,n\,1)))(Y\,G)\,1 \\
+&\rightarrow \lambda n.IF\,(=\,n\,0)\,1\,(*\,n\,((Y\,G)(-\,n\,1)))\,1    \\
+&\rightarrow IF (=\,n\,0)\,1\,(*\,n\,((Y\,G)(-\,1\,1))) \\
+&\rightarrow *\,1\,(Y\,G\,0) \\
+&= *\,1\,(G(Y\,G)\,0) \\
+&= *\,1((\lambda f.\lambda n.IF\,(=\,n\,0)\,1\,(*\,n\,(f\,(-\,n\,1))))(Y\,G)\,0)\\
+&\rightarrow *\,1((\lambda n.IF\,(=\,n\,0)\,1\,(*\,n\,((Y\,G)(-\,n\,1)))))0 \\
+&\rightarrow *\,1(IF\,(=\,0\,0)\,1\,(*\,0\,((Y\,G)(-\,0\,1)))) \\
+&\rightarrow *\,1\,1 \\
+&\rightarrow 1     
+\end{align*}
+\end{itemize}
+
+\section*{Class Notes}
+\subsection*{Beta Reduction}
+\begin{align*}
+&(\lambda x.\lambda y.+\,x\,y)\,1\,2 \\
+&(+\,x\,y) \\
+&(\lambda y.(\lambda y.(+\,x\,y))) \\
+&((\lambda x.(\lambda y.(+\,x\,y)))1)2 \\
+&(\lambda y.(+\,1\,y)) 2 \\
+&(+\,1\,2)
+\end{align*}
+
+\subsection*{Argument is a Function}
+\begin{align*}
+&(\lambda f.f\,1)(\lambda x.(+\,x\,2)) \\
+&\overset{\beta}{\rightarrow} (\lambda x.(+\,x\,2)) 1\\
+&\overset{\beta}{\rightarrow} (+\,1\,2)
+\end{align*}
+
+\subsection*{Rename to avoid name conflicts}
+\begin{align*}
+&((\lambda x.(\lambda y.(x\,y))) y) \\
+&\overset{\alpha}{\rightarrow} ((\lambda x.(\lambda z.(x\,z))) y) \\
+&\overset{\beta}{\rightarrow} (\lambda z.(y\,z))
+\end{align*}
+
+\section*{The Lambda Calculus II}
+\begin{description}
+\item[Normal form:] A lambda expression with no redexes
+\end{description}
+\subsubsection*{Examples}
+\begin{itemize}
+\item $x$
+\item $\lambda y$
+\item $\lambda x.y$
+\end{itemize}
+
+Consider 
+\begin{align*}
+&(\lambda x.x\,x)(\lambda x.x\,x)\\
+&\overset{\beta}{\rightarrow}(\lambda x.x\,x)(\lambda x.x\,x)
+\end{align*}
+Infinite loop.
+
+\subsection*{Reduction Strategy}
+The order in which beta reductions are made.
+\[ e = ((\lambda x.f)g) \]
+$eh$: The lambda in $e$ is to the left of any lambda in $h$, $f$, $g$.
+
+\end{document}
