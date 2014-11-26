@@ -1,0 +1,38 @@
+\documentclass[]{article}
+\usepackage[all]{xy}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{indentfirst}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+\usepackage{tipa}
+\begin{document}
+
+\newtheorem{thm}{Theorem}
+\title{Computer Science Theory \\ COMS W3261 \\ Lecture 23}
+\author{Alexander Roth}
+\date{2014 -- 11 -- 26}
+\maketitle
+
+\section*{Problems}
+\begin{enumerate}
+\item Consider the Language $L_\infty = \{ M | M$ is a TM that runs forever on all inputs $\}$. Is $L_\infty$ is RE? True or False. 
+\item[\emph{Solution}:] False, we can reduce this to $L_{ne}$ which is the not empty language. This is RE, but not decidable. We can construct $M^\prime$ that simulates $M$ on any given input. If $M$ accepts $M^\prime$ halts, otherwise loops forever. $M^\prime$ is in the complement of $M$. $\overline{L}$ is RE and not recursive, which implies $\overline{L}$ is not RE.
+
+\item $L_{nsub} = \{ (M, D)\,|\,L(M)\nsubseteq L(D) \}$. $L_{nsub}$ is RE?
+\item[\emph{Solution}:] True, this language is recursively enumerable. Given a DFA $D$ and an input string $w$, we must decide whether $D$ rejects $w$. We create a verifier $V(D,w)$ that verifies $D$ on input string $w$. If $D$ rejects $w$, we check if $M$ accepts $w$. Nondeterministically guess every single $w$. Run it against the verifier, three cases. Accepted by $L(D)$, rejected by both $L(D)$ and $L(M)$, rejected by $L(D)$ and accepted by $L(M)$.  There may be a $w$ such that $w \not\in L(D)$ but $w \in L(M)$.
+
+\item DNF-TAUT $\in$ CO-NP?
+\item[\emph{Solution}:] True
+
+\item DNF-TAUT $\in$ CO-NP? Is it CONP-hard?
+\item[\emph{Solution}:] $L$ is C-hard. $\forall L^\prime \in$ CONP. $L^\prime \leq_P$ DNF-TAUT. True, reductions hold even if you complement the language. $L_c \leq_P L^\prime_c$. $L \leq_P L$. If $L$ is NP-hard, then $L^c$ is CONP-hard. $\forall M \in \mathcal{NP}$, $M \leq_P L$ and $M^c \leq_P L^c$. $\{\phi|\exists X \phi(x) = 0\} = L^c$. CNF-SAT $\leq_P L^c$.
+
+\item $L = \{(m, k)|m > k \exists i < k | i \,\,\text{is a prime factor of}\,\,M \}$. Is $L \in \mathcal{NP}$? Is $L\in\text{CONP}$?
+\item[\emph{Solution}:] True, suppose there is a language $PR = \{ m | m \text{is a prime number}\}$. $PR \in \mathcal{P}$. We can guess all numbers between 2 and $k - 1$. Construct a verifier for this problem, $V(m, i)| 1 < i < k$. Our $V$ must test if this is a prime factor. If $PR(i)$ accepts, then it's prime. Then do $m/i$, if it is an integer add it to the set. $L^c = \{ (m,k)|\forall i, 1 < i < k$ where $i$ is not a prime factor of $M \}$. Nondeterministically guess a set of prime numbers, from 1 to $k$. See if it divides $m$, and if contains all primes, then $L^c$ is in $\mathcal{NP}$.
+\end{enumerate}
+\end{document}
