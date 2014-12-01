@@ -25,26 +25,63 @@ constructs a parse tree for the expression
 \[ (\lambda x.\lambda y.x\,y)\lambda z.z \]
 Use the standard disambiguating conventions for lambda expressions in constructing your parse tree.
 \item[\emph{Solution}:]
+\Tree [.$E$ [.$(E)$ [.$\lambda$ ] [.var [.$x$ ] ] [.. ] [.$E$ [.$\lambda$ ] [.var [.$y$ ] ] [.. ] [.$E$ [.$E$ [.var [.$x$ ] ] ] [.$E$ [.var [.$y$ ] ] ] ] ] ] [.$E$ [.$\lambda$ ] [.var [.$z$ ] ] [.. ] [.$E$ [.var [.$z$ ] ] ] ] ]
 
 \item Consider the lambda-calculus expression $(\lambda x.(\lambda y.x)x)((\lambda z.z)(\lambda w.(\lambda v.v)w))$.
 \begin{enumerate}
 \item Identify all redexes in this expression.
-\item[\emph{Solution}:]
+\item[\emph{Solution}:] There are 4 redexes.
+\begin{enumerate}
+\item[1.]$(\lambda x.(\lambda y.x)x)((\lambda z.z)(\lambda w.(\lambda v.v)w))$
+\item[2.]$(\lambda y.x)x$
+\item[3.]$(\lambda z.z)(\lambda w.(\lambda v.v)w)$
+\item[4.]$(\lambda v.v)w$
+\end{enumerate}
 
 \item Evaluate this expression using normal order evaluation.
 \item[\emph{Solution}:]
+\begin{align*}
+(\lambda x.(\lambda y.x)x)((\lambda z.z)(\lambda w.(\lambda v.v)w))&\overset{\beta}{\rightarrow} (\lambda y.((\lambda z.z)(\lambda w.(\lambda v.v)w)) ((\lambda z.z)(\lambda w.(\lambda v.v)w))) \\
+&\overset{\beta}{\rightarrow}(\lambda z.z)(\lambda w.(\lambda v.v)w) \\
+&\overset{\beta}{\rightarrow}(\lambda w.(\lambda v.v)w) \\
+&\overset{\alpha}{\rightarrow}(\lambda a.(\lambda v.v)w) \\
+&\overset{\beta}{\rightarrow}\lambda v.v
+\end{align*}
 
 \item Evaluate this expression using applicative order evaluation.
 \item[\emph{Solution}:]
+\begin{align*}
+(\lambda x.(\lambda y.x)x)((\lambda z.z)(\lambda w.(\lambda v.v)w)) &\overset{\alpha}{\rightarrow}(\lambda x.(\lambda y.x)x)((\lambda z.z)(\lambda a.(\lambda v.v)w))\\
+&\overset{\beta}{\rightarrow}(\lambda x.(\lambda y.x)x)((\lambda z.z)(\lambda v.v)) \\
+&\overset{\beta}{\rightarrow}(\lambda x.(\lambda y.x)x)(\lambda v.v) \\
+&\overset{\alpha}{\rightarrow}(\lambda q.(\lambda y.q)x)(\lambda v.v) \\
+&\overset{\beta}{\rightarrow}(\lambda y.(\lambda v.v))x \\
+&\overset{\beta}{\rightarrow}(\lambda v.v)
+\end{align*}
 \end{enumerate}
 
 
 \item Evaluate the lambda expression $(\lambda x.(\lambda y.(x(\lambda x.x\,y))))y$. Describe all the steps in your evaluation.
-
+\item[\emph{Solution}:] 
+\begin{align}
+(\lambda x.(\lambda y.(x(\lambda x.x\,y))))y &\overset{\alpha}{\rightarrow} (\lambda z.(\lambda y.(z(\lambda x.x\,y))))y \\
+&\overset{\alpha}{\rightarrow}(\lambda z.(\lambda q.(z(\lambda x.x\,y))))y \\
+&\overset{\beta}{\rightarrow}(\lambda q.(y(\lambda x.x y)))
+\end{align}
 \item Let $G$ be the lambda abstraction
 \[ G = (\lambda f.\lambda x.f(f\,x)) \]
 Evaluate the lambda expression $G\,G$.
 \item[\emph{Solution}:]
+\begin{align*}
+GG &= (\lambda f.\lambda x.f(f\,x))(\lambda f.\lambda x.f(f\,x)) \\
+&\overset{\beta}{\rightarrow}\lambda x.(\lambda f.\lambda x.f(f\,x))((\lambda f.\lambda x.f(f\,x))\,x) \\
+&\overset{\alpha}{\rightarrow}\lambda x.(\lambda f.\lambda z.f(f\,z))((\lambda f.\lambda z.f(f\,z))\,x) \\
+&\overset{\beta}{\rightarrow}\lambda x.\lambda z.((\lambda f.\lambda z.f(f\,z))\,x)(((\lambda f.\lambda z.f(f\,z))x)x) \\
+&\overset{\alpha}{\rightarrow}\lambda x.\lambda z.((\lambda f.\lambda v.f(f\,v))\,x)(((\lambda f.\lambda v.f(f\,v))x)x) \\
+&\overset{\beta}{\rightarrow}\lambda x.\lambda z.(\lambda v.x(x\,v))((\lambda v.x(x\,v))x) \\
+&\overset{\beta}{\rightarrow}\lambda x.\lambda z.x(x(\lambda v.x(x\,v))x) \\
+&\overset{\beta}{\rightarrow}\lambda x.\lambda z.x(x(x(x\,v)))
+\end{align*}
 
 \item Let add, one, and two be the following lambda expressions:
 \begin{align*}
@@ -54,6 +91,19 @@ Evaluate the lambda expression $G\,G$.
 \end{align*}
 Evaluate (add one two).
 \item[\emph{Solution}:]
+\begin{align*}
+&((\lambda m.\lambda n.\lambda f.\lambda x.m f(n\,f\,x))(\lambda f.\lambda x.f x)(\lambda f.\lambda x.f(f\,x)))\\
+&\overset{\alpha}{\rightarrow}((\lambda m.\lambda n.\lambda f.\lambda x.m\,f(n\,f\,x))(\lambda z.\lambda x.z\,x)(\lambda f.\lambda x.f(f\,x))) \\
+&\overset{\alpha}{\rightarrow}((\lambda m.\lambda n.\lambda f.\lambda x.m\,f(n\,f\,x))(\lambda z.\lambda q.z\,q)(\lambda f.\lambda x.f(f\,x))) \\
+&\overset{\alpha}{\rightarrow}((\lambda m.\lambda n.\lambda f.\lambda x.m\,f(n\,f\,x))(\lambda z.\lambda q.z\,q)(\lambda a.\lambda x.a(a\,x))) \\
+&\overset{\alpha}{\rightarrow}((\lambda m.\lambda n.\lambda f.\lambda x.m\,f(n\,f\,x))(\lambda z.\lambda q.z\,q)(\lambda a.\lambda b.a(a\,b)\\ 
+&\overset{\beta}{\rightarrow}((\lambda n.\lambda f.\lambda x.(\lambda z.\lambda q.z\,q)f(n\,f\,x))(\lambda a.\lambda b.a(a\,b))) \\
+&\overset{\beta}{\rightarrow}((\lambda f.\lambda x.(\lambda z.\lambda q.z\,q)f((\lambda a.\lambda b.a(a\,b))\,f\,x)) \\
+&\overset{\beta}{\rightarrow}((\lambda f.\lambda x.(\lambda q.f\,q)((\lambda a.\lambda b.a(a\,b))f\,x)) \\
+&\overset{\beta}{\rightarrow}((\lambda f.\lambda x.f((\lambda a.\lambda b.a(a\,b))f\,x))) \\
+&\overset{\beta}{\rightarrow}((\lambda f.\lambda x.f((\lambda b.f(f\,b))x))) \\
+&\overset{\beta}{\rightarrow}\lambda f.\lambda x.f(f(f\,x))
+\end{align*}
 \end{enumerate}
 
 \end{document}
