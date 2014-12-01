@@ -1,0 +1,164 @@
+\documentclass[]{article}
+\usepackage[all]{xy}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{indentfirst}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+\usepackage{tipa}
+\begin{document}
+
+\newtheorem{thm}{Theorem}
+\title{Computer Science Theory \\ COMS W3261 \\ Lecture 23}
+\author{Alexander Roth}
+\date{2014 -- 12 -- 1}
+\maketitle
+
+\section*{Outline}
+\begin{enumerate}
+\item Church numerals
+\item Arithmetic
+\item Logic
+\item Other programming language constructs
+\item The influence of the lambda calculus on functional languages
+\end{enumerate}
+
+\section{Church Numerals}
+\begin{itemize}
+\item Church numbers are a way of represent the intergers in lambda calculus.
+\item Church numbers are defined as functions taking two parameters
+\begin{align*}
+&0\,\,\textrm{is defined as}\,\,\lambda f.\lambda x.x \\
+&1\,\,\textrm{is defined as}\,\,\lambda f.\lambda x.f\,x\\
+&2\,\,\textrm{is defined as}\,\,\lambda f.\lambda x.f(f\,x)\\
+&3\,\,\textrm{is defined as}\,\,\lambda f.\lambda x.f(f(f\,x))\\
+&n\,\,\textrm{is defined as}\,\,\lambda f.\lambda x.f^n\,x
+\end{align*}
+\item $n$ has the property that for any lambda expressions $g$ and $y$, $ngy \overset{*}{\rightarrow} g^ny$. That is to say, $ngy$ causes $g$ to be applied to $y$ $n$ times.
+\end{itemize}
+
+\section{Arithmetic}
+\begin{itemize}
+\item In lambda calculus, arithmetic functions can be represented by corresponding operations on Church numerals.
+\item We can define a successor function $succ$ of three arguments that adds one to its first argument:
+\[ \lambda n.\lambda f.\lambda x.f (n\,f,x) \]
+\begin{itemize}
+\item Example: Let us evaluate $succ\,\,2 = $
+\begin{align*}
+&(\lambda n.\lambda f.\lambda x.f(n\,f\,x))(\lambda f^\prime.\lambda x^\prime.f^\prime(f^\prime\,x^\prime)) \\
+&\rightarrow \lambda f.\lambda x.f((\lambda f^\prime.\lambda x^\prime.f^\prime(f^\prime\,x^\prime))f\,x) \\
+&\rightarrow \lambda f.\lambda x.f(\lambda x^\prime.f(f\,x^\prime)x) \\
+&\rightarrow \lambda f.\lambda x.f(f(f\,x)) \\
+&= 3
+\end{align*}
+\end{itemize}
+\item We can define a function $add$ as follows:
+\[ \lambda m.\lambda n.\lambda f.\lambda x.m\,f(n\,f\,x) \]
+\begin{itemize}
+\item Example: Let us evaluate $add\,\,0\,1=$
+\begin{align*}
+&(\lambda m.\lambda n.\lambda f.\lambda x.m\,f(n\,f\,x)0\,1 \\
+&\rightarrow \lambda n.\lambda f.\lambda x.0\,f\,(n\,f\,x)\,1\\
+&\rightarrow \lambda f.\lambda x.0\,f(1\,f\,x) \\
+&= \lambda f.\lambda x.(\lambda f^\prime.\lambda x^\prime.x^\prime)f(1\,f\,x)\\
+&\rightarrow \lambda f.\lambda x.\lambda x^\prime.x^\prime(1\,f\,x) \\
+&\rightarrow \lambda f.\lambda x.(1\,f\,x) \\
+&= \lambda f.\lambda x.((\lambda f^\prime.\lambda x^\prime.f^\prime\,x^\prime)f\,x) \\
+&\rightarrow \lambda f.\lambda x.(\lambda x^\prime.f\,x^\prime)x\\
+&\rightarrow \lambda f.\lambda x.f\,x \\
+&= 1
+\end{align*}
+\end{itemize}
+\item We can define a function $mult$ as follows:
+\[ \lambda m.\lambda n.\lambda f.m(n\,f) \]
+\begin{itemize}
+\item Example: Let us evaluate $mul\,\,2\,3=$
+\begin{align*}
+&(\lambda m.\lambda n.\lambda f.m(n\,f))2\,3 \\
+&\rightarrow \lambda n.\lambda f.2(n\,f)3 \\
+&\rightarrow \lambda f.2(3\,f) \\
+&\overset{*}{\rightarrow}\lambda f.\lambda x.f(f(f(f(f(f\,x))))) \\
+&= 6
+\end{align*}
+\end{itemize}
+\end{itemize}
+
+\section{Logic}
+\begin{itemize}
+\item The boolean value true can be represented by a function of two arguments that always selects its first argument: $\lambda x.\lambda y.x$
+\item The boolean value false can be represented by a function of two arguments that always selects its second argument: $\lambda x.\lambda y.y$
+\item An if-then-else statement can be represented by a function of three arguments $\lambda c.\lambda i.\lambda e.c\,i\,e$ that uses its condition $c$ to select either the if-part $i$ or the else-part $e$.
+\begin{itemize}
+\item Example: Let us evaluate if true then 1 else 0:
+\begin{align*}
+&(\lambda c.\lambda i.\lambda e.c\,i\,e) \textrm{true}\,1\,0 \\
+&\rightarrow(\lambda i.\lambda e.\textrm{true}\,i\,e)1\,0\\
+&\rightarrow(\lambda e.\textrm{true}\,1\,e)0\\
+&\rightarrow\textrm{true}\,1\,0\\
+&\rightarrow(\lambda x.\lambda y.x)1\,0\\
+&\rightarrow(\lambda y.1)0\\
+&\rightarrow1
+\end{align*}
+\end{itemize}
+\item The boolean operators and, or, and not can be implemented as follows:
+\begin{align*}
+\textrm{and} &= \lambda p.\lambda q.p\,q\,p\\
+\textrm{or}  &= \lambda p.\lambda q.p\,p\,q\\
+\textrm{not} &= \lambda p.\lambda a.\lambda b.p\,b\,a\\
+\end{align*}
+\begin{itemize}
+\item Example: Let us evalue $\textrm{not true}$:
+\begin{align*}
+&(\lambda p.\lambda a.\lambda b.p\,b\,a)\textrm{true}
+&\rightarrow \lambda a.\lambda b.\textrm{true}\,b\,a\\
+&= \lambda a.\lambda b.(\lambda x.\lambda y.x)\,b\,a\\
+&\rightarrow \lambda a.\lambda b.(\lambda y.b)a\\
+&\rightarrow \lambda a.\lambda b.b\\
+&= \textrm{false (under renaming)}
+\end{align*}
+\end{itemize}
+\end{itemize}
+
+\section{Other Programming Language Constructs}
+\begin{itemize}
+\item We can readily implement other programming language constructs in lambda calculus. As an example, here are lambda calculus expressions for various list operations such as cons (constructing a list), head (selecting the first item from a list), and tail (selecting the remainder of a list after the first item):
+\begin{align*}
+\textrm{cons} &= \lambda h.\lambda t.\lambda f.f\,h\,t\\
+\textrm{head} &= \lambda l.l (\lambda h.\lambda t.h)\\
+\textrm{tail} &= \lambda l.l (\lambda h.\lambda t.t)\\
+\end{align*}
+\end{itemize}
+
+\section*{Class Notes}
+\subsection*{Church Numerals}
+\begin{align*}
+0 &= \lambda f.\lambda x.x \\
+1 &= \lambda f.\lambda x.f\,x \\
+2 &= \lambda f.\lambda x.f(f\,x)
+\end{align*}
+
+\subsubsection*{Example}
+\[(\lambda f.(\lambda x.(f\,x)))E\,F \]
+All functions are unary.
+\begin{align*}
+&\underset{\beta}{\rightarrow} (\lambda x.(E\,x))F \\
+&\underset{\beta}{\rightarrow} (E\,F)
+\end{align*}
+
+\subsection*{Logic}
+and true false
+\begin{align*}
+&((\lambda p.\lambda q.p\,q\,p)\textrm{true})\textrm{false}) \\
+&\underset{\beta}{\rightarrow}(\lambda q.\textrm{true}\,q\,\textrm{true})\textrm{false} \\
+&\underset{\beta}{\rightarrow}\textrm{true false true}\\
+&=((\lambda x.\lambda y.x)\textrm{false true}) \\
+&=(\lambda y.\textrm{false})\textrm{true} \\
+&=\textrm{false}
+\end{align*}
+Two lambda expressions are equivalent if you can rename one and substitute in the other with bound variables.
+
+\end{document}
