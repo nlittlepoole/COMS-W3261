@@ -46,26 +46,22 @@ y.x)x)((\lambda z.z)(\lambda w.(\lambda v.v)w))$.
 \item[\emph{Solution}:]
 \begin{align*}
 (\lambda x.(\lambda y.x)x)((\lambda z.z)(\lambda w.(\lambda
-v.v)w))&\underset{\beta}{\rightarrow} (\lambda y.((\lambda z.z)(\lambda
-w.(\lambda v.v)w)) ((\lambda z.z)(\lambda w.(\lambda v.v)w))) \\
+v.v)w))&\underset{\beta}{\rightarrow} \lambda y.((\lambda z.z)(\lambda
+w.(\lambda v.v)w))((\lambda z.z)(\lambda w.(\lambda v.v)w))\\
 &\underset{\beta}{\rightarrow}(\lambda z.z)(\lambda w.(\lambda v.v)w) \\
 &\underset{\beta}{\rightarrow}(\lambda w.(\lambda v.v)w) \\
-&\underset{\alpha}{\rightarrow}(\lambda a.(\lambda v.v)w) \\
-&\underset{\beta}{\rightarrow}\lambda v.v
+&\underset{\beta}{\rightarrow}\lambda w.w
 \end{align*}
 
 \item Evaluate this expression using applicative order evaluation.
 \item[\emph{Solution}:]
 \begin{align*}
 (\lambda x.(\lambda y.x)x)((\lambda z.z)(\lambda w.(\lambda v.v)w))
-&\underset{\alpha}{\rightarrow}(\lambda x.(\lambda y.x)x)((\lambda z.z)(\lambda
-a.(\lambda v.v)w))\\
 &\underset{\beta}{\rightarrow}(\lambda x.(\lambda y.x)x)((\lambda z.z)(\lambda
-v.v)) \\
-&\underset{\beta}{\rightarrow}(\lambda x.(\lambda y.x)x)(\lambda v.v) \\
-&\underset{\alpha}{\rightarrow}(\lambda q.(\lambda y.q)x)(\lambda v.v) \\
-&\underset{\beta}{\rightarrow}(\lambda y.(\lambda v.v))x \\
-&\underset{\beta}{\rightarrow}\lambda v.v
+w.w))\\
+&\underset{\beta}{\rightarrow}(\lambda x.(\lambda y.x)x)(\lambda w.w) \\
+&\underset{\beta}{\rightarrow}(\lambda x.x)(\lambda w.w) \\
+&\underset{\beta}{\rightarrow}\lambda w.w
 \end{align*}
 \end{enumerate}
 
@@ -94,19 +90,20 @@ $\lambda q.(y(\lambda x.x\,y))$.
 Evaluate the lambda expression $G\,G$.
 \item[\emph{Solution}:]
 \begin{align*}
-GG &= (\lambda f.\lambda x.f(f\,x))(\lambda f.\lambda x.f(f\,x)) \\
-&\underset{\beta}{\rightarrow}\lambda x.(\lambda f.\lambda x.f(f\,x))((\lambda
-f.\lambda x.f(f\,x))\,x) \\
-&\underset{\alpha}{\rightarrow}\lambda x.(\lambda f.\lambda z.f(f\,z))((\lambda
-f.\lambda z.f(f\,z))\,x) \\
-&\underset{\beta}{\rightarrow}\lambda x.\lambda z.((\lambda f.\lambda
-z.f(f\,z))\,x)(((\lambda f.\lambda z.f(f\,z))x)x) \\
-&\underset{\alpha}{\rightarrow}\lambda x.\lambda z.((\lambda f.\lambda
-v.f(f\,v))\,x)(((\lambda f.\lambda v.f(f\,v))x)x) \\
-&\underset{\beta}{\rightarrow}\lambda x.\lambda z.(\lambda v.x(x\,v))((\lambda
-v.x(x\,v))x) \\
-&\underset{\beta}{\rightarrow}\lambda x.\lambda z.x(x(\lambda v.x(x\,v))x) \\
-&\underset{\beta}{\rightarrow}\lambda x.\lambda z.x(x(x(x\,v)))
+GG &= (\lambda f.\lambda x.f(f\,x))G\\
+&\underset{\beta}{\rightarrow} \lambda x.G(G\,x) \\
+&\underset{\alpha}{\rightarrow} \lambda x.G((\lambda f.\lambda
+x^\prime.f(f\,x^\prime)) x) \\
+&\underset{\beta}{\rightarrow} \lambda x.G(\lambda x^\prime.x(x\,x^\prime)) \\
+&\underset{\alpha}{\rightarrow} \lambda x.(\lambda f.\lambda y.f(f\,y))(\lambda
+x^\prime.x(x\,x^\prime)) \\
+&\underset{\beta}{\rightarrow} \lambda x.\lambda y.(\lambda
+x^\prime.x(x\,x^\prime))((\lambda x^\prime.x(x\,x^\prime))\,y) \\
+&\underset{\beta}{\rightarrow} \lambda x.\lambda y.(\lambda
+x^\prime.x(x\,x^\prime)) (x(x\,y)) \\
+&\underset{\beta}{\rightarrow} \lambda x.\lambda y.x(x(x(x(x\,y))))\\
+&\underset{\alpha}{\rightarrow} \lambda f.\lambda y.f(f(f(f\,y)))) \\
+&\underset{\alpha}{\rightarrow} \lambda f.\lambda x.f(f(f(f\,x))))
 \end{align*}
 
 \item Let add, one, and two be the following lambda expressions:
