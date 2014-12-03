@@ -57,9 +57,8 @@ w.(\lambda v.v)w))((\lambda z.z)(\lambda w.(\lambda v.v)w))\\
 \item[\emph{Solution}:]
 \begin{align*}
 (\lambda x.(\lambda y.x)x)((\lambda z.z)(\lambda w.(\lambda v.v)w))
-&\underset{\beta}{\rightarrow}(\lambda x.(\lambda y.x)x)((\lambda z.z)(\lambda
-w.w))\\
-&\underset{\beta}{\rightarrow}(\lambda x.(\lambda y.x)x)(\lambda w.w) \\
+&\underset{\beta}{\rightarrow}(\lambda x.x)((\lambda z.z)(\lambda w.(\lambda v.v)w) \\
+&\underset{\beta}{\rightarrow}(\lambda x.x)((\lambda z.z)(\lambda w.w)) \\
 &\underset{\beta}{\rightarrow}(\lambda x.x)(\lambda w.w) \\
 &\underset{\beta}{\rightarrow}\lambda w.w
 \end{align*}
