@@ -1,0 +1,112 @@
+\documentclass[]{article}
+\usepackage[all]{xy}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{indentfirst}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+\usepackage{tipa}
+\begin{document}
+
+\newtheorem{thm}{Theorem}
+\title{Computer Science Theory \\ COMS W3261 \\ Lecture 24}
+\author{Alexander Roth}
+\date{2014 -- 12 -- 03}
+\maketitle
+
+\section*{What will be on the test?}
+\begin{enumerate}
+\item 2 Regular Languages
+\item 2 Context-Free Languages
+\item 2 Computability Problems
+\item 2 Complexity Problems
+\item 1 Lambda Calculus
+\item 1 Surprise
+\end{enumerate}
+
+\begin{itemize}
+\item Know the basic facts. Nothing will be esoteric
+\end{itemize}
+
+\section*{What have we learned in this course?}
+\begin{itemize}
+\item Computational Thinking: How we go about solving problems in the age of the
+Internet.
+\item We should find an appropriate model of computation, so that problems in
+that area can be solved using algorithms and computational steps.
+\item Look at the Internet.
+\item Model of Computation: A mathematical abstraction, in which problems can be
+posed and solved using sequences of algorithmic steps. Some of the enduring
+models of life.
+\end{itemize}
+
+\subsection*{Problem Areas}
+\begin{enumerate}
+\item Finding patterns in strings
+\begin{itemize}
+\item Applications
+\item Textual analysis
+\item NLP
+\item Compliling
+\item Genomic Analysis
+\end{itemize}
+\end{enumerate}
+
+\subsubsection*{Problem}
+Given a description of a set of strings or a regular expression $R$ and an input
+string $w$, is $w$ in $L(R)$?
+
+$R$ to the MYT-Algorithm to the $\epsilon$-NFA takes time complexity
+$O(|R|\times|w|)$.
+
+$R$ to the MYT-Algorithm to the $\epsilon$-NFA to the subset construction to a
+DFA, takes time complexity $O(2^|R|+|w|)$
+
+\subsection*{What to know}
+\begin{itemize}
+\item Pumping lemma for regular languages
+\item Closure properties
+\item Decidability results.
+\end{itemize}
+
+\subsection*{The Universe of Languages}
+\begin{enumerate}
+\item Regular languages
+\item Context Free Languages
+\item Recursive Langauges (Algorithms)
+\item Recursively Enumerable Languages (Turing Machine Recognizable, either
+halts or goes into an infinite loop)
+\item All Languages on $\{0,1\}$ (Contains uncountably infinite languages)
+\end{enumerate}
+
+\begin{description}
+\item[Algorithm] A Turing machine that halts on all inputs.
+\end{description}
+
+All languages are countably infinite.
+
+We don't have a pumping lemma for Recursively Enumerable languages. Instead, we
+use the diagonalization language $L_d$ to show that a language cannot be
+recursively enumerable. We have the universal language for Recursively
+Enumerable $L_u$. Recursive languages can be proving with the Turing machine.
+
+We say a problem is undecidable if it's either recursively enumerable or
+unrecursively enumerable.
+
+
+\section*{Complexity Theory}
+To show that SAT is NP-Complete, we need to show that SAT is NP, and that every
+language in NP is reducible to SAT in polynomial time. That is, there is an
+algorithm that must take polynomial time that will map every language in NP to
+SAT. We are restricting the reductions to those that can be done with a
+deterministic Turing machine in polynomial time.
+
+If $L_1$ is NP-Complete, and $L_2$ is in NP and there is a polynomial time
+reduction of $L_1$ to $L_2$, then $L_2$ is NP-Complete.
+
+Is P = NP?
+\end{document}
